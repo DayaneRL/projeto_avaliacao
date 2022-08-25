@@ -19,14 +19,14 @@ class LoginController extends Controller
             'password'=> $request -> password
         ];
 
-        // falta encriptar a senha pro auth funcionar
+        // falta encriptar a senha
         if(Auth::attempt($credentials)){
-            return redirect()->route('dashboard');
+            return redirect()->route('dashboard.index');
         }
 
         return redirect()
             ->route('auth.login.create')
-            ->with('warning', $credentials)
+            ->with('warning', 'Usuário ou senha incorretos!')
             ->withInput();
     }
 }

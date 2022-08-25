@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Dashboard\DashboardController;
+
 
 
 // tela user logado
@@ -11,7 +13,4 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', [LoginController::class , 'create'])->name('auth.login.create');
 Route::post('/', [LoginController::class , 'store'])->name('auth.login.store');
-
-Route::get('/logado',function(){
-    return view('dashboard');
-});
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');

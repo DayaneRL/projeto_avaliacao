@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,15 +9,11 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/sb-admin-2.min.css') }}">
 </head>
 <body>
-    <h1 class="text-center my-4">Login</h1>
+    <h1 class="text-center my-4">Entrar</h1>
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-4">
-
-                @if(session()->has('success'))
-                <div class="alert alert-success">{{session('success')}}</div>
-                @endif
 
                 @if(session()->has('warning'))
                     <div class="alert alert-warning">{{session('warning')}}</div>
@@ -34,10 +30,10 @@
                                         <input
                                             type="email"
                                             name="email"
-                                            class="form-control "
+                                            class="form-control"
                                             placeholder="E-mail"
+                                            value="{{old('email')}}"
                                         >
-                                        {{-- <div class="invalid-feedback">{{ $errors->first('email') }}</div> --}}
                                     </div>
                                 </div>
 
@@ -49,18 +45,15 @@
                                             class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}"
                                             placeholder="Senha"
                                         >
-                                        {{-- <div class="invalid-feedback">{{ $errors->first('password') }}</div> --}}
                                     </div>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success btn-block mt-3">
-                                Login
+                                Entrar
                             </button>
                         </form>
                         <hr>
-                        <div class="text-center">
-                            {{-- <a class="small" href="{{ route('auth.register.create') }}">Não tem uma conta? Cadastre-se!</a> --}}
-                        </div>
+
                     </div>
                 </div>
             </div>
