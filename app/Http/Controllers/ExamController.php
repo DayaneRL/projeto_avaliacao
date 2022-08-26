@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Level;
 use Illuminate\Http\Request;
 
 class ExamController extends Controller
@@ -23,7 +25,9 @@ class ExamController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        $levels = Level::all();
+        return view('exams.create', compact('categories', 'levels'));
     }
 
     /**
@@ -45,7 +49,7 @@ class ExamController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('exams.show');
     }
 
     /**
