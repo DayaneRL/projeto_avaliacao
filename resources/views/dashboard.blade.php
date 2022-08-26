@@ -7,6 +7,10 @@
     <title>Dashboard</title>
 </head>
 <body>
-    <h1>Dashboard</h1>
+    <h1>Dashboard</h1><br>
+    <form action="{{route('auth.login.destroy')}}" method="post">
+        @csrf
+        <button type="submit">Sair</button>
+    </form>
 </body>
 </html>
