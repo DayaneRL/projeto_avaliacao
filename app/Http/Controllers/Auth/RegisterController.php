@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Http\Requests\Auth\RegisterRequest;
 
 
 class RegisterController extends Controller
@@ -15,16 +16,11 @@ class RegisterController extends Controller
     }
 
     public function store(RegisterRequest $request){
-        var_dump($request);
-        return '0';
-        $requestData = $request->validated();
-
+        $requestData=$request->all();
 
         DB::beginTransaction();
         try{
-
-
-            $user = User::create($requestData['user']);
+            $user = User::create($requestData);
 
             DB::commit();
 
@@ -34,5 +30,11 @@ class RegisterController extends Controller
         }catch(Exception $exception){
             DB::rollBack();
         }
+    }
+
+    public function messages(){
+        return [
+            'required' => 'O campo :attribute deve ser preenchido'
+        ];
     }
 }

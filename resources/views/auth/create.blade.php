@@ -35,30 +35,28 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Criação de conta de usuário</h1>
                             </div>
-                            <form class="user" method="POST">
+                            <form class="user" action="{{route('auth.register.store')}}" method="post">
+                                @csrf
                                 <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                                            placeholder="Nome do usuário">
+                                    <div class="col-sm-12 mb-3 mb-sm-0">
+                                        <input type="text" value="{{old('name')}}" class="form-control form-control-user {{$errors->has('name') ? 'is-invalid' : ''}}" id="exampleFirstName" name="name" placeholder="Nome do usuário">
+                                        <div class="invalid-feedback">{{  $errors->first('name') }}</div>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <input type="text" class="form-control form-control-user" id="exampleLastName"
-                                            placeholder="Sobrenome do usuário">
-                                    </div>
+
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                                        placeholder="Email do usuário">
+                                    <input type="email" value="{{old('email')}}" class="form-control form-control-user {{$errors->has('email') ? 'is-invalid' : ''}}" id="exampleInputEmail" name="email" placeholder="Email do usuário">
+                                    <div class="invalid-feedback">{{  $errors->first('email') }}</div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <input type="password" class="form-control form-control-user"
-                                            id="exampleInputPassword" placeholder="Senha">
+                                        <input type="password"  class="form-control form-control-user {{$errors->has('password') ? 'is-invalid' : ''}}" id="exampleInputPassword" name="password" placeholder="Senha">
+                                        <div class="invalid-feedback">{{  $errors->first('password') }}</div>
                                     </div>
                                     <div class="col-sm-6">
-                                        <input type="password" class="form-control form-control-user"
-                                            id="exampleRepeatPassword" placeholder="Confirme a senha">
+                                        <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" name="password_confirmation" placeholder="Confirme a senha">
                                     </div>
+
                                 </div>
                                 <button type="submit"  class="btn btn-primary btn-user btn-block">
                                     Cadastrar
@@ -66,7 +64,7 @@
                             </form>
                             <hr>
                             <div class="text-center">
-                                <a class="small" href="dashboard.html">Voltar a dashboard</a>
+                                <a class="small" href="{{route('dashboard.index')}}">Voltar a dashboard</a>
                             </div>
                         </div>
                     </div>
