@@ -17,7 +17,7 @@ use App\Http\Controllers\HeaderController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/dashboard');
 });
 Route::resource('/dashboard', DashboardController::class);
 Route::resource('/exams', ExamController::class);

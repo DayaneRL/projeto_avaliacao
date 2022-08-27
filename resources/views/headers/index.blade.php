@@ -4,6 +4,11 @@
     Cabeçalho
 @endsection
 
+@section('style')
+    <!-- Custom styles for this page -->
+    <link href="{{asset('plugins/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+@endsection
+
 @section('content')
 
 <div class="col-12 mb-4">
@@ -12,7 +17,7 @@
             <div class="row no-gutters align-items-center mb-3">
                 <div class="col mr-2">
                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Cabeçalhos cadastradas
+                        Cabeçalhos cadastrados
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
                 </div>
@@ -53,8 +58,8 @@
                                     <td class="header descriprion">Geografia</td>
                                     <td class="header_date">{{date('d/m/Y')}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
-                                            <i class="fas fa-eye"></i>
+                                        <button type="button" class="btn btn-info btn-icon-split p-2 ">
+                                            <i class="fas fa-pen"></i>
                                         </button>
                                         <button type="button" class="btn btn-danger btn-icon-split p-2">
                                             <i class="fas fa-trash"></i>
@@ -66,8 +71,8 @@
                                     <td class="header descriprion">História</td>
                                     <td class="header_date">{{date('d/m/Y')}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
-                                            <i class="fas fa-eye"></i>
+                                        <button type="button" class="btn btn-info btn-icon-split p-2 ">
+                                            <i class="fas fa-pen"></i>
                                         </button>
                                         <button type="button" class="btn btn-danger btn-icon-split p-2">
                                             <i class="fas fa-trash"></i>
@@ -81,17 +86,14 @@
             </div>
 
         </div>
-        <!-- End of Main Content -->
-            </div>
-        </div>
     </div>
 </div>
 
 @endsection
 
 @section('js')
-    <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{asset('js/datatable.js')}}"></script>
 @endsection
 

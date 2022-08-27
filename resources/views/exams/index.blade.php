@@ -6,7 +6,7 @@
 
 @section('style')
     <!-- Custom styles for this page -->
-    <link href="{{asset('vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{asset('plugins/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -94,9 +94,7 @@
                 <!-- /.container-fluid -->
 
             </div>
-            <!-- End of Main Content -->
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -124,8 +122,8 @@
 
 @section('js')
     <!-- Page level plugins -->
-    <script src="{{asset('vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <!-- Page level custom scripts -->
     <script src="{{asset('js/datatable.js')}}"></script>
     <script src="{{asset('js/exams/index.js')}}"></script>

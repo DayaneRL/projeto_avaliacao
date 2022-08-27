@@ -4,6 +4,22 @@
     Cadastrar Prova
 @endsection
 
+@section('style')
+    <link href="{{asset('plugins/select2/select2.min.css')}}" rel="stylesheet" />
+    <style>
+        .select2-selection{
+            border: 1px solid #d1d3e2 !important;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--multiple{
+            color:#6e707e;
+            background-color:#fff;
+            border-color:#bac8f3;
+            outline:0;
+            box-shadow:0 0 0 .2rem rgba(78,115,223,.25)
+        }
+    </style>
+@endsection
+
 @section('content')
     <div class="col-12 mb-4">
         <div class="card shadow h-100 py-2">
@@ -12,12 +28,20 @@
                     <form action="{{route('exams.store')}}" method="POST" class="col-12">
                         @csrf
                         <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="inputName">Nome da avaliação</label>
+                            <div class="form-group col-md-6">
+                                <label for="inputName">Título da avaliação</label>
                                 <input type="text" class="form-control" id="inputName"
                                 placeholder="Avaliação História segundo bimestre">
                             </div>
-                            essa linha de baixo pode se repetir
+                            <div class="form-group col-md-6">
+                                <label for="inputName">Tags</label>
+                                <select class="js-example-basic-multiple form-control" name="states[]" multiple="multiple">
+                                    <option value="AL">Alabama</option>
+                                    <option value="NY">Nova York</option>
+                                    <option value="WY">Wyoming</option>
+                                  </select>
+                            </div>
+
                             <div class="form-group col-md-4">
                                 <label for="inputQuant">Quantidade de questões</label>
                                 <input type="text" class="form-control" id="inputQuant" placeholder="10">
@@ -59,5 +83,6 @@
 @endsection
 
 @section('js')
-
+    <script src="{{asset('plugins/select2/select2.min.js')}} "></script>
+    <script src="{{asset('js/exams/create.js')}}"></script>
 @endsection

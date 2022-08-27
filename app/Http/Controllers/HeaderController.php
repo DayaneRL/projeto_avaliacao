@@ -23,7 +23,7 @@ class HeaderController extends Controller
      */
     public function create()
     {
-        //
+        return view('headers.create');
     }
 
     /**
