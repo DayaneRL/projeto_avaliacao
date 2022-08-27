@@ -13,11 +13,11 @@ Route::group([ 'middleware'=>'guest'], function(){
 
 
 Route::group(['middleware'=>'auth'], function(){
-    Route::get('/cadastro_de_usuario', [RegisterController::class , 'create'])->name('auth.register.create');
-    Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->name('auth.register.store');
+    
+    Route::get('/cadastro_de_usuario', [RegisterController::class , 'create'])->middleware('admin:true')->name('auth.register.create');
+    Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->middleware('admin:true')->name('auth.register.store');
 
     Route::get('/dashboard',function(){
-        // return "dashboard";
         return view('dashboard');
     })->name('dashboard.index');
 

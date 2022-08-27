@@ -8,6 +8,8 @@
 </head>
 <body>
     <h1>Dashboard</h1><br>
+    <h4>{{auth()->user()->name}}</h4>
+    <h4>{{auth()->user()->email}}</h4>
     <form action="{{route('auth.login.destroy')}}" method="post">
         @csrf
         <button type="submit">Sair</button>

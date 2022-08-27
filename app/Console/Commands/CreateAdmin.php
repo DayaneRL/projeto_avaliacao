@@ -5,12 +5,12 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\User;
 
-class CreateUser extends Command
+class CreateAdmin extends Command
 {
 
-    protected $signature = 'create:user {name} {email} {password}';
+    protected $signature = 'create:admin {name} {email} {password}';
 
-    protected $description = 'Cria um novo usuário';
+    protected $description = 'Cria um novo usuário administrador';
 
     public function __construct()
     {
@@ -23,10 +23,12 @@ class CreateUser extends Command
         $email = $this->argument('email');
         $password = $this->argument('password');
 
+
         User::create([
             'name'=>$name,
             'email'=>$email,
             'password'=>$password,
+            'admin'=>true
         ]);
 
         $this->info('Usuário criado com sucesso');

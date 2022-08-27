@@ -25,7 +25,7 @@ class RegisterController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('auth.login.create')
+                ->route('dashboard.index')
                 ->with('success', 'Conta criada com sucesso');
         }catch(Exception $exception){
             DB::rollBack();
