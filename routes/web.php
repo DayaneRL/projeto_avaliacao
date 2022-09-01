@@ -18,10 +18,20 @@ use App\Http\Controllers\Auth\{LoginController,RegisterController};
 |
 */
 
+Route::group([ 'middleware'=>'guest'], function(){
+    Route::get('/', [LoginController::class , 'create'])->name('auth.login.create');
+    Route::post('/', [LoginController::class , 'store'])->name('auth.login.store');
+
+});
+
+Route::group(['middleware'=>'auth'], function(){
+
+    Route::get('/cadastro_de_usuario', [RegisterController::class , 'create'])->middleware('admin:true')->name('auth.register.create');
+    Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->middleware('admin:true')->name('auth.register.store');
+
+    Route::resource('/dashboard', DashboardController::class);
+    Route::resource('/exams', ExamController::class);
+    Route::resource('/headers', HeaderController::class);
+
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
-    Route::get('/', function () {
-        return redirect('/dashboard');
-    });
-Route::resource('/dashboard', DashboardController::class);
-Route::resource('/exams', ExamController::class);
-Route::resource('/headers', HeaderController::class);
+});

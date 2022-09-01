@@ -16,7 +16,7 @@ class LoginController extends Controller
     public function store(LoginRequest $request){
         $credentials = [
             'email' => $request->email,
-            'password'=> $request -> password
+            'password'=> $request->password
         ];
 
         // falta encriptar a senha
