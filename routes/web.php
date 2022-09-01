@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HeaderController;
+use App\Http\Controllers\Auth\{LoginController,RegisterController};
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +18,10 @@ use App\Http\Controllers\HeaderController;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/dashboard');
-});
+    Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
+    Route::get('/', function () {
+        return redirect('/dashboard');
+    });
 Route::resource('/dashboard', DashboardController::class);
 Route::resource('/exams', ExamController::class);
 Route::resource('/headers', HeaderController::class);
