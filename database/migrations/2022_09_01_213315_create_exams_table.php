@@ -3,9 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Question;
 
-class CreateReplysTable extends Migration
+class CreateExamsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,13 +13,13 @@ class CreateReplysTable extends Migration
      */
     public function up()
     {
-        Schema::create('replys', function (Blueprint $table) {
+        Schema::create('exams', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Question::class);
-            $table->string('text');
-            $table->string('alternative', 10); // a, b, c or d
-            $table->tinyInteger('valid')->nullable(); //0 or 1
+            $table->string('title');
+            $table->string('tags');
+            $table->string('number_of_questions');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +30,6 @@ class CreateReplysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('replys');
+        Schema::dropIfExists('exams');
     }
 }

@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Question extends Model
+class ExamAttribute extends Model
 {
-
+    protected $table = 'exam_attributes';
     protected $fillable = [
-        'number',
-        'text',
-        'category_id'
+        'number_questions',
+        'level_id'
     ];
 
 
