@@ -38,7 +38,8 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // gerar a prova
+        return view('exams.store');
     }
 
     /**
