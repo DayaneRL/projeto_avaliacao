@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Question;
+use App\Models\{Question, Exam};
 
 class CreateExamReplysTable extends Migration
 {
@@ -20,6 +20,7 @@ class CreateExamReplysTable extends Migration
             $table->string('text');
             $table->string('alternative', 10); // a, b, c or d
             $table->tinyInteger('valid')->nullable(); //0 or 1
+            $table->foreignIdFor(Exam::class);
             $table->timestamps();
             $table->softDeletes();
         });

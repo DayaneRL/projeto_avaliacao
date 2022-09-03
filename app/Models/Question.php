@@ -7,12 +7,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Question extends Model
 {
-
+    protected $table = 'exam_questions';
     protected $fillable = [
         'number',
         'text',
-        'category_id'
+        'exam_id'
     ];
+
+    public function Exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
 
 
 }

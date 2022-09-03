@@ -18,7 +18,6 @@ class CreateExamQuestionsTable extends Migration
             $table->id();
             $table->string('number');
             $table->string('text');
-            $table->foreignIdFor(Category::class);
             $table->foreignIdFor(Exam::class);
             $table->timestamps();
             $table->softDeletes();

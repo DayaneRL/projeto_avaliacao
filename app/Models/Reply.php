@@ -12,8 +12,13 @@ class Reply extends Model
         'question_id',
         'text',
         'alternative',
-        'valid'
+        'valid',
+        'exam_id'
     ];
 
+    public function Exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
 
 }

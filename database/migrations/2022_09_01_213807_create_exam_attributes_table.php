@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Level;
+use App\Models\{Level,Exam};
 
 class CreateExamAttributesTable extends Migration
 {
@@ -18,6 +18,7 @@ class CreateExamAttributesTable extends Migration
             $table->id();
             $table->string('number_of_questions');
             $table->foreignIdFor(Level::class);
+            $table->foreignIdFor(Exam::class);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -24,31 +24,40 @@
     <div class="col-12 mb-4">
         <div class="card shadow h-100 py-2">
             <div class="card-body">
+
+                @if(session()->has('success'))
+                    <div class="alert alert-success">{{session('success')}}</div>
+                @endif
+
+                @if(session()->has('warning'))
+                    <div class="alert alert-warning">{{session('warning')}}</div>
+                @endif
+
                 <div class="row mb-3">
                     <form action="{{route('exams.store')}}" method="POST" class="col-12">
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputName">Título da avaliação</label>
-                                <input type="text" class="form-control" id="inputName"
+                                <input type="text" class="form-control" id="inputName" name="exam[title]"
                                 placeholder="Avaliação História segundo bimestre">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputName">Tags</label>
-                                <select class="js-example-basic-multiple form-control" name="states[]" multiple="multiple">
-                                    <option value="AL">Alabama</option>
-                                    <option value="NY">Nova York</option>
-                                    <option value="WY">Wyoming</option>
-                                  </select>
+                                <select class="js-example-basic-multiple form-control" name="exam[tags][]" multiple="multiple">
+                                    <option value="primeira_guerra">Primeira Guerra</option>
+                                    <option value="guerra_fria">Guerra Fria</option>
+                                    <option value="baskara">Baskara</option>
+                                </select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="inputQuant">Quantidade de questões</label>
-                                <input type="text" class="form-control" id="inputQuant" placeholder="10">
+                                <input type="text" class="form-control" id="inputQuant" name="exam[number_of_questions]" placeholder="10">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">Categoria</label>
-                                <select id="inputState" class="form-control">
+                                <select id="inputState" class="form-control" name="exam_questions[category_id]">
                                     @foreach ($categories as $category)
                                         <option value="{{$category->id}}">{{$category->name}}</option>
                                     @endforeach
@@ -56,7 +65,7 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">Nível</label>
-                                <select id="inputState" class="form-control">
+                                <select id="inputState" class="form-control" name="exam_attributes[level_id]">
                                    @foreach ($levels as $level)
                                         <option value="{{$level->id}}">{{$level->name}}</option>
                                     @endforeach

@@ -35,6 +35,15 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
+
+                            @if(session()->has('success'))
+                                <div class="alert alert-success">{{session('success')}}</div>
+                            @endif
+
+                            @if(session()->has('warning'))
+                                <div class="alert alert-warning">{{session('warning')}}</div>
+                            @endif
+
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
@@ -56,34 +65,24 @@
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                        <tr>
-                                            <td class="exam_id">1</td>
-                                            <td class="exam_category">Geografia</td>
-                                            <td class="exam_level">Médio</td>
-                                            <td class="exam_date">{{date('d/m/Y')}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-icon-split p-2">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="exam_id">2</td>
-                                            <td class="exam_category">História</td>
-                                            <td class="exam_level">Fácil</td>
-                                            <td class="exam_date">{{date('d/m/Y')}}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-icon-split p-2">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        @foreach ($exams as $exam)
+
+                                            <tr>
+                                                <td class="exam_id">{{$exam->id}}</td>
+                                                <td class="exam_category">{{$exam->Category->name}}</td>
+                                                <td class="exam_level">{{$exam->levels}}</td>
+                                                <td class="exam_date">{{$exam->created_at->format('d/m/Y')}}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-icon-split p-2">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

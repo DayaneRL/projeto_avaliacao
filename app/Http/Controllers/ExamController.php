@@ -2,43 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Level;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use App\Models\{Exam, Question, Category, Level};
+use App\Http\Requests\ExamRequest;
+use App\Services\ExamService;
 
 class ExamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index():View
     {
-        return view('exams.index');
+        $exams = Exam::all();
+        return view('exams.index', compact('exams'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function create(): View
     {
         $categories = Category::all();
         $levels = Level::all();
         return view('exams.create', compact('categories', 'levels'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(ExamRequest $request): RedirectResponse
     {
-        //
+        try{
+            DB::beginTransaction();
+
+            $exam = ExamService::storeExam(
+                $request->validated()
+            );
+
+            DB::commit();
+            return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
+
+        }catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+        }
+
     }
 
     /**
