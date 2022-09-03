@@ -5,6 +5,11 @@
 @endsection
 
 @section('style')
+    <style>
+        #visualizacaoProva{
+            width: 800px;
+        }
+    </style>
 
 @endsection
 
@@ -21,15 +26,21 @@
                         <i class="fas fa-eye mr-2 pt-1"></i> Visualizar gabarito
                     </button>
                 </div>
-                <div class="row mb-3" >
-                    <div class="card w-100 border border-secondary h-100 py-2">
-                        <div class="card-body" id="visualizacaoProva">
+                <div class="row mb-3 d-flex justify-content-center" >
+                    <div class="card border border-secondary h-100 py-2">
+                        <div class="card-body text-dark" id="visualizacaoProva">
                             <div class="testHeader">
                                 <img src="{{asset('img/logocaraguasecretaria.png')}}"
                                 class="d-inline"
                                 width="300px">
-                                <h3 class="d-inline">CEI/EMEI Prof° Aparecida Maria Pires de Meneses</h3>
+                                <h5 class="d-inline">CEI/EMEI Prof° Aparecida Maria Pires de Meneses</h5>
                             </div>
+                            {{-- quebra de opções --}}
+                            <div class="headerInfo d-flex justify-content-center ">
+                                <h3>{{$formData['name']}}</h3>
+                            </div>
+                            <h5 class="m-0">Professor {{Auth::user()->name}}</h5>
+                            <h5 class="m-0 ">Caraguatatuba, 25 de maio de 2022</h5>
 
                         </div>
                     </div>
@@ -45,7 +56,17 @@
     <script>
         function downloadProva(){
             var element = document.getElementById('visualizacaoProva');
-            html2pdf(element);
+            var opt = {
+                filename: "{{$formData['name']}}",
+                html2canvas: {
+                    dpi: 192,
+                    scale:4,
+                    letterRendering: true,
+                    useCORS: true
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(opt).save();
         }
     </script>
 @endsection

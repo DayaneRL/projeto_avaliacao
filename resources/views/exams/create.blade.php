@@ -30,7 +30,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputName">Título da avaliação</label>
-                                <input type="text" class="form-control" id="inputName"
+                                <input type="text" name="name" class="form-control" id="inputName"
                                 placeholder="Avaliação História segundo bimestre">
                             </div>
                             <div class="form-group col-md-6">
@@ -44,18 +44,18 @@
 
                             <div class="form-group col-md-4">
                                 <label for="inputQuant">Quantidade de questões</label>
-                                <input type="text" class="form-control" id="inputQuant" placeholder="10">
+                                <input type="text" name="numberOfQuestions" class="form-control" id="inputQuant" placeholder="10">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputState">Categoria</label>
-                                <select id="inputState" class="form-control">
+                                <select id="inputState" name="category" class="form-control">
                                     @foreach ($categories as $category)
                                         <option value="{{$category->id}}">{{$category->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
-                                <label for="inputState">Nível</label>
+                                <label for="inputState" name="level">Nível</label>
                                 <select id="inputState" class="form-control">
                                    @foreach ($levels as $level)
                                         <option value="{{$level->id}}">{{$level->name}}</option>
