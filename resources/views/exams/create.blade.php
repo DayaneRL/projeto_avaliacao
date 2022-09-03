@@ -51,11 +51,11 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4">
-                                <label for="inputQuant">Quantidade de questões</label>
-                                <input type="text" class="form-control" id="inputQuant" name="exam[number_of_questions]" placeholder="10">
+                            <div class="form-group col-md-6">
+                                <label for="inputTotQuant">Total de questões</label>
+                                <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]" placeholder="10">
                             </div>
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <label for="inputState">Categoria</label>
                                 <select id="inputState" class="form-control" name="exam_questions[category_id]">
                                     @foreach ($categories as $category)
@@ -63,17 +63,35 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-4">
-                                <label for="inputState">Nível</label>
-                                <select id="inputState" class="form-control" name="exam_attributes[level_id]">
-                                   @foreach ($levels as $level)
+                        </div>
+
+                        <div class="exam-attributes">
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label for="inputQuant">Qtd. de questões</label>
+                                    <input type="number" class="form-control input-quant" id="inputQuant" name="exam[number_of_questions]">
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <label for="inputState">Nível</label>
+                                    <select id="inputState" class="form-control" name="exam_attributes[level_id]">
+                                        @foreach ($levels as $level)
                                         <option value="{{$level->id}}">{{$level->name}}</option>
-                                    @endforeach
-                                </select>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-3 pt-3">
+                                    <button type="button" class="btn btn-primary mt-3 btn-icon-split p-2 pr-3 pl-3 add-row-exam">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger mt-3 btn-icon-split p-2 pr-3 pl-3 rm-row-exam disabled" disabled="true">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mt-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="gridCheck">
                                 <label class="form-check-label" for="gridCheck">
@@ -81,7 +99,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Gerar Pova</button>
+                        <button type="submit" class="btn btn-primary" id="submit-exam">Gerar Pova</button>
                         <a href="{{route('exams.index')}}" class="btn btn-light border">Cancelar</a>
                     </form>
                 </div>
