@@ -56,8 +56,8 @@
                                 <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]" placeholder="10">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputState">Categoria</label>
-                                <select id="inputState" class="form-control" name="exam_questions[category_id]">
+                                <label for="inputCategory">Categoria</label>
+                                <select id="inputCategory" class="form-control" name="exam_questions[category_id]">
                                     @foreach ($categories as $category)
                                         <option value="{{$category->id}}">{{$category->name}}</option>
                                     @endforeach
@@ -66,15 +66,15 @@
                         </div>
 
                         <div class="exam-attributes">
-                            <div class="form-row">
+                            <div class="form-row attribute">
                                 <div class="form-group col-md-3">
                                     <label for="inputQuant">Qtd. de questões</label>
                                     <input type="number" class="form-control input-quant" id="inputQuant" name="exam[number_of_questions]">
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <label for="inputState">Nível</label>
-                                    <select id="inputState" class="form-control" name="exam_attributes[level_id]">
+                                    <label for="inputState_0">Nível</label>
+                                    <select id="inputState_0" class="form-control" name="exam_attributes[level_id]">
                                         @foreach ($levels as $level)
                                         <option value="{{$level->id}}">{{$level->name}}</option>
                                         @endforeach
