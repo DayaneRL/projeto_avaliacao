@@ -25,12 +25,14 @@
         <div class="card shadow h-100 py-2">
             <div class="card-body">
 
-                @if(session()->has('success'))
-                    <div class="alert alert-success">{{session('success')}}</div>
-                @endif
-
-                @if(session()->has('warning'))
-                    <div class="alert alert-warning">{{session('warning')}}</div>
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
 
                 <div class="row mb-3">
@@ -38,45 +40,55 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="inputName">Título da avaliação</label>
+                                <label for="inputName">Título da avaliação<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="inputName" name="exam[title]"
-                                placeholder="Avaliação História segundo bimestre">
+                                placeholder="Avaliação História segundo bimestre" value="{{old('exam.title')}}">
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputName">Tags</label>
+                                <label for="inputName">Tags<span class="text-danger">*</span></label>
                                 <select class="js-example-basic-multiple form-control" name="exam[tags][]" multiple="multiple">
+                                    {{-- trazer do banco dinamico --}}
                                     <option value="primeira_guerra">Primeira Guerra</option>
                                     <option value="guerra_fria">Guerra Fria</option>
                                     <option value="baskara">Baskara</option>
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="inputTotQuant">Total de questões</label>
-                                <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]" placeholder="10">
+                            <div class="form-group col-md-4">
+                                <label for="inputTotQuant">Total de questões<span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]" placeholder="10"
+                                value="{{old('exam.number_of_questions')}}">
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputCategory">Categoria</label>
-                                <select id="inputCategory" class="form-control" name="exam_questions[category_id]">
+                            <div class="form-group col-md-4">
+                                <label for="inputCategory">Categoria<span class="text-danger">*</span></label>
+                                <select id="inputCategory" class="form-control" name="exam[category_id]">
                                     @foreach ($categories as $category)
-                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                        <option value="{{$category->id}}"
+                                            @if(old('exam.category_id')==$category->id) selected @endif>{{$category->name}}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputData">Data da prova<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="inputData" name="exam[date]" placeholder="xx/xx/xxxx"
+                                value="{{old('exam.date')}}">
                             </div>
                         </div>
 
                         <div class="exam-attributes">
                             <div class="form-row attribute">
                                 <div class="form-group col-md-3">
-                                    <label for="inputQuant">Qtd. de questões</label>
-                                    <input type="number" class="form-control input-quant" id="inputQuant" name="exam[number_of_questions]">
+                                    <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[0][number_of_questions]"
+                                    value="{{old('exam_attributes.0.number_of_questions')}}">
                                 </div>
 
                                 <div class="form-group col-md-3">
-                                    <label for="inputState_0">Nível</label>
-                                    <select id="inputState_0" class="form-control" name="exam_attributes[level_id]">
+                                    <label for="inputState_0">Nível <span class="text-danger">*</span></label>
+                                    <select id="inputState_0" class="form-control" name="exam_attributes[0][level_id]">
                                         @foreach ($levels as $level)
-                                        <option value="{{$level->id}}">{{$level->name}}</option>
+                                        <option value="{{$level->id}}"
+                                            @if(old('exam_attributes.0.level_id')==$level->id) selected @endif>{{$level->name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -111,5 +123,6 @@
 
 @section('js')
     <script src="{{asset('plugins/select2/select2.min.js')}} "></script>
+    <script src="{{asset('js/jquery.mask.js')}}"></script>
     <script src="{{asset('js/exams/create.js')}}"></script>
 @endsection

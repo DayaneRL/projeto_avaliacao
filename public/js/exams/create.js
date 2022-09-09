@@ -1,5 +1,6 @@
 $(document).ready(function() {
     $('.js-example-basic-multiple').select2();
+    $('#inputData').mask('99/99/9999');
 });
 
 var totalQuestions = $('#inputTotQuant').val()==''? 0 : parseInt($('#inputTotQuant').val());
@@ -25,11 +26,11 @@ $(document).on('click', '.add-row-exam', function(){
             `<div class="form-row attribute">
                 <div class="form-group col-md-3">
                     <label for="inputQuant">Qtd. de questões</label>
-                    <input type="number" class="form-control input-quant" id="inputQuant" name="exam[number_of_questions]">
+                    <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[${quant_attributes}][number_of_questions]">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputState_${quant_attributes}">Nível</label>
-                    <select id="inputState_${quant_attributes}" class="form-control level_select" name="exam_attributes[level_id]">
+                    <select id="inputState_${quant_attributes}" class="form-control level_select" name="exam_attributes[${quant_attributes}][level_id]">
                     </select>
                 </div>
                 <div class="form-group col-md-3 pt-3">

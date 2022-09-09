@@ -40,6 +40,7 @@ class ExamController extends Controller
             return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 
         }catch (\Throwable $e) {
+            return $e->getMessage();
             DB::rollBack();
             return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }
@@ -54,7 +55,8 @@ class ExamController extends Controller
      */
     public function show($id)
     {
-        return view('exams.show');
+        $exam = Exam::find($id);
+        return view('exams.show', compact('exam'));
     }
 
     /**

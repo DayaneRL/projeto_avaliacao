@@ -49,8 +49,10 @@
                                     <thead>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Nome</th>
                                             <th>Categoria</th>
-                                            <th>Nível</th>
+                                            <th>Tags</th>
+                                            <th>Data da prova</th>
                                             <th>Data de cadastro</th>
                                             <th>Ações</th>
                                         </tr>
@@ -58,8 +60,10 @@
                                     <tfoot>
                                         <tr>
                                             <th>ID</th>
+                                            <th>Nome</th>
                                             <th>Categoria</th>
-                                            <th>Nível</th>
+                                            <th>Tags</th>
+                                            <th>Data da prova</th>
                                             <th>Data de cadastro</th>
                                             <th>Ações</th>
                                         </tr>
@@ -69,9 +73,10 @@
 
                                             <tr>
                                                 <td class="exam_id">{{$exam->id}}</td>
+                                                <td class="exam_title">{{$exam->title}}</td>
                                                 <td class="exam_category">{{$exam->Category->name}}</td>
-                                                <td class="exam_level">{{$exam->levels}}</td>
-                                                <td class="exam_date">{{$exam->created_at->format('d/m/Y')}}</td>
+                                                <td class="exam_date">{{$exam->date->format('d/m/Y')}}</td>
+                                                <td class="exam_created_at">{{$exam->created_at->format('d/m/Y')}}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
                                                         <i class="fas fa-eye"></i>

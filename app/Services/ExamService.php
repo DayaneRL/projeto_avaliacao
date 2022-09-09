@@ -15,20 +15,26 @@ class ExamService
         $exam = new Exam();
         $exam->title = $request['exam']['title'];
         $exam->tags = implode(', ', $request['exam']['tags']);
-        $exam->number_of_questions =$request['exam']['number_of_questions'];
-        $exam->category_id = $request['exam_questions']['category_id'];
+        $exam->number_of_questions = $request['exam']['number_of_questions'];
+        $exam->category_id = $request['exam']['category_id'];
+
+        $dt_exam = explode('/', $request['exam']['date']);
+        $exam->date = new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]");
+
         $exam->save();
 
-        $questions = new Question();
-        $questions->number = 1;
-        $questions->text = 'Quando aconteceu a primeira guerra';
-        $questions->exam_id = $exam->id;
-        $questions->save();
+        for($i=0; $i<$request['exam']['number_of_questions']; $i++){
+            $questions = new Question();
+            $questions->number = $i;
+            $questions->text = 'Descrição da pergunta '.$i;
+            $questions->exam_id = $exam->id;
+            $questions->save();
+        }
 
-        for($i=0;$i<2;$i++){
+        foreach($request['exam_attributes'] as $attribute){
             $attributes = new ExamAttribute();
-            $attributes->number_of_questions = 5;
-            $attributes->level_id = $request['exam_attributes']['level_id'];
+            $attributes->number_of_questions = $attribute['number_of_questions'];
+            $attributes->level_id = $attribute['level_id'];
             $attributes->exam_id = $exam->id;
             $attributes->save();
         }
