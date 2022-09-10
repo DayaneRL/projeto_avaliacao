@@ -30,11 +30,17 @@ class Exam extends Model
     }
 
     // Accessors
+    public function tagsList(): Attribute
+    {
+        $tags = explode(',', $this->tags);
+        return Attribute::make(
+            get: fn ($value) => count($tags)>2 ? $tags[0].', '.$tags[1].', ...' : $tags[0]
+        );
+    }
 
     public function examDate(): Attribute
     {
         $date = new \DateTime($this->date);
-
         return Attribute::make(
             get: fn ($value) => $date->format('d/m/Y')
         );

@@ -1,3 +1,12 @@
 span.text-danger{
     font-size: 0.9em;
 }
+
+.actions{
+    min-width: 120px;
+}
+
+#loading{
+    width: 50px;
+    margin: 20px 10px;
+}

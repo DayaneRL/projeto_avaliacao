@@ -34,4 +34,6 @@ Route::group(['middleware'=>'auth'], function(){
     Route::resource('/headers', HeaderController::class);
 
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
+
+    Route::get('/findExam/{id}', [ExamController::class,'find']);
 });

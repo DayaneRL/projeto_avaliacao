@@ -92,4 +92,21 @@ class ExamController extends Controller
     {
         //
     }
+
+    public function find($id){
+        try{
+            $exam = Exam::findOrFail($id);
+
+            return response()->json([
+                'exam'      => $exam,
+                'category'  => $exam->Category,
+                'exam_date' => $exam->exam_date,
+                'levels'    => $exam->levels
+            ], 200);
+        }catch (\Exception $ex) {
+            return response()->json([
+                'data'  => 'Algo deu errado.'
+            ], 500);
+        }
+    }
 }
