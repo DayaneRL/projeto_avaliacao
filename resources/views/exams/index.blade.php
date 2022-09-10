@@ -70,13 +70,12 @@
                                     </tfoot>
                                     <tbody>
                                         @foreach ($exams as $exam)
-
                                             <tr>
                                                 <td class="exam_id">{{$exam->id}}</td>
                                                 <td class="exam_title">{{$exam->title}}</td>
-                                                <td class="exam_category">{{$exam->Category->name}}</td>
-                                                <td class="exam_date">{{$exam->date->format('d/m/Y')}}</td>
-                                                <td class="exam_created_at">{{$exam->created_at->format('d/m/Y')}}</td>
+                                                <td>{{$exam->Category->name}}</td>
+                                                <td>{{$exam->exam_date}}</td>
+                                                <td>{{$exam->created_at_formatted}}</td>
                                                 <td>
                                                     <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
                                                         <i class="fas fa-eye"></i>
@@ -86,7 +85,6 @@
                                                     </button>
                                                 </td>
                                             </tr>
-
                                         @endforeach
                                     </tbody>
                                 </table>
@@ -104,16 +102,24 @@
 
 
     {{-- begin:modal --}}
-    <div class="modal fade" id="showModal" tabindex="-1" role="dialog" aria-labelledby="showModalLabel" aria-hidden="true">
+    <div class="modal fade" id="examModal" tabindex="-1" role="dialog" aria-labelledby="examModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="showModalLabel"></h5>
+              <h5 class="modal-title" id="examModalLabel"></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
+                <h3 id="exam_title"></h3>
+                <p id="exam_tags"><b>Tags:</b>  </p>
+                <p id="exam_total"><b>Total de questões:</b> </p>
+                <p id="exam_categoria"><b>Categoria:</b> </p>
+                <p id="exam_data"><b>Data da prova:</b> </p>
+
+                <hr/>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

@@ -23,15 +23,24 @@ class ExamRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'exam.title'=>'required|max:255',
             'exam.number_of_questions'=>'required',
             'exam.tags'=>'required',
             'exam.category_id'=>'required',
             'exam.date'=>'required',
-            'exam_attributes.0.number_of_questions'=>'required',
-            'exam_attributes.0.level_id'=>'required',
         ];
+
+        if ($this->filled('exam_attributes'))
+        {
+            foreach($this->input('exam_attributes') as $key => $val)
+            {
+                $rules["exam_attributes.{$key}.number_of_questions"] = ['required'];
+                $rules["exam_attributes.{$key}.level_id"] = ['required'];
+            }
+        }
+
+        return $rules;
     }
 
     public function messages()
@@ -43,9 +52,15 @@ class ExamRequest extends FormRequest
             'exam.tags.required'=>'O campo Tags é obrigatório.',
             'exam.category_id.required'=>'O campo Tags é obrigatório.',
             'exam.date.required'=>'O campo Data da Prova é obrigatório.',
-            'exam_attributes.0.number_of_questions.required'=>'O campo Qtd. de questões é obrigatório.',
-            'exam_attributes.0.level_id.required'=>'O campo Nível é obrigatório.',
         ];
+        if ($this->filled('exam_attributes'))
+        {
+            foreach($this->input('exam_attributes') as $key => $val)
+            {
+                $messages["exam_attributes.{$key}.number_of_questions.required"] = 'O campo Qtd. de questões é obrigatório.';
+                $messages["exam_attributes.{$key}.level_id.required"] = 'O campo Nível é obrigatório.';
+            }
+        }
         return $messages;
     }
 }

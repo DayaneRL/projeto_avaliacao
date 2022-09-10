@@ -9,7 +9,7 @@ class ExamAttribute extends Model
 {
     protected $table = 'exam_attributes';
     protected $fillable = [
-        'number_questions',
+        'number_of_questions',
         'level_id',
         'exam_id'
     ];

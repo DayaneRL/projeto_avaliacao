@@ -30,6 +30,24 @@ class Exam extends Model
     }
 
     // Accessors
+
+    public function examDate(): Attribute
+    {
+        $date = new \DateTime($this->date);
+
+        return Attribute::make(
+            get: fn ($value) => $date->format('d/m/Y')
+        );
+    }
+
+    public function createdAtFormatted(): Attribute
+    {
+        $date = new \DateTime($this->created_at);
+        return Attribute::make(
+            get: fn ($value) => $date->format('d/m/Y')
+        );
+    }
+
     public function levels(): Attribute
     {
         $Attributes = $this->Attributes;
