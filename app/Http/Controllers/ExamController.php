@@ -24,7 +24,8 @@ class ExamController extends Controller
     {
         $categories = Category::all();
         $levels = Level::all();
-        return view('exams.create', compact('categories', 'levels'));
+        $tagsExemple = ['primeira_guerra'=>'Primeira Guerra', 'guerra_fria'=>'Guerra Fria','baskara'=>'Baskara'];
+        return view('exams.create', compact('categories', 'levels','tagsExemple'));
     }
 
     public function store(ExamRequest $request): RedirectResponse
@@ -67,7 +68,11 @@ class ExamController extends Controller
      */
     public function edit($id)
     {
-        //
+        $exam = Exam::find($id);
+        $categories = Category::all();
+        $levels = Level::all();
+        $tagsExemple = ['primeira_guerra'=>'Primeira Guerra', 'guerra_fria'=>'Guerra Fria','baskara'=>'Baskara'];
+        return view('exams.create', compact('categories', 'levels', 'exam', 'tagsExemple'));
     }
 
     /**
@@ -77,9 +82,26 @@ class ExamController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ExamRequest $request, $id): RedirectResponse
     {
-        //
+        try{
+            DB::beginTransaction();
+
+            $exam = Exam::findOrFail($id);
+            ExamService::updateExam(
+                $request->validated(),
+                $exam
+            );
+
+            DB::commit();
+            return redirect()->route('exams.index')->with('success', "Prova atualizada com sucesso" );
+
+        }catch (\Throwable $e) {
+            return $e->getMessage();
+            DB::rollBack();
+            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+        }
+
     }
 
     /**
@@ -90,7 +112,20 @@ class ExamController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $exam = Exam::findOrFail($id);
+            ExamService::deleteExam($exam);
+            DB::commit();
+            return response()->json([
+                'msg'  => 'Prova excluída com sucesso!'
+            ], 200);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json([
+                'msg'  => 'Não foi possível excluir a prova.'
+            ], 500);
+        }
     }
 
     public function find($id){

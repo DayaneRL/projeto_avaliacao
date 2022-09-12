@@ -1,6 +1,8 @@
 $(document).on('click','.show_exam', function(){
     let id = $(this).parents('tr').find('.exam_id').text();
 
+    $('#examModalLabel').text('Dados da prova');
+
     $('#examModal').find('.content').remove();
     $('#examModal').find('.modal-body').append(`
         <div class="content text-center">
@@ -10,7 +12,6 @@ $(document).on('click','.show_exam', function(){
     $('#examModal').modal('show');
 
     $.ajax({
-        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         url: `/findExam/${id}`,
         type: 'GET',
         success: function (response) {
@@ -39,6 +40,7 @@ $(document).on('click','.show_exam', function(){
                 </div>
             `);
 
+            $('#examModal').find('.modal-footer').find('.btn-primary').remove();
             $('#examModal').find('.modal-footer').prepend(`
                 <a href="/exams/${id}" class="btn btn-primary">Visualizar</a>
             `);
@@ -49,4 +51,41 @@ $(document).on('click','.show_exam', function(){
         }
     });
 
+})
+
+
+$(document).on('click', '.btn-delete', function(){
+    let exam_id = $(this).parents('tr').find('.exam_id').text();
+    let title = $(this).parents('tr').find('.exam_title').text();
+
+    $('#examModalLabel').text('Excluir Prova');
+    $('#examModal').find('.modal-body').find('.content').text(`
+    Deseja realmente excluir: ${title} ?`);
+
+    $('#examModal').find('.modal-footer').find('.btn-primary').remove();
+    $('#examModal').find('.modal-footer').find('.btn-danger').remove();
+    $('#examModal').find('.modal-footer').prepend(`
+        <button type="button" class="btn btn-danger btn-confirm" id="rm_exam_${exam_id}">Excluir</button>
+    `);
+
+    $('#examModal').modal('show');
+})
+
+$(document).on('click','.btn-confirm', function(){
+    let id = $(this).attr('id').split('_')[2];
+    $(this).attr('disabled',true);
+
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
+        url: `/exams/${id}`,
+        type: 'DELETE',
+        success: function (response) {
+            $('#exam_id_'+id).parents('tr').find('td').slideUp('slow');
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+
+    $('#examModal').modal('hide');
 })

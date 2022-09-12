@@ -34,6 +34,14 @@ class Exam extends Model
     {
         $tags = explode(',', $this->tags);
         return Attribute::make(
+            get: fn ($value) => $tags
+        );
+    }
+
+    public function tagsListTable(): Attribute
+    {
+        $tags = explode(',', $this->tags);
+        return Attribute::make(
             get: fn ($value) => count($tags)>2 ? $tags[0].', '.$tags[1].', ...' : $tags[0]
         );
     }

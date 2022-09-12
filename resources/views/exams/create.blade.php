@@ -36,71 +36,111 @@
                 @endif
 
                 <div class="row mb-3">
-                    <form action="{{route('exams.store')}}" method="POST" class="col-12">
+                    <form action="{{isset($exam)?route('exams.update',$exam->id):route('exams.store')}}" method="POST" class="col-12">
                         @csrf
+                        @if(isset($exam))
+                            @method('PUT')
+                        @endif
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputName">Título da avaliação<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="inputName" name="exam[title]"
-                                placeholder="Avaliação História segundo bimestre" value="{{old('exam.title')}}">
+                                placeholder="Avaliação História segundo bimestre" value="{{$exam->title??old('exam.title')}}">
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputName">Tags<span class="text-danger">*</span></label>
                                 <select class="js-example-basic-multiple form-control" name="exam[tags][]" multiple="multiple">
-                                    {{-- trazer do banco dinamico --}}
-                                    <option value="primeira_guerra">Primeira Guerra</option>
-                                    <option value="guerra_fria">Guerra Fria</option>
-                                    <option value="baskara">Baskara</option>
+                                    @foreach ($tagsExemple as $key => $tag)
+                                        <option value="{{$key}}"
+                                        @if(isset($exam)&&in_array($key, $exam->tags_list))
+                                            selected
+                                        @endif>{{$tag}}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="inputTotQuant">Total de questões<span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]" placeholder="10"
-                                value="{{old('exam.number_of_questions')}}">
+                                value="{{$exam->number_of_questions??old('exam.number_of_questions')}}">
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputCategory">Categoria<span class="text-danger">*</span></label>
                                 <select id="inputCategory" class="form-control" name="exam[category_id]">
                                     @foreach ($categories as $category)
                                         <option value="{{$category->id}}"
-                                            @if(old('exam.category_id')==$category->id) selected @endif>{{$category->name}}</option>
+                                            @if(old('exam.category_id')==$category->id||
+                                                (isset($exam)&&$exam->category_id==$category->id)
+                                                ) selected @endif>{{$category->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputData">Data da prova<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="inputData" name="exam[date]" placeholder="xx/xx/xxxx"
-                                value="{{old('exam.date')}}">
+                                value="{{isset($exam->date)?$exam->exam_date:old('exam.date')}}">
                             </div>
                         </div>
 
                         <div class="exam-attributes">
-                            <div class="form-row attribute">
-                                <div class="form-group col-md-3">
-                                    <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[0][number_of_questions]"
-                                    value="{{old('exam_attributes.0.number_of_questions')}}">
-                                </div>
+                            @if(isset($exam->Attributes))
+                                @foreach ($exam->Attributes as $key => $attribute)
+                                    <div class="form-row attribute">
+                                        <input type="hidden" name="exam_attributes[{{$key}}][id]" value="{{$attribute->id}}">
+                                        <div class="form-group col-md-3">
+                                            <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[{{$key}}][number_of_questions]"
+                                            value="{{ $attribute->number_of_questions}}">
+                                        </div>
 
-                                <div class="form-group col-md-3">
-                                    <label for="inputState_0">Nível <span class="text-danger">*</span></label>
-                                    <select id="inputState_0" class="form-control" name="exam_attributes[0][level_id]">
-                                        @foreach ($levels as $level)
-                                        <option value="{{$level->id}}"
-                                            @if(old('exam_attributes.0.level_id')==$level->id) selected @endif>{{$level->name}}</option>
-                                        @endforeach
-                                    </select>
+                                        <div class="form-group col-md-3">
+                                            <label for="inputState_0">Nível <span class="text-danger">*</span></label>
+                                            <select id="inputState_0" class="form-control" name="exam_attributes[{{$key}}][level_id]">
+                                                @foreach ($levels as $level)
+                                                <option value="{{$level->id}}"
+                                                    @if(old('exam_attributes.0.level_id')==$level->id || $attribute->level_id==$level->id) selected @endif
+                                                >{{$level->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3 pt-3">
+                                            <button type="button" class="btn btn-primary mt-3 btn-icon-split p-2 pr-3 pl-3 add-row-exam">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger mt-3 btn-icon-split p-2 pr-3 pl-3 rm-row-exam {{$key==0?'disabled':''}}" {{$key==0?'disabled':''}}>
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                @endforeach
+                            @else
+                                <div class="form-row attribute">
+                                    <div class="form-group col-md-3">
+                                        <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[0][number_of_questions]"
+                                        value="{{old('exam_attributes.0.number_of_questions')}}">
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <label for="inputState_0">Nível <span class="text-danger">*</span></label>
+                                        <select id="inputState_0" class="form-control" name="exam_attributes[0][level_id]">
+                                            @foreach ($levels as $level)
+                                            <option value="{{$level->id}}"
+                                                @if(old('exam_attributes.0.level_id')==$level->id) selected @endif>{{$level->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-md-3 pt-3">
+                                        <button type="button" class="btn btn-primary mt-3 btn-icon-split p-2 pr-3 pl-3 add-row-exam">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger mt-3 btn-icon-split p-2 pr-3 pl-3 rm-row-exam disabled" disabled="true">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-3 pt-3">
-                                    <button type="button" class="btn btn-primary mt-3 btn-icon-split p-2 pr-3 pl-3 add-row-exam">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-danger mt-3 btn-icon-split p-2 pr-3 pl-3 rm-row-exam disabled" disabled="true">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            @endif
                         </div>
 
                         <div class="form-group mt-2">
@@ -111,7 +151,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submit-exam">Gerar Pova</button>
+                        <button type="submit" class="btn btn-primary" id="submit-exam">{{isset($exam)?'Salvar':'Gerar'}} Pova</button>
                         <a href="{{route('exams.index')}}" class="btn btn-light border">Cancelar</a>
                     </form>
                 </div>

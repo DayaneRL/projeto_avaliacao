@@ -25,22 +25,6 @@ class ExamService
             )
         );
 
-        for($i=0; $i<$request['exam']['number_of_questions']; $i++){
-            $question = new Question();
-            $question->number = ($i+1);
-            $question->text = 'Descrição da pergunta '.($i+1);
-            $question->exam_id = $exam->id;
-            $question->save();
-
-            // $reply = new Reply();
-            // $reply->question_id = $question->id;
-            // $question->text = 'Resposta da questão '
-            // $reply->alternative = 'a';
-            // $reply->valid = 'a';
-            // $reply->exam_id = $exam->id;
-            // $reply->save();
-        }
-
         foreach($request['exam_attributes'] as $attribute){
             ExamAttribute::create(
                 array_merge(
@@ -50,17 +34,59 @@ class ExamService
             );
         }
 
+        // for($i=0; $i<$request['exam']['number_of_questions']; $i++){
+        //     $question = new Question();
+        //     $question->number = ($i+1);
+        //     $question->text = 'Descrição da pergunta '.($i+1);
+        //     $question->exam_id = $exam->id;
+        //     $question->save();
+
+            // $reply = new Reply();
+            // $reply->question_id = $question->id;
+            // $question->text = 'Resposta da questão '
+            // $reply->alternative = 'a';
+            // $reply->valid = 'a';
+            // $reply->exam_id = $exam->id;
+            // $reply->save();
+        // }
+
         return $exam;
     }
 
     public static function updateExam(array $request, Exam $exam): Exam
     {
-        $exam = Exam::find($exam->id);
-        $exam->title = $request['exam']['title'];
-        $exam->tags = implode(', ', $request['exam']['tags']);
-        $exam->number_of_questions = $request['exam']['number_of_questions'];
-        $exam->category_id = $request['exam_questions']['category_id'];
-        $exam->update();
+        $tags = count($request['exam']['tags']) > 1 ? implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0];
+        $dt_exam = explode('/', $request['exam']['date']);
+        $exam->update(
+            array_merge(
+                $request['exam'],
+                ['tags'=>$tags,
+                 'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]")]
+            )
+        );
+
+        foreach($request['exam_attributes'] as $attribute){
+            $examAttribute = ExamAttribute::find($attribute['id']);
+            $examAttribute->update(
+                $attribute
+            );
+        }
+
         return $exam;
+    }
+
+    public static function deleteExam(Exam $exam): void
+    {
+        $exam->delete();
+    }
+
+    public static function forceDeleteExam(Exam $exam): void
+    {
+        $exam->forceDelete();
+    }
+
+    public static function restoreExam(Exam $exam): void
+    {
+        $exam->restore();
     }
 }

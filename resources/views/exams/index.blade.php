@@ -68,20 +68,20 @@
                                 <tbody>
                                     @foreach ($exams as $exam)
                                         <tr>
-                                            <td class="exam_id">{{$exam->id}}</td>
+                                            <td class="exam_id" id="exam_id_{{$exam->id}}">{{$exam->id}}</td>
                                             <td class="exam_title">{{$exam->title}}</td>
                                             <td>{{$exam->Category->name}}</td>
-                                            <td>{{$exam->tags_list}}</td>
+                                            <td>{{$exam->tags_list_table}}</td>
                                             <td>{{$exam->exam_date}}</td>
                                             <td>{{$exam->created_at_formatted}}</td>
                                             <td class="actions">
                                                 <button type="button" class="btn btn-primary btn-icon-split p-2 show_exam">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-info btn-icon-split p-2 show_exam">
+                                                <a href="/exams/{{$exam->id}}/edit" class="btn btn-info btn-icon-split p-2">
                                                     <i class="fas fa-pen"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-danger btn-icon-split p-2">
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-icon-split p-2 btn-delete">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </td>
@@ -102,16 +102,17 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="examModalLabel">Dados da prova</h5>
+              <h5 class="modal-title" id="examModalLabel"></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-                <div class="content">
+                <div class="content text-center">
                 </div>
             </div>
             <div class="modal-footer">
+                @csrf
                 <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
             </div>
           </div>

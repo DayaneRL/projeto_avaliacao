@@ -37,6 +37,10 @@ class ExamRequest extends FormRequest
             {
                 $rules["exam_attributes.{$key}.number_of_questions"] = ['required'];
                 $rules["exam_attributes.{$key}.level_id"] = ['required'];
+                if ($this->filled("exam_attributes.{$key}.id"))
+                {
+                    $rules["exam_attributes.{$key}.id"] = ['required'];
+                }
             }
         }
 
