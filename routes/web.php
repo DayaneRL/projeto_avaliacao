@@ -29,11 +29,11 @@ Route::group(['middleware'=>'auth'], function(){
     Route::get('/cadastro_de_usuario', [RegisterController::class , 'create'])->middleware('admin:true')->name('auth.register.create');
     Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->middleware('admin:true')->name('auth.register.store');
 
-    Route::resource('/dashboard', DashboardController::class);
-    Route::resource('/exams', ExamController::class);
-    Route::resource('/headers', HeaderController::class);
+    Route::resource('/exams', ExamController::class)->middleware('admin:false');
+    Route::get('/findExam/{id}', [ExamController::class,'find'])->middleware('admin:false');
+    Route::resource('/headers', HeaderController::class)->middleware('admin:false');
 
+    Route::resource('/dashboard', DashboardController::class);
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 
-    Route::get('/findExam/{id}', [ExamController::class,'find']);
 });

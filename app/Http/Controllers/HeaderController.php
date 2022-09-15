@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Models\UserHeader;
 
 class HeaderController extends Controller
 {
@@ -34,7 +37,25 @@ class HeaderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            DB::beginTransaction();
+
+            $header = UserHeader::create(
+                array_merge(
+                    $request->input('header'),
+                    ['user_id'=>Auth::user()->id]
+                )
+            );
+            return $header;
+
+            // DB::commit();
+            return redirect()->route('headers.index')->with('success', "CAbeçalho cadastrado com sucesso" );
+
+        }catch (\Throwable $e) {
+            return $e->getMessage();
+            DB::rollBack();
+            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+        }
     }
 
     /**

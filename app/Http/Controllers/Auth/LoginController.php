@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Services\UserService;
 
 class LoginController extends Controller
 {
@@ -22,6 +23,8 @@ class LoginController extends Controller
         // falta encriptar a senha
         if(Auth::attempt($credentials)){
             return redirect()->route('dashboard.index');
+            // $userRole = auth()->user()->role;
+            // return redirect(UserService::getDashboardRouteBasedOnUserRole($userRole));
         }
 
         return redirect()

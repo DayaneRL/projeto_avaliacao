@@ -37,18 +37,26 @@
             </li>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">
-                Interface
+                Menu
             </div>
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('exams.index')}}">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Provas</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{route('headers.index')}}">
-                    <i class="fas fa-newspaper"></i>
-                    <span>Cabeçalhos</span></a>
-            </li>
+            @if(Auth::user()->admin)
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>Usuários</span></a>
+                </li>
+            @else
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('exams.index')}}">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>Provas</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('headers.index')}}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Cabeçalhos</span></a>
+                </li>
+            @endif
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
