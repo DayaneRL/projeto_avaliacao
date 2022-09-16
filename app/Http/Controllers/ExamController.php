@@ -5,33 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Level;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExamController extends Controller
 {
-    function getQuestionsTest(){
-        $data = array(
-            "Nostrud fugiat dolor anim pariatur labore. R:1" =>
-            array("Officia culpa nostrud commodo ex occaecat sit irure cupidatat ex consectetur ipsum ipsum. ",
-            "Laborum quis quis ullamco tempor laborum pariatur ullamco ex exercitation dolor tempor anim.",
-            "Adipisicing anim sunt laborum nulla sunt adipisicing ullamco mollit minim.",
-            "Aliquip veniam cillum officia nisi voluptate id aute."),
 
-            "Nostrud fugiat dolor anim pariatur labore. R:2" =>
-
-            array("Officia culpa nostrud commodo ex occaecat sit irure cupidatat ex consectetur ipsum ipsum. ",
-            "Laborum quis quis ullamco tempor laborum pariatur ullamco ex exercitation dolor tempor anim.",
-            "Adipisicing anim sunt laborum nulla sunt adipisicing ullamco mollit minim.",
-            "Aliquip veniam cillum officia nisi voluptate id aute."),
-
-            "Nostrud fugiat dolor anim pariatur labore. R:3" =>
-
-            array("Officia culpa nostrud commodo ex occaecat sit irure cupidatat ex consectetur ipsum ipsum. ",
-            "Laborum quis quis ullamco tempor laborum pariatur ullamco ex exercitation dolor tempor anim.",
-            "Adipisicing anim sunt laborum nulla sunt adipisicing ullamco mollit minim.",
-            "Aliquip veniam cillum officia nisi voluptate id aute."),
-        );
-        return $data;
-    }
 
     /**
      * Display a listing of the resource.
@@ -52,6 +30,7 @@ class ExamController extends Controller
     {
         $categories = Category::all();
         $levels = Level::all();
+
         return view('exams.create', compact('categories', 'levels'));
     }
 
@@ -63,10 +42,20 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
+        // $pdf = new PDF([
+        //     'logOutputFile' => '',
+        //     // authorize DomPdf to download fonts and other Internet assets
+        //     'isRemoteEnabled' => true
+        // ]);
+        // return phpinfo();
+        Pdf::setOption('isRemoteEnabled',true );
+        $pdf = Pdf::loadView('exams/pdf/test');
+        return $pdf->download('prova.pdf');
+
         // gerar a prova
-        $formData = $request->all();
-        $fakeData = self::getQuestionsTest();
-        return view('exams.store', compact('formData', 'fakeData'));
+        // $formData = $request->all();
+        // $fakeData = self::getQuestionsTest();
+        // return view('exams.store', compact('formData', 'fakeData'));
     }
 
     /**
