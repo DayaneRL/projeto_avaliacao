@@ -34,6 +34,15 @@
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
                 <div class="card-body">
+
+                @if(session()->has('success'))
+                    <div class="alert alert-success">{{session('success')}}</div>
+                @endif
+
+                @if(session()->has('warning'))
+                    <div class="alert alert-warning">{{session('warning')}}</div>
+                @endif
+
                     <div class="table-responsive">
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
@@ -53,32 +62,24 @@
                                 </tr>
                             </tfoot>
                             <tbody>
-                                <tr>
-                                    <td class="header_id">1</td>
-                                    <td class="header descriprion">Geografia</td>
-                                    <td class="header_date">{{date('d/m/Y')}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-icon-split p-2 ">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-icon-split p-2">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="header_id">2</td>
-                                    <td class="header descriprion">História</td>
-                                    <td class="header_date">{{date('d/m/Y')}}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-info btn-icon-split p-2 ">
-                                            <i class="fas fa-pen"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-icon-split p-2">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                @foreach ($headers as $header)
+                                    <tr>
+                                        <td class="header_id" id="header_id_{{$header->id}}">{{$header->id}}</td>
+                                        <td class="header descriprion">{{$header->description}}</td>
+                                        <td class="header_date">{{$header->created_at->format('d/m/Y')}}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-icon-split p-2 show_header">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <a href="/headers/{{$header->id}}/edit" class="btn btn-info btn-icon-split p-2">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-danger btn-icon-split p-2 btn-delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -89,11 +90,34 @@
     </div>
 </div>
 
+    {{-- begin:modal --}}
+    <div class="modal fade" id="headerModal" tabindex="-1" role="dialog" aria-labelledby="headerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="headerModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="content text-center">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    {{-- end:modal --}}
+
 @endsection
 
 @section('js')
     <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('plugins/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="{{asset('js/datatable.js')}}"></script>
+    <script src="{{asset('js/headers/index.js')}}"></script>
 @endsection
 

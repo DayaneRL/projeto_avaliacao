@@ -32,6 +32,7 @@ Route::group(['middleware'=>'auth'], function(){
     Route::resource('/exams', ExamController::class)->middleware('admin:false');
     Route::get('/findExam/{id}', [ExamController::class,'find'])->middleware('admin:false');
     Route::resource('/headers', HeaderController::class)->middleware('admin:false');
+    Route::get('/findHeader/{id}', [HeaderController::class,'find'])->middleware('admin:false');
 
     Route::resource('/dashboard', DashboardController::class);
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');

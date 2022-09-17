@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{Hash, Storage, Auth};
 use App\Models\UserHeader;
+use App\Services\HeaderService;
 
 class HeaderController extends Controller
 {
@@ -16,7 +17,8 @@ class HeaderController extends Controller
      */
     public function index()
     {
-        return view('headers.index');
+        $headers = UserHeader::all();
+        return view('headers.index', compact('headers'));
     }
 
     /**
@@ -40,19 +42,15 @@ class HeaderController extends Controller
         try{
             DB::beginTransaction();
 
-            $header = UserHeader::create(
-                array_merge(
-                    $request->input('header'),
-                    ['user_id'=>Auth::user()->id]
-                )
+            $header = HeaderService::storeHeader(
+                $request,
+                Auth::user()
             );
-            return $header;
 
-            // DB::commit();
-            return redirect()->route('headers.index')->with('success', "CAbeçalho cadastrado com sucesso" );
+            DB::commit();
+            return redirect()->route('headers.index')->with('success', "Cabeçalho cadastrado com sucesso" );
 
         }catch (\Throwable $e) {
-            return $e->getMessage();
             DB::rollBack();
             return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }
@@ -77,7 +75,8 @@ class HeaderController extends Controller
      */
     public function edit($id)
     {
-        //
+        $header = UserHeader::findOrFail($id);
+        return view('headers.create', compact('header'));
     }
 
     /**
@@ -89,7 +88,26 @@ class HeaderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+
+            $header = UserHeader::findOrFail($id);
+            $update = HeaderService::updateHeader(
+                $request,
+                $header,
+                Auth::user()
+            );
+            // return $update;
+            //FAZER REQUEST
+
+            DB::commit();
+            return redirect()->route('headers.index')->with('success', "Cabeçalho atualizado com sucesso" );
+
+        }catch (\Throwable $e) {
+            return $e->getMessage();
+            DB::rollBack();
+            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+        }
     }
 
     /**
@@ -101,5 +119,20 @@ class HeaderController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function find($id){
+        try{
+            $header = UserHeader::findOrFail($id);
+            $header['date'] =  $header->created_at->format('d/m/Y');
+
+            return response()->json([
+                'header'      => $header,
+            ], 200);
+        }catch (\Exception $ex) {
+            return response()->json([
+                'data'  => 'Algo deu errado.'
+            ], 500);
+        }
     }
 }
