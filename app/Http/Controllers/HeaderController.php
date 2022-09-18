@@ -43,6 +43,7 @@ class HeaderController extends Controller
         try{
             DB::beginTransaction();
 
+            $request->validated();
             $header = HeaderService::storeHeader(
                 $request,
                 Auth::user()
@@ -65,7 +66,7 @@ class HeaderController extends Controller
      */
     public function show($id)
     {
-        //
+        return redirect()->route('headers.index');
     }
 
     /**
@@ -116,7 +117,20 @@ class HeaderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $header = UserHeader::findOrFail($id);
+            HeaderService::deleteHeader($header);
+            DB::commit();
+            return response()->json([
+                'msg'  => 'Cabeçalho excluída com sucesso!'
+            ], 200);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json([
+                'msg'  => 'Não foi possível excluir o cabeçalho.'
+            ], 500);
+        }
     }
 
     public function find($id){

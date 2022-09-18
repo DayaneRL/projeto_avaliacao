@@ -7,6 +7,12 @@
 @section('style')
     <!-- Custom styles for this page -->
     <link href="{{asset('plugins/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <style>
+        .img-preview{
+            width:120px;
+            height:120px
+        }
+    </style>
 @endsection
 
 @section('content')

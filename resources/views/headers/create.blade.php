@@ -28,6 +28,16 @@
     <div class="col-12 mb-4">
         <div class="card shadow h-100 py-2">
             <div class="card-body">
+                @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
                 <div class="row mb-3">
                     <form action="{{isset($header)?route('headers.update',$header->id):route('headers.store')}}" method="POST" class="col-12" enctype="multipart/form-data">
                         @csrf
@@ -40,7 +50,7 @@
                             <div class="form-group col-md-12">
                                 <label for="inputName">Descrição</label>
                                 <input type="text" class="form-control" id="inputName" name="header[description]"
-                                value={{$header->description??''}}>
+                                value={{$header->description??old('header.description')}}>
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="upload_image">Imagem de logo</label>

@@ -1,7 +1,8 @@
 $(document).on('click','.show_header', function(){
     let id = $(this).parents('tr').find('.header_id').text();
+    var MAIN_URL = window.location.origin;
 
-    $('#examModalLabel').text('Dados do cabeçalho');
+    $('#headerModalLabel').text('Dados do cabeçalho');
     $('#headerModal').find('.content').remove();
     $('#headerModal').find('.modal-body').append(`
         <div class="content text-center">
@@ -19,9 +20,10 @@ $(document).on('click','.show_header', function(){
 
             $('#headerModal').find('.modal-body').append(`
                 <div class="content text-center">
-                    <h3>${response.header.description}</h3>
+                    <p><b>Descrição:</b> ${response.header.description}</p>
                     <p><b>Data de cadastro:</b> ${response.header.date} </p>
-                    <img src='${response.header.logo}' alt='${response.header.description}'/>
+                    <img src='${MAIN_URL}/storage/${response.header.logo}'
+                    class="rounded img-preview" alt='${response.header.description}'/>
                 </div>
             `);
 
@@ -37,8 +39,9 @@ $(document).on('click','.show_header', function(){
 $(document).on('click', '.btn-delete', function(){
     let header_id = $(this).parents('tr').find('.header_id').text();
 
-    $('#examModalLabel').text('Excluir cabeçalho');
+    $('#headerModalLabel').text('Excluir cabeçalho');
     $('#headerModal').find('.modal-body').find('.content').text(`
+    Essa ação é permanente.
     Deseja realmente excluir ?`);
 
     $('#headerModal').find('.modal-footer').find('.btn-danger').remove();

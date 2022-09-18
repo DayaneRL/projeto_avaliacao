@@ -15,7 +15,7 @@ class HeaderService
         $imageName =  Self::storeImage($request);
         $header = UserHeader::create(
             array_merge(
-                $request->validated(),
+                $request->input('header'),
                 ['user_id'=>$user->id,
                  'logo' => $imageName]
             )
