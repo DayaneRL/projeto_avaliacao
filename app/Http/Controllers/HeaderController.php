@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\{Hash, Storage, Auth};
 use App\Models\UserHeader;
 use App\Services\HeaderService;
+use App\Http\Requests\HeaderRequest;
 
 class HeaderController extends Controller
 {
@@ -37,7 +38,7 @@ class HeaderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HeaderRequest $request)
     {
         try{
             DB::beginTransaction();
@@ -86,19 +87,16 @@ class HeaderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(HeaderRequest $request, $id)
     {
         try{
             DB::beginTransaction();
-
             $header = UserHeader::findOrFail($id);
+            $request->validated();
             $update = HeaderService::updateHeader(
                 $request,
-                $header,
-                Auth::user()
+                $header
             );
-            // return $update;
-            //FAZER REQUEST
 
             DB::commit();
             return redirect()->route('headers.index')->with('success', "Cabeçalho atualizado com sucesso" );
@@ -125,6 +123,21 @@ class HeaderController extends Controller
         try{
             $header = UserHeader::findOrFail($id);
             $header['date'] =  $header->created_at->format('d/m/Y');
+
+            return response()->json([
+                'header'      => $header,
+            ], 200);
+        }catch (\Exception $ex) {
+            return response()->json([
+                'data'  => 'Algo deu errado.'
+            ], 500);
+        }
+    }
+
+    public function updateLogo(Request $request){
+        try{
+            $header = UserHeader::findOrFail($request['id']);
+            HeaderService::updateOnlyLogo($request['logo'], $header);
 
             return response()->json([
                 'header'      => $header,
