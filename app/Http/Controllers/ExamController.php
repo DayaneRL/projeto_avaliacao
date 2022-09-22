@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Level;
+use App\Models\{Category,Level,Question,Reply};
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Collection;
 
 class ExamController extends Controller
 {
-
-
     /**
      * Display a listing of the resource.
      *
@@ -42,20 +40,33 @@ class ExamController extends Controller
      */
     public function store(Request $request)
     {
-        // $pdf = new PDF([
-        //     'logOutputFile' => '',
-        //     // authorize DomPdf to download fonts and other Internet assets
-        //     'isRemoteEnabled' => true
-        // ]);
-        // return phpinfo();
-        Pdf::setOption('isRemoteEnabled',true );
-        $pdf = Pdf::loadView('exams/pdf/test');
-        return $pdf->download('prova.pdf');
 
-        // gerar a prova
-        // $formData = $request->all();
-        // $fakeData = self::getQuestionsTest();
-        // return view('exams.store', compact('formData', 'fakeData'));
+
+        $request->all();
+        $questions = Question::all();
+        $questions_ids= [];
+        foreach($questions as $question){
+            $questions_ids[]+=$question['id'];
+        }
+        $replys = Reply::whereIn('question_id', $questions_ids)->get();
+
+        return view('exams.store', compact('request', 'questions','replys'));
+
+        // return view('exams.pdf.test', compact('request','questions','replys'));
+
+    }
+    public function downloadExam(){
+        // bring the $request to here
+        $questions = Question::all();
+        $questions_ids= [];
+        foreach($questions as $question){
+            $questions_ids[]+=$question['id'];
+        }
+        $replys = Reply::whereIn('question_id', $questions_ids)->get();
+
+        Pdf::setOption('isRemoteEnabled',true);
+        $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));
+        return $pdf->download('prova.pdf');
     }
 
     /**

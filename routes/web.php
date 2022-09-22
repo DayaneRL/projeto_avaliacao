@@ -29,9 +29,12 @@ Route::group(['middleware'=>'auth'], function(){
     Route::get('/cadastro_de_usuario', [RegisterController::class , 'create'])->middleware('admin:true')->name('auth.register.create');
     Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->middleware('admin:true')->name('auth.register.store');
 
+    Route::get('/exams/download_exam', [ExamController::class , 'downloadExam']);
+
     Route::resource('/dashboard', DashboardController::class);
     Route::resource('/exams', ExamController::class);
     Route::resource('/headers', HeaderController::class);
+
 
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 });

@@ -7,39 +7,80 @@
     <title>Prova</title>
 
     <style>
-        .image{
-            width: auto;
-            height: 100px;
-            width: 200px;
-            background-image: url( "{{asset('img/logocaraguasecretaria.png')}}" );
-            display: block;
+        *{
+            margin: 0;
+            padding: 0;
         }
-        /* .quebraPagina{
-            width: 200px;
-            height: 200px;
-            background-color: red;
-            margin: 10px;
-        } */
-      </style>
+        html, body{
+            width: 100%;
+            font-family: sans-serif;
+        }
+        .testContainer{
+            margin: 30px;
+        }
+        .header{
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 18PX;
+        }
+        .imgHeader{
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        .testInfo{
+            font-size: 16px;
+        }
+        .questionNumber{
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .questionImg{
+            max-height: 200px;
+            max-width: 600px;
+        }
+    </style>
 </head>
 <body>
-    <!-- teste 1 -->
-    <h1>Path: </h1>
-    <h2>Imagem 1:</h2>
+    <div class="testContainer">
+        <div class="header">
+            <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="imgHeader">
+            {{-- <img src="{{ public_path().'/img/logocaraguasecretaria.png' }}" class="imgHeader"> --}}
+            <p>CEI/EMEI Prof° Aparecida Maria Pires de Meneses</p>
+            <p>{{ $request->name }}</p>
+        </div>
+        <div class="testInfo">
+            <p>Professor {{$userRole = auth()->user()->name;}}</p>
+            <p>Caraguatatuba, 25 de maio de 2022</p>
+        </div>
+        @php
+            $questionCounter = 1;
 
-    <div class="image"></div>
+        @endphp
+        <div class="questions">
+
+            @foreach ($questions as $question)
+                <h6 class="questionNumber">Questão {{$questionCounter++}}</h6>
+
+                @if ($question['img'])
+                    <img src="{{$question['img']}}" class="questionImg">
+                @endif
+
+                <p>{{$question['text']}}</p>
+
+                @foreach ($replys as $answer)
+                    @if ($answer['question_id']==$question['id'])
+                        <p>{{ $answer['alternative'] . ') ' . $answer['text'] }}</p>
+                    @endif
+                @endforeach
+            @endforeach
+        </div>
 
 
-    <br><br><br>
-    <h2>Imagem 2:</h2>
-    <!-- teste 2 -->
-    {{-- <img src="{{ asset('img/logocaraguasecretaria.png') }}" style="height:100px;">
 
-    <h3>{{'teste'. asset('img/logocaraguasecretaria.png') }}</h3> --}}
+    </div>
 
-    <!-- <div class="quebraPagina"></div>
-    <div class="quebraPagina"></div>
-    <div class="quebraPagina"></div>
-    <div class="quebraPagina"></div> -->
+
+
 </body>
 </html>
