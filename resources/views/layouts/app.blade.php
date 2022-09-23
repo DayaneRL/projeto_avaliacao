@@ -37,7 +37,7 @@
             </div>
             @if(Auth::user()->admin)
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{route('users.index')}}">
                         <i class="fas fa-fw fa-folder"></i>
                         <span>Usuários</span></a>
                 </li>
@@ -82,10 +82,16 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+
+                                <a class="dropdown-item" href="{{ route('profile') }}"
+                                    onclick="event.preventDefault();  document.getElementById('profile-form').submit();">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Perfil
+                                    <form id="profile-form" action="{{ route('profile') }}" method="POST" class="d-none">
+                                        @csrf
+                                    </form>
                                 </a>
+
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal"
                                     data-target="#logoutModal">
@@ -147,6 +153,29 @@
         </div>
     </div>
     <!-- end modal -->
+
+
+    {{-- begin:modal --}}
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="content text-center">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    {{-- end:modal --}}
 
     <script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>

@@ -103,7 +103,6 @@ class HeaderController extends Controller
             return redirect()->route('headers.index')->with('success', "Cabeçalho atualizado com sucesso" );
 
         }catch (\Throwable $e) {
-            return $e->getMessage();
             DB::rollBack();
             return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }
