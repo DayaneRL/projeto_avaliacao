@@ -34,11 +34,21 @@
                     <div class="card-body">
 
                         @if(session()->has('success'))
-                            <div class="alert alert-success">{{session('success')}}</div>
+                            <div class="alert alert-success">
+                                {{session('success')}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         @endif
 
                         @if(session()->has('warning'))
-                            <div class="alert alert-warning">{{session('warning')}}</div>
+                            <div class="alert alert-warning">
+                                {{session('warning')}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         @endif
 
                         <div class="table-responsive">
@@ -97,28 +107,6 @@
         </div>
     </div>
 
-    {{-- begin:modal --}}
-    <div class="modal fade" id="examModal" tabindex="-1" role="dialog" aria-labelledby="examModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="examModalLabel"></h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-                <div class="content text-center">
-                </div>
-            </div>
-            <div class="modal-footer">
-                @csrf
-                <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
-            </div>
-          </div>
-        </div>
-    </div>
-    {{-- end:modal --}}
 @endsection
 
 @section('js')

@@ -1,15 +1,22 @@
 $(document).on('click','.show_exam', function(){
     let id = $(this).parents('tr').find('.exam_id').text();
 
-    $('#examModalLabel').text('Dados da prova');
+    $('#utilsModalLabel').text('Dados da prova');
 
-    $('#examModal').find('.content').remove();
-    $('#examModal').find('.modal-body').append(`
+    $('#utilsModal').find('.content').remove();
+    $('#utilsModal').find('.modal-body').append(`
         <div class="content text-center">
             <img src="/img/Book.gif" alt="loading gif" id="loading">
         </div>
     `);
-    $('#examModal').modal('show');
+
+    $('#utilsModal').find('.modal-footer').children().remove();
+    $('#utilsModal').find('.modal-footer').prepend(`
+        <a href="/exams/${id}" class="btn btn-primary">Visualizar</a>
+        <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+    `);
+
+    $('#utilsModal').modal('show');
 
     $.ajax({
         url: `/findExam/${id}`,
@@ -18,9 +25,9 @@ $(document).on('click','.show_exam', function(){
 
             let exam = response.exam;
             let category = response.category;
-            $('#examModal').find('.modal-body').find('.content').remove();
+            $('#utilsModal').find('.modal-body').find('.content').remove();
 
-            $('#examModal').find('.modal-body').append(`
+            $('#utilsModal').find('.modal-body').append(`
                 <div class="content text-center">
                     <h3 id="exam_title">${exam.title}</h3>
                     <p id="exam_tags"><b>Tags:</b> ${exam.tags} </p>
@@ -40,11 +47,6 @@ $(document).on('click','.show_exam', function(){
                 </div>
             `);
 
-            $('#examModal').find('.modal-footer').find('.btn-primary').remove();
-            $('#examModal').find('.modal-footer').prepend(`
-                <a href="/exams/${id}" class="btn btn-primary">Visualizar</a>
-            `);
-
         },
         error: function (error) {
             console.log(error);
@@ -58,17 +60,19 @@ $(document).on('click', '.btn-delete', function(){
     let exam_id = $(this).parents('tr').find('.exam_id').text();
     let title = $(this).parents('tr').find('.exam_title').text();
 
-    $('#examModalLabel').text('Excluir Prova');
-    $('#examModal').find('.modal-body').find('.content').text(`
-    Deseja realmente excluir: ${title} ?`);
+    $('#utilsModalLabel').text('Excluir Prova');
 
-    $('#examModal').find('.modal-footer').find('.btn-primary').remove();
-    $('#examModal').find('.modal-footer').find('.btn-danger').remove();
-    $('#examModal').find('.modal-footer').prepend(`
+    $('#utilsModal').find('.modal-body').find('.content').children().remove();
+    $('#utilsModal').find('.modal-body').find('.content').append
+    (`<p>Deseja realmente excluir: <b>${title}</b> ?</p>`);
+
+    $('#utilsModal').find('.modal-footer').children().remove();
+    $('#utilsModal').find('.modal-footer').prepend(`
         <button type="button" class="btn btn-danger btn-confirm" id="rm_exam_${exam_id}">Excluir</button>
+        <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
     `);
 
-    $('#examModal').modal('show');
+    $('#utilsModal').modal('show');
 })
 
 $(document).on('click','.btn-confirm', function(){
@@ -87,5 +91,5 @@ $(document).on('click','.btn-confirm', function(){
         }
     });
 
-    $('#examModal').modal('hide');
+    $('#utilsModal').modal('hide');
 })

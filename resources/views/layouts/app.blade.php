@@ -155,12 +155,12 @@
     <!-- end modal -->
 
 
-    {{-- begin:modal --}}
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    {{-- begin: show and delete modal --}}
+    <div class="modal fade" id="utilsModal" tabindex="-1" role="dialog" aria-labelledby="utilsModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="deleteModalLabel"></h5>
+              <h5 class="modal-title" id="utilsModalLabel"></h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>

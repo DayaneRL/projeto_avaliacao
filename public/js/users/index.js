@@ -2,15 +2,16 @@ $(document).on('click', '.btn-delete', function(){
     let user_id = $(this).parents('tr').find('.user_id').text();
     let name = $(this).parents('tr').find('.user_name').text();
 
-    $('#deleteModalLabel').text('Excluir cabeçalho');
-    $('#deleteModal').find('.modal-body').find('.content').append(`<p>Deseja realmente excluir <b>${name}</b>?</p>`);
+    $('#utilsModalLabel').text('Excluir cabeçalho');
+    $('#utilsModal').find('.modal-body').find('.content').children().remove();
+    $('#utilsModal').find('.modal-body').find('.content').append(`<p>Deseja realmente excluir <b>${name}</b>?</p>`);
 
-    $('#deleteModal').find('.modal-footer').find('.btn-danger').remove();
-    $('#deleteModal').find('.modal-footer').prepend(`
+    $('#utilsModal').find('.modal-footer').find('.btn-danger').remove();
+    $('#utilsModal').find('.modal-footer').prepend(`
         <button type="button" class="btn btn-danger btn-confirm" id="rm_delete_${user_id}">Excluir</button>
     `);
 
-    $('#deleteModal').modal('show');
+    $('#utilsModal').modal('show');
 })
 
 
@@ -30,6 +31,6 @@ $(document).on('click','.btn-confirm', function(){
         }
     });
 
-    $('#deleteModal').modal('hide');
+    $('#utilsModal').modal('hide');
 })
 

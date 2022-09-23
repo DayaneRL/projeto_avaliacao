@@ -36,11 +36,21 @@
                     <div class="card-body">
 
                         @if(session()->has('success'))
-                            <div class="alert alert-success">{{session('success')}}</div>
+                            <div class="alert alert-success">
+                                {{session('success')}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         @endif
 
                         @if(session()->has('warning'))
-                            <div class="alert alert-warning">{{session('warning')}}</div>
+                            <div class="alert alert-warning">
+                                {{session('warning')}}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                         @endif
 
                         <div class="table-responsive">

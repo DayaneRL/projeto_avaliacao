@@ -2,23 +2,29 @@ $(document).on('click','.show_header', function(){
     let id = $(this).parents('tr').find('.header_id').text();
     var MAIN_URL = window.location.origin;
 
-    $('#headerModalLabel').text('Dados do cabeçalho');
-    $('#headerModal').find('.content').remove();
-    $('#headerModal').find('.modal-body').append(`
+    $('#utilsModalLabel').text('Dados do cabeçalho');
+    $('#utilsModal').find('.content').remove();
+    $('#utilsModal').find('.modal-body').append(`
         <div class="content text-center">
             <img src="/img/Book.gif" alt="loading gif" id="loading">
         </div>
     `);
-    $('#headerModal').modal('show');
+    $('#utilsModal').find('.modal-footer').children().remove();
+    $('#utilsModal').find('.modal-footer').prepend(`
+        <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
+    `);
+
+
+    $('#utilsModal').modal('show');
 
     $.ajax({
         url: `/findHeader/${id}`,
         type: 'GET',
         success: function (response) {
 
-            $('#headerModal').find('.modal-body').find('.content').remove();
+            $('#utilsModal').find('.modal-body').find('.content').remove();
 
-            $('#headerModal').find('.modal-body').append(`
+            $('#utilsModal').find('.modal-body').append(`
                 <div class="content text-center">
                     <p><b>Descrição:</b> ${response.header.description}</p>
                     <p><b>Data de cadastro:</b> ${response.header.date} </p>
@@ -39,17 +45,18 @@ $(document).on('click','.show_header', function(){
 $(document).on('click', '.btn-delete', function(){
     let header_id = $(this).parents('tr').find('.header_id').text();
 
-    $('#headerModalLabel').text('Excluir cabeçalho');
-    $('#headerModal').find('.modal-body').find('.content').text(`
+    $('#utilsModalLabel').text('Excluir cabeçalho');
+    $('#utilsModal').find('.modal-body').find('.content').text(`
     Essa ação é permanente.
-    Deseja realmente excluir ?`);
+    Deseja realmente excluir?`);
 
-    $('#headerModal').find('.modal-footer').find('.btn-danger').remove();
-    $('#headerModal').find('.modal-footer').prepend(`
+    $('#utilsModal').find('.modal-footer').children().remove();
+    $('#utilsModal').find('.modal-footer').prepend(`
         <button type="button" class="btn btn-danger btn-confirm" id="rm_header_${header_id}">Excluir</button>
+        <button type="button" class="btn btn-light border" data-dismiss="modal">Cancelar</button>
     `);
 
-    $('#headerModal').modal('show');
+    $('#utilsModal').modal('show');
 })
 
 $(document).on('click','.btn-confirm', function(){
@@ -68,5 +75,5 @@ $(document).on('click','.btn-confirm', function(){
         }
     });
 
-    $('#headerModal').modal('hide');
+    $('#utilsModal').modal('hide');
 })
