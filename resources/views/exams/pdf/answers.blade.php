@@ -36,9 +36,6 @@
             display: block;
             margin: 0;
         }
-        .testInfo{
-            margin-bottom: 20px;
-        }
         .testInfo p{
             font-size: 12;
             line-height: 20px;
@@ -59,55 +56,44 @@
         .alternative{
             text-transform: uppercase;
         }
-        /* .studentName{
-            display: block;
-            border-bottom: 1px solid #000;
-            line-height: 14px;
-            margin: 10px 0;
-        } */
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
-        {{-- <img src="{{ asset('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
+        {{-- <img src="https://www.w3schools.com/howto/img_nature_wide.jpg" class="headerImg"> --}}
+        <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg">
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
         <p class="titleTest">
-            {{$request['name']}}
+            Gabarito da prova: {{$request['name']}}
         </p>
     </div>
     <div class="testInfo">
         <p>Professor {{Auth::user()->name}}</p>
         <p>Caraguatatuba, 25 de maio de 2022</p>
-        <p class="studentName">Nome: _____________________________________________________________</p>
-
-
     </div>
         @php
             $questionNumber = 1;
         @endphp
         @foreach ($questions as $question)
 
-            <p class="questionNumber">Questão {{$questionNumber++}}</p>
+            <p class="questionNumber">Questão {{$questionNumber++;}}</p>
             @if ($question->img)
                 <img src="{{ $question->img}} " class="questionImg">
             @endif
-            <p class="questionText">{{$question->text}}</p>
+            <p class="questionText">{{$question->text;}}</p>
             @foreach ($replys as $reply)
                 @if($reply->question_id == $question->id)
                     <li class="answers">
-                        <span class="alternative">{{$reply->alternative}})</span>
+                        <span class="alternative">{{$reply->alternative;}})</span>
                         {{$reply->text}}
                     </li>
                 @endif
-
             @endforeach
-            {{-- <li class="answers">
-                <p>E) <strong>Resposta certa</strong></p>
-            </li> --}}
+
         @endforeach
+
 
 </body>
 </html>

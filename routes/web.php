@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HeaderController;
+use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\Auth\{LoginController,RegisterController};
 
 
@@ -29,7 +30,7 @@ Route::group(['middleware'=>'auth'], function(){
     Route::get('/cadastro_de_usuario', [RegisterController::class , 'create'])->middleware('admin:true')->name('auth.register.create');
     Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->middleware('admin:true')->name('auth.register.store');
 
-    Route::get('/exams/download_exam', [ExamController::class , 'downloadExam']);
+    Route::post('/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
 
     Route::resource('/dashboard', DashboardController::class);
     Route::resource('/exams', ExamController::class);

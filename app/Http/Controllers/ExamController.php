@@ -9,6 +9,10 @@ use Illuminate\Support\Collection;
 
 class ExamController extends Controller
 {
+
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -48,26 +52,22 @@ class ExamController extends Controller
         foreach($questions as $question){
             $questions_ids[]+=$question['id'];
         }
+
+
         $replys = Reply::whereIn('question_id', $questions_ids)->get();
 
         return view('exams.store', compact('request', 'questions','replys'));
 
+        // Pdf::setOption('isRemoteEnabled',true);
+        // $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));
+        // return $pdf->download($request->name.'.pdf');
+
+
+
         // return view('exams.pdf.test', compact('request','questions','replys'));
 
     }
-    public function downloadExam(){
-        // bring the $request to here
-        $questions = Question::all();
-        $questions_ids= [];
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
-        }
-        $replys = Reply::whereIn('question_id', $questions_ids)->get();
 
-        Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));
-        return $pdf->download('prova.pdf');
-    }
 
     /**
      * Display the specified resource.
