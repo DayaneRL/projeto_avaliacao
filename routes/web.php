@@ -31,6 +31,8 @@ Route::group(['middleware'=>'auth'], function(){
     Route::post('/cadastro_de_usuario', [RegisterController::class , 'store'])->middleware('admin:true')->name('auth.register.store');
 
     Route::post('/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
+    Route::post('/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');
+    Route::post('/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
 
     Route::resource('/dashboard', DashboardController::class);
     Route::resource('/exams', ExamController::class);

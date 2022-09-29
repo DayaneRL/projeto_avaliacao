@@ -56,7 +56,7 @@ class ExamController extends Controller
 
         $replys = Reply::whereIn('question_id', $questions_ids)->get();
 
-        return view('exams.store', compact('request', 'questions','replys'));
+        return view('exams.store', compact('request', 'questions','replys', 'questions_ids'));
 
         // Pdf::setOption('isRemoteEnabled',true);
         // $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));

@@ -15,6 +15,10 @@
         }
         html{
             font-family: 'Open Sans', sans-serif;
+            width: 100%;
+        }
+        body{
+            width: 100%;
         }
         .header{
             text-align: center;
@@ -42,19 +46,21 @@
             display: block;
             margin: 0;
         }
-        .questionNumber{
-            font-weight: bold;
-        }
+
         .answers{
-            list-style: none;
-            padding-left: 0;
+            width: 100%;
+            margin-top: 20px;
         }
-        .questionText, .answers li{
-            text-align: justify;
-            text-justify: inter-word;
+        table{
+            margin: 0 auto;
+            border-collapse: collapse;
         }
-        .alternative{
-            text-transform: uppercase;
+        table, td, th{
+            border: 1px solid black;
+            text-align: center;
+        }
+        td, th{
+            padding: 4px;
         }
     </style>
 </head>
@@ -76,23 +82,39 @@
         @php
             $questionNumber = 1;
         @endphp
-        @foreach ($questions as $question)
 
-            <p class="questionNumber">Questão {{$questionNumber++;}}</p>
-            @if ($question->img)
-                <img src="{{ $question->img}} " class="questionImg">
-            @endif
-            <p class="questionText">{{$question->text;}}</p>
-            @foreach ($replys as $reply)
-                @if($reply->question_id == $question->id)
-                    <li class="answers">
-                        <span class="alternative">{{$reply->alternative;}})</span>
-                        {{$reply->text}}
-                    </li>
-                @endif
-            @endforeach
 
-        @endforeach
+    <div class="answers">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Questão</th>
+                        <th>Gabarito</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($questions as $question)
+                    <tr>
+                        <td>{{ $question->number }}</td>
+                        <td>
+                            @foreach ($replys as $reply)
+                                @if ($reply->question_id == $question->id)
+                                    {{$reply->alternative}}
+                                @endif
+                            @endforeach
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+    </div>
+        {{-- @foreach ($questions as $question)
+
+
+
+        @endforeach --}}
 
 
 </body>

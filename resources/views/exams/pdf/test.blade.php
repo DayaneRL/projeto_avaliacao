@@ -69,8 +69,8 @@
 </head>
 <body>
     <div class="header">
-        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
-        {{-- <img src="{{ asset('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
+        {{-- <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg"> --}}
+        <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg">
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
@@ -82,8 +82,6 @@
         <p>Professor {{Auth::user()->name}}</p>
         <p>Caraguatatuba, 25 de maio de 2022</p>
         <p class="studentName">Nome: _____________________________________________________________</p>
-
-
     </div>
         @php
             $questionNumber = 1;
