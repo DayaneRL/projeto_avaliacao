@@ -5,8 +5,10 @@ use App\Http\Controllers\{
     DashboardController,
     ExamController,
     HeaderController,
-    UserController
+    UserController,
+    DownloadController
 };
+
 use App\Http\Controllers\Auth\{LoginController,RegisterController};
 
 
@@ -30,6 +32,12 @@ Route::group([ 'middleware'=>'guest'], function(){
 Route::group(['middleware'=>'auth'], function(){
 
     Route::resource('/dashboard', DashboardController::class);
+    Route::post('/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
+    Route::post('/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');
+    Route::post('/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
+
+
+
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 
     Route::post('/profile', [UserController::class,'show'])->name('profile');

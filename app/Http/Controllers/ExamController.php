@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level};
+use App\Models\{Exam, Question, Category, Level, Reply};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Collection;
 
 class ExamController extends Controller
 {
@@ -47,6 +49,30 @@ class ExamController extends Controller
         }
 
     }
+
+    public function preview(ExamRequest $request){
+
+        $request->all();
+        $questions = Question::all();
+        $questions_ids= [];
+        foreach($questions as $question){
+            $questions_ids[]+=$question['id'];
+        }
+
+
+        $replys = Reply::whereIn('question_id', $questions_ids)->get();
+
+        return view('exams.store', compact('request', 'questions','replys', 'questions_ids'));
+
+        // Pdf::setOption('isRemoteEnabled',true);
+        // $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));
+        // return $pdf->download($request->name.'.pdf');
+
+
+
+        // return view('exams.pdf.test', compact('request','questions','replys'));
+    }
+
 
     /**
      * Display the specified resource.

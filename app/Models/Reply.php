@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Reply extends Model
 {
 
+    protected $table = 'exam_replys';
+
     protected $fillable = [
         'question_id',
         'text',
