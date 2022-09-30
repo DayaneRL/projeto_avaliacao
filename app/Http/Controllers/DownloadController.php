@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Question,Reply};
+use App\Models\{Question,Reply,Exam};
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class DownloadController extends Controller
@@ -44,10 +44,34 @@ class DownloadController extends Controller
     public function saveExam(){
         $request= request()->all();
         var_dump($request);
+        //here i have the name of the test and the questions ids. there's nothing about questions
+        //edited yet
+        //i need to get the test id after saving it, so i can pass it to the load and download functions
+
+
+        if($request->testId){
+            $exam = Exam::find($request->testId);
+            $exam->updated_at = now();
+        }else{
+            $exam = new Exam;
+            $exam->created_at = now();
+        }
+
+        $exam->title = $request->name;
+        $exam->number_of_questions = $request->number_of_questions;
+        $exam->date = $request->date;
+
+
+
+        $post->save();
+        // after saving the id is saved here, return the id and pass it to js
+        $post->id;
         return true;
     }
     public function loadTest(){
-        $returnHTML = view('job.userjobs')->compact('userjobs', $userjobs)->render();
+
+
+        $returnHTML = view('exams/pdf/teste')->compact('request','questions','replys')->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
     public function loadAnswers(){

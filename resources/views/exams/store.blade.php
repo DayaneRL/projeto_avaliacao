@@ -60,6 +60,8 @@
         let visualizingTest=true;
         let testSaved=false;
 
+        let testId=-1;
+
         btnTest.addEventListener("click", btnTestClick);
         btnAnswers.addEventListener("click", btnAnswersClick);
         // btnAnswers.addEventListener("click", saveTest);
@@ -123,6 +125,8 @@
                     {
                         _token: "{{ csrf_token() }}",
                         name: "{{$request->name}}",
+                        number_of_questions: "{{$request->number_of_questions}}",
+                        date: "{{$request->date}}",
                         questions: "{{json_encode($questions_ids)}}"
                     },
                 success: function(response){

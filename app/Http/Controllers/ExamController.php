@@ -30,7 +30,7 @@ class ExamController extends Controller
         return view('exams.create', compact('categories', 'levels','tagsExemple'));
     }
 
-    public function store(ExamRequest $request): RedirectResponse
+    public function store(ExamRequest $request)
     {
         try{
             DB::beginTransaction();
@@ -47,11 +47,10 @@ class ExamController extends Controller
             DB::rollBack();
             return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }
-
     }
 
-    public function preview(ExamRequest $request){
-
+    public function preview(ExamRequest $request)
+    {
         $request->all();
         $questions = Question::all();
         $questions_ids= [];
@@ -64,34 +63,17 @@ class ExamController extends Controller
 
         return view('exams.store', compact('request', 'questions','replys', 'questions_ids'));
 
-        // Pdf::setOption('isRemoteEnabled',true);
-        // $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));
-        // return $pdf->download($request->name.'.pdf');
-
-
-
-        // return view('exams.pdf.test', compact('request','questions','replys'));
     }
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
         $exam = Exam::find($id);
         return view('exams.show', compact('exam'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         $exam = Exam::find($id);
@@ -101,13 +83,7 @@ class ExamController extends Controller
         return view('exams.create', compact('categories', 'levels', 'exam', 'tagsExemple'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(ExamRequest $request, $id): RedirectResponse
     {
         try{
@@ -127,15 +103,8 @@ class ExamController extends Controller
             DB::rollBack();
             return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         DB::beginTransaction();

@@ -20,7 +20,6 @@ class LoginController extends Controller
             'password'=> $request->password
         ];
 
-        // falta encriptar a senha
         if(Auth::attempt($credentials)){
             return redirect()->route('dashboard.index');
             // $userRole = auth()->user()->role;
