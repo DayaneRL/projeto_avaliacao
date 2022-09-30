@@ -45,11 +45,12 @@
                             <div class="form-group col-md-6">
                                 <label for="inputName">Título da avaliação<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="inputName" name="exam[title]"
-                                placeholder="Avaliação História segundo bimestre" value="{{$exam->title??old('exam.title')}}">
+                                    required value="{{$exam->title??old('exam.title')}}">
+                                <small class="text-secondary">Exemplo: Avaliação História segundo bimestre</small>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputName">Tags<span class="text-danger">*</span></label>
-                                <select class="js-example-basic-multiple form-control" name="exam[tags][]" multiple="multiple">
+                                <select class="js-example-basic-multiple form-control" name="exam[tags][]" multiple="multiple" required>
                                     @foreach ($tagsExemple as $key => $tag)
                                         <option value="{{$key}}"
                                         @if(isset($exam)&&in_array($key, $exam->tags_list))
@@ -61,12 +62,13 @@
 
                             <div class="form-group col-md-4">
                                 <label for="inputTotQuant">Total de questões<span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]" placeholder="10"
-                                value="{{$exam->number_of_questions??old('exam.number_of_questions')}}">
+                                <input type="number" class="form-control" id="inputTotQuant" name="exam[number_of_questions]"
+                                value="{{$exam->number_of_questions??old('exam.number_of_questions')}}" required>
                             </div>
                             <div class="form-group col-md-4">
                                 <label for="inputCategory">Categoria<span class="text-danger">*</span></label>
-                                <select id="inputCategory" class="form-control" name="exam[category_id]">
+                                <select id="inputCategory" class="form-control" name="exam[category_id]" required>
+                                    <option></option>
                                     @foreach ($categories as $category)
                                         <option value="{{$category->id}}"
                                             @if(old('exam.category_id')==$category->id||
@@ -78,7 +80,7 @@
                             <div class="form-group col-md-4">
                                 <label for="inputData">Data da prova<span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" id="inputData" name="exam[date]" placeholder="xx/xx/xxxx"
-                                value="{{isset($exam->date)?$exam->exam_date:old('exam.date')}}">
+                                value="{{isset($exam->date)?$exam->exam_date:old('exam.date')}}" required>
                             </div>
                         </div>
 
@@ -90,12 +92,12 @@
                                         <div class="form-group col-md-3">
                                             <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
                                             <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[{{$key}}][number_of_questions]"
-                                            value="{{ $attribute->number_of_questions}}">
+                                            value="{{ $attribute->number_of_questions}}" required>
                                         </div>
 
                                         <div class="form-group col-md-3">
                                             <label for="inputState_0">Nível <span class="text-danger">*</span></label>
-                                            <select id="inputState_0" class="form-control" name="exam_attributes[{{$key}}][level_id]">
+                                            <select id="inputState_0" class="form-control" name="exam_attributes[{{$key}}][level_id]" required>
                                                 @foreach ($levels as $level)
                                                 <option value="{{$level->id}}"
                                                     @if(old('exam_attributes.0.level_id')==$level->id || $attribute->level_id==$level->id) selected @endif

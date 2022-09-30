@@ -15,9 +15,21 @@ class LevelSeeder extends Seeder
     public function run()
     {
         DB::table('levels')->insert([
-            ['name' => 'Fácil'],
-            ['name' => 'Médio'],
-            ['name' => 'Difícil'],
+            [
+                'name' => 'Fácil',
+                'created_at'=> now(),
+                'updated_at'=> now()
+            ],
+            [
+                'name' => 'Médio',
+                'created_at'=> now(),
+                'updated_at'=> now()
+            ],
+            [
+                'name' => 'Difícil',
+                'created_at'=> now(),
+                'updated_at'=> now()
+            ],
         ]);
     }
 }

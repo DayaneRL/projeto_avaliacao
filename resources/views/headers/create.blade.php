@@ -57,18 +57,23 @@
                                 <div class="col-md-12 p-0">
                                 @if(isset($header)&&isset($header->logo))
                                     <input type="file" class="form-control-file d-none" id="upload_image" name="header[logo]" />
-                                    <img src={{asset('storage/'.$header->logo)}} class="rounded img-preview" alt={{$header->description}}/>
-                                    <button type="button" class="btn btn-info" id="add_img"><i class="fas fa-pen"></i></button>
+                                    {{-- <img src={{asset('storage/'.$header->logo)}} class="rounded img-preview" alt={{$header->description}}/> --}}
+                                    <button type="button" class="btn btn-info" id="add_img"><i class="fas fa-pen"></i> Editar</button>
                                 @else
                                     <input type="file" class="form-control-file d-none" id="upload_image" name="header[logo]" />
-                                    <img src={{asset('img/default.jpg')}} class="rounded img-preview" alt="Imagem default"/>
-                                    <button type="button" class="btn btn-info" id="add_img"><i class="fas fa-plus"></i> </button>
+                                    {{-- <img src={{asset('img/default.jpg')}} class="rounded img-preview" alt="Imagem default"/> --}}
+                                    <button type="button" class="btn btn-info" id="add_img"><i class="fas fa-plus"></i> Adicionar</button>
                                 @endif
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <div id="image_demo" class="d-none"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                        <button type="button" class="btn btn-primary" id="send_header">Cadastrar</button>
                         <a href="{{route('headers.index')}}" class="btn btn-light border">Cancelar</a>
                     </form>
                 </div>
@@ -78,7 +83,7 @@
     </div>
 
     <!-- beggin upload modal -->
-    <div id="uploadimageModal" class="modal modal-lg" role="dialog">
+    {{-- <div id="uploadimageModal" class="modal modal-lg" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -89,12 +94,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-9 text-center">
-                            <div id="image_demo" style="width:650px; height: 450px; margin-top:0px"></div>
-                        </div>
-                        <div class="col-md-3" style="padding-top:0px;">
-                            <p>Prévia</p>
-                            <img class="img-responsive" id="prev-img" src="" alt="Preview" />
+                        <div class="col-md-12 text-center">
+                            <div id="image_demo"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -105,7 +106,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!-- end modal -->
 
 @endsection

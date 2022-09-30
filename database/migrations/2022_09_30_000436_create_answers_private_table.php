@@ -3,10 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
-use App\Models\Role;
+use App\Models\{Answer,User,ExamQuestion};
 
-class CreateUserRolesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +14,15 @@ class CreateUserRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_roles', function (Blueprint $table) {
+        Schema::create('answers_private', function (Blueprint $table) {
             $table->id();
+            $table->string('description');
+            $table->string('alternative', 2); // a, b, c or d
+            $table->tinyInteger('valid')->nullable(); //0 or 1
+            $table->foreignIdFor(Answer::class);
             $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Role::class);
+            $table->foreignIdFor(ExamQuestion::class);
+
             $table->timestamps();
         });
     }
@@ -30,6 +34,6 @@ class CreateUserRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('answers_private');
     }
-}
+};

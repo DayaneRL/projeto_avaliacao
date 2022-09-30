@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Category;
+use App\Models\{Category,User};
 
 class CreateExamsTable extends Migration
 {
@@ -21,6 +21,7 @@ class CreateExamsTable extends Migration
             $table->string('number_of_questions');
             $table->date('date')->nullable();
             $table->foreignIdFor(Category::class);
+            $table->foreignIdFor(User::class);
             $table->timestamps();
             $table->softDeletes();
         });
