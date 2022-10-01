@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\{Auth, DB};
-use App\Models\{Exam, Question, ExamAttribute, Reply};
+use App\Models\{Exam, Question, ExamAttribute, Reply, User};
 
 class ExamService
 {
@@ -20,7 +20,8 @@ class ExamService
                 $request['exam'],
                 [
                     'tags'=>$tags,
-                    'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]")
+                    'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
+                    'user_id'=>Auth::user()->id
                 ]
             )
         );
@@ -61,7 +62,8 @@ class ExamService
             array_merge(
                 $request['exam'],
                 ['tags'=>$tags,
-                 'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]")]
+                 'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
+                ]
             )
         );
 
@@ -73,6 +75,38 @@ class ExamService
         }
 
         return $exam;
+    }
+
+    public static function deadlines(User $user): array
+    {
+        $exams = Exam::where('user_id','=',Auth::user()->id);
+        $total = $exams->count();
+
+        if($total==0){
+            return [
+                'yet_to_come'=>[0,0],
+                'this_week'=>[0,0],
+                'passed'=>[0,0]
+            ];
+        }
+
+        $SundayLastWeek = date('Y-m-d', strtotime("sunday -1 week"));
+        $SundayNextWeek = date('Y-m-d', strtotime("sunday 0 week"));
+
+        $exams_passed = $exams->where('date','<', date('Y-m-d'))->count();
+        $exams_this_week = $exams->where('date','>', $SundayLastWeek)->where('date','<',$SundayNextWeek)->count();
+        $exams_yet_to_come = $exams->where('date','>', $SundayNextWeek)->count();
+
+        return [
+            'yet_to_come'=>[$exams_yet_to_come,round(self::descobrir_porcentagem($total, $exams_yet_to_come))],
+            'this_week'=>[$exams_this_week,round(self::descobrir_porcentagem($total, $exams_this_week))],
+            'passed'=>[$exams_passed,round(self::descobrir_porcentagem($total, $exams_passed))],
+        ];
+    }
+
+    private static function descobrir_porcentagem(float $valor_base, float $valor): float
+    {
+         return $valor / $valor_base * 100;
     }
 
     public static function deleteExam(Exam $exam): void

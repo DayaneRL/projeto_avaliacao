@@ -12,13 +12,14 @@ use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class ExamController extends Controller
 {
 
     public function index():View
     {
-        $exams = Exam::all();
+        $exams = Exam::where('user_id','=',Auth::user()->id)->get();
         return view('exams.index', compact('exams'));
     }
 
@@ -59,12 +60,11 @@ class ExamController extends Controller
         }
 
 
-        $replys = Reply::whereIn('question_id', $questions_ids)->get();
+        // $replys = Reply::whereIn('question_id', $questions_ids)->get();
 
         return view('exams.store', compact('request', 'questions','replys', 'questions_ids'));
 
     }
-
 
 
     public function show($id)

@@ -39,7 +39,7 @@
             @if(Auth::user()->admin)
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('users.index')}}">
-                        <i class="fas fa-fw fa-folder"></i>
+                        <i class="fas fa-fw fa-user"></i>
                         <span>Usuários</span></a>
                 </li>
             @else
