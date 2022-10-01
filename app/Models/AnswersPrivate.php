@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AnswerPrivate extends Model
 {
+    protected $table = 'answers_private';
     protected $fillable = [
         'answer_id',
         'exam_question_id',

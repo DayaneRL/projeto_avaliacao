@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Models\{Category,Exam, QuestionsPrivate, UserHeader};
 
 class DashboardController extends Controller
 {
@@ -15,7 +15,19 @@ class DashboardController extends Controller
     public function index()
     {
         $categories = Category::all();
-        return view('dashboard.index', compact('categories'));
+        $firstdayOfTheWeek = date('l - d/m/Y', strtotime("sunday -1 week"));
+        $examsCount = Exam::all()->count();
+        $questionsCount = QuestionsPrivate::all()->count();
+        $headersCount = UserHeader::all()->count();
+        return view('dashboard.index',
+                compact(
+                    'categories',
+                    'firstdayOfTheWeek',
+                    'examsCount',
+                    'questionsCount',
+                    'headersCount'
+                )
+        );
     }
 
     /**

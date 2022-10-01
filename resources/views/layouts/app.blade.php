@@ -46,7 +46,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('exams.index')}}">
                         <i class="fas fa-fw fa-folder"></i>
-                        <span>Provas</span></a>
+                        <span>Avaliações</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('headers.index')}}">
