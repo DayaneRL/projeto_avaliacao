@@ -19,12 +19,6 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <a href="{{route('users.edit',$user->id)}}" class="btn btn-info btn-icon-split">
-                        <span class="icon">
-                            <i class="fas fa-pen"></i>
-                        </span>
-                        <span class="text">Editar</span>
-                    </a>
                 </div>
             </div>
 

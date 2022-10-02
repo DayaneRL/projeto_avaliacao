@@ -63,6 +63,11 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
+        $route = $request->path();
+        if(stripos($route, 'users')===0){
+            return redirect()->route('profile');
+        }
+
         $user = Auth::user();
         return view('users.show', compact('user'));
     }

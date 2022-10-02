@@ -38,7 +38,7 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 
-    Route::post('/profile', [UserController::class,'show'])->name('profile');
+    Route::get('/profile', [UserController::class,'show'])->name('profile');
 
     Route::group(['middleware' => 'admin:false'], function() {
         Route::resource('/exams', ExamController::class);
