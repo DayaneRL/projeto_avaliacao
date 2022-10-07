@@ -12,7 +12,7 @@ class HeaderService
 {
     public static function storeHeader(HeaderRequest $request, User $user): UserHeader
     {
-        $imageName =  Self::storeImage($request);
+        $imageName =  Self::saveImageAjax($request);
         $header = UserHeader::create(
             array_merge(
                 $request->input('header'),
@@ -25,8 +25,8 @@ class HeaderService
 
     public static function updateHeader(HeaderRequest $request, UserHeader $header): UserHeader
     {
-        $imageName =  Self::storeImage($request, $header);
-        //substituir $imageName por $header->logo
+        $imageName =  Self::saveImageAjax($request, $header);
+
         $header->update(
             array_merge(
                 $request->input('header'),
@@ -53,6 +53,25 @@ class HeaderService
             return 'headers/' . $fileName;
         }else{
             return null;
+        }
+    }
+
+    private static function saveImageAjax(HeaderRequest $request, UserHeader $header = null): string
+    {
+        if($request['header']['logo']){
+            if(!is_null($header) && $header->logo) {
+                $filePath = $header->getRawOriginal('logo');
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+            }
+
+            $image_array_1 = explode(";", $request['header']['logo']);
+            $image_array_2 = explode(",", $image_array_1[1]);
+            $data = base64_decode($image_array_2[1]);
+            $fileName = uniqid(date('HisYmd')) . ".png";
+            file_put_contents( 'storage/headers/'.$fileName, $data);
+            return 'headers/' . $fileName;
         }
     }
 

@@ -79,7 +79,7 @@ class ExamService
 
     public static function deadlines(User $user): array
     {
-        $exams = Exam::where('user_id','=',Auth::user()->id);
+        $exams = Exam::where('user_id','=',Auth::user()->id)->get();
         $total = $exams->count();
 
         if($total==0){
@@ -90,12 +90,12 @@ class ExamService
             ];
         }
 
-        $SundayLastWeek = date('Y-m-d', strtotime("sunday -1 week"));
-        $SundayNextWeek = date('Y-m-d', strtotime("sunday 0 week"));
+        $lastSundary = date('Y-m-d', strtotime("sunday -1 week"));
+        $nexSunday   = date('Y-m-d', strtotime("sunday 0 week"));
 
         $exams_passed = $exams->where('date','<', date('Y-m-d'))->count();
-        $exams_this_week = $exams->where('date','>', $SundayLastWeek)->where('date','<',$SundayNextWeek)->count();
-        $exams_yet_to_come = $exams->where('date','>', $SundayNextWeek)->count();
+        $exams_this_week = $exams->where('date','>', $lastSundary)->where('date','<',$nexSunday)->count();
+        $exams_yet_to_come = $exams->where('date','>', $nexSunday)->count();
 
         return [
             'yet_to_come'=>[$exams_yet_to_come,round(self::descobrir_porcentagem($total, $exams_yet_to_come))],

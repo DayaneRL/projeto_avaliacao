@@ -48,13 +48,20 @@ class HeaderController extends Controller
                 $request,
                 Auth::user()
             );
-
             DB::commit();
-            return redirect()->route('headers.index')->with('success', "Cabeçalho cadastrado com sucesso" );
+
+            session(['success' => 'Cabeçalho cadastrado com sucesso']);
+            return response()->json([
+                'msg'  => "Cabeçalho cadastrado com sucesso"
+            ], 200);
+            // return redirect()->route('headers.index')->with('success', "Cabeçalho cadastrado com sucesso" );
 
         }catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+            return response()->json([
+                'msg'  => 'Algo deu errado.'
+            ], 500);
+            // return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }
     }
 
@@ -94,17 +101,24 @@ class HeaderController extends Controller
             DB::beginTransaction();
             $header = UserHeader::findOrFail($id);
             $request->validated();
+
             $update = HeaderService::updateHeader(
                 $request,
                 $header
             );
 
             DB::commit();
-            return redirect()->route('headers.index')->with('success', "Cabeçalho atualizado com sucesso" );
-
+            // return redirect()->route('headers.index')->with('success', "Cabeçalho atualizado com sucesso" );
+            session(['success' => 'Cabeçalho atualizado com sucesso']);
+            return response()->json([
+                'msg'  => "Cabeçalho atualizado com sucesso"
+            ], 200);
         }catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+            // return back()->withInput($request->input())->with('warning', "Algo deu errado" );
+            return response()->json([
+                'msg'  => 'Algo deu errado.'
+            ], 500);
         }
     }
 

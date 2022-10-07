@@ -56,19 +56,18 @@
                                 <label for="upload_image">Imagem de logo</label>
                                 <div class="col-md-12 p-0">
                                 @if(isset($header)&&isset($header->logo))
+                                    <input type="hidden" id="logo" value="{{asset('storage/'.$header->logo)}}"/>
                                     <input type="file" class="form-control-file d-none" id="upload_image" name="header[logo]" />
-                                    {{-- <img src={{asset('storage/'.$header->logo)}} class="rounded img-preview" alt={{$header->description}}/> --}}
                                     <button type="button" class="btn btn-info" id="add_img"><i class="fas fa-pen"></i> Editar</button>
                                 @else
                                     <input type="file" class="form-control-file d-none" id="upload_image" name="header[logo]" />
-                                    {{-- <img src={{asset('img/default.jpg')}} class="rounded img-preview" alt="Imagem default"/> --}}
                                     <button type="button" class="btn btn-info" id="add_img"><i class="fas fa-plus"></i> Adicionar</button>
                                 @endif
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <div id="image_demo" class="d-none"></div>
+                                    <div id="image_demo" class="d-none"> </div>
                                 </div>
                             </div>
                         </div>
@@ -81,33 +80,6 @@
             </div>
         </div>
     </div>
-
-    <!-- beggin upload modal -->
-    {{-- <div id="uploadimageModal" class="modal modal-lg" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ajustar Imagem</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <div id="image_demo"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 ">
-                            <button class="btn btn-success crop_image">Enviar Imagem</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-    <!-- end modal -->
 
 @endsection
 
