@@ -46,6 +46,7 @@ function loadCroppie(){
             height: 250
         },
         enableResize: true,
+        mouseWheelZoombool: false
     });
 }
 
@@ -86,8 +87,8 @@ $(document).on('click', '#send_header', function(){
                 }
             },
             success: function (response) {
-                // window.location.replace('/headers');
-                console.log(response);
+                window.location.replace('/headers');
+                // console.log(response);
             },
             error: function (error) {
                 console.log(error);

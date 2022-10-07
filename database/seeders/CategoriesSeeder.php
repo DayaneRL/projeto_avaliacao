@@ -31,6 +31,11 @@ class CategoriesSeeder extends Seeder
                     'name'      => 'Inglês',
                     'created_at'=> now(),
                     'updated_at'=> now()
+                ],
+                [
+                    'name'      => 'História',
+                    'created_at'=> now(),
+                    'updated_at'=> now()
                 ]
             ]
     );

@@ -3,7 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Level;
+use App\Models\{Question, Tag};
+
 return new class extends Migration
 {
     /**
@@ -13,11 +14,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('question_tags', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
-            $table->string('image');
-            $table->foreignIdFor(Level::class);
+            $table->foreignIdFor(Question::class);
+            $table->foreignIdFor(Tag::class);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('question_tags');
     }
 };
