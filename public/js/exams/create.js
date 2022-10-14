@@ -1,6 +1,14 @@
 $(document).ready(function() {
-    $('.js-example-basic-multiple').select2();
+    $('.js-select2').select2({
+        "language": {
+            "noResults": function(){
+                return "Não encontrou resultados";
+            }
+        },
+    });
+
     $('#inputData').mask('99/99/9999');
+    tagOptions = $('#tags').find('option');
 });
 
 var totalQuestions = $('#inputTotQuant').val()==''? 0 : parseInt($('#inputTotQuant').val());
@@ -142,3 +150,22 @@ function checkTotField(){
         $('#inputTotQuant').parents('.form-group').find('span.obg').remove();
     }
 }
+
+
+$(document).on('change','#inputCategory', function(){
+    let filtered = [];
+    $(tagOptions).each( function(i,e) {
+        if($(e).val().split('-')[1] == $('#inputCategory').val()){
+            filtered.push({
+               value: $(e).val().split('-')[1],
+               label: $(e).text()
+            });
+        }
+    });
+    $('#tags').find('option').remove();
+    $(filtered).each( function(i, e){
+        $('#tags').append(`<option value="${e.value}">${e.label}</option>`);
+    });
+    console.log(filtered);
+    //each filter substituir options
+});

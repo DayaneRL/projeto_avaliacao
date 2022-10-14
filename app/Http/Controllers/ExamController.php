@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level, Reply};
+use App\Models\{Exam, Question, Category, Level, Tag};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -23,12 +23,13 @@ class ExamController extends Controller
         return view('exams.index', compact('exams'));
     }
 
-    public function create(): View
+    public function create()
     {
+        //View
         $categories = Category::all();
         $levels = Level::all();
-        $tagsExemple = ['primeira_guerra'=>'Primeira Guerra', 'guerra_fria'=>'Guerra Fria','baskara'=>'Baskara'];
-        return view('exams.create', compact('categories', 'levels','tagsExemple'));
+        $tags = Tag::all();
+        return view('exams.create', compact('categories', 'levels','tags'));
     }
 
     public function store(ExamRequest $request)

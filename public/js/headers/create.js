@@ -1,10 +1,12 @@
 $(document).ready(function () {
 
-    var url = '';
     loadCroppie();
 
     if($('#logo').length){
-        $('.cr-image').attr('src',$('#logo').val());
+        $image_crop.croppie('bind', {
+            url: $('#logo').val(),
+            zoom: 0
+        });
         $('#image_demo').removeClass('d-none');
     }
 
@@ -63,7 +65,6 @@ $(document).on('click','#rm_img', function(){
 })
 
 $(document).on('click', '#send_header', function(){
-
     $image_crop.croppie('result', {
         type: 'canvas',
         size: 'viewport'
@@ -88,7 +89,6 @@ $(document).on('click', '#send_header', function(){
             },
             success: function (response) {
                 window.location.replace('/headers');
-                // console.log(response);
             },
             error: function (error) {
                 console.log(error);

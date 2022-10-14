@@ -12,7 +12,9 @@ class ExamService
 
     public static function storeExam(array $request): Exam
     {
-        $tags = count($request['exam']['tags']) > 1 ? implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0];
+        $tags = count($request['exam']['tags']) > 1 ?
+                implode(', ', $request['exam']['tags']) :
+                $request['exam']['tags'][0];
         $dt_exam = explode('/', $request['exam']['date']);
 
         $exam = Exam::create(

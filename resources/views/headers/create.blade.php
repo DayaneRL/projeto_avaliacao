@@ -72,7 +72,7 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-primary" id="send_header">Cadastrar</button>
+                        <button type="button" class="btn btn-primary" id="send_header">{{isset($header)?'Salvar':'Cadastrar'}}</button>
                         <a href="{{route('headers.index')}}" class="btn btn-light border">Cancelar</a>
                     </form>
                 </div>
