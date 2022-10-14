@@ -69,13 +69,14 @@
 </head>
 <body>
     <div class="header">
-        {{-- <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg"> --}}
-        <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg">
+        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
+        {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
         <p class="titleTest">
-            {{$request['name']}}
+
+            {{$exam['title']}}
         </p>
     </div>
     <div class="testInfo">
@@ -85,19 +86,21 @@
     </div>
         @php
             $questionNumber = 1;
+
         @endphp
+
         @foreach ($questions as $question)
 
             <p class="questionNumber">Questão {{$questionNumber++}}</p>
-            @if ($question->img)
-                <img src="{{ $question->img}} " class="questionImg">
+            @if ($question->image)
+                <img src="{{ $question->image}} " class="questionImg">
             @endif
-            <p class="questionText">{{$question->text}}</p>
+            <p class="questionText">{{$question->description}}</p>
             @foreach ($replys as $reply)
                 @if($reply->question_id == $question->id)
                     <li class="answers">
                         <span class="alternative">{{$reply->alternative}})</span>
-                        {{$reply->text}}
+                        {{$reply->description}}
                     </li>
                 @endif
 

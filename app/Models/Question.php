@@ -12,4 +12,9 @@ class Question extends Model
         'image'
     ];
 
+    public function Exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
+
 }
