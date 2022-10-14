@@ -7,6 +7,7 @@
     <title>Prova</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
+
         @font-face {
             font-family: 'Open Sans', sans-serif;
             font-style: normal;
@@ -66,13 +67,13 @@
 </head>
 <body>
     <div class="header">
-        {{-- <img src="https://www.w3schools.com/howto/img_nature_wide.jpg" class="headerImg"> --}}
-        <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg">
+        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
+        {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
         <p class="titleTest">
-            Gabarito da prova: {{$request['name']}}
+            Gabarito da prova: {{$exam['title']}}
         </p>
     </div>
     <div class="testInfo">

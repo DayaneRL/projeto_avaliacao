@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Question,Reply,Exam};
+use App\Models\{Question,Answer,Exam};
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class DownloadController extends Controller
 {
     public function downloadExam(){
-        // trying to get the request with ajax
-        $request= request()->all();
+        $exam= request()->all();
 
         $questions = Question::all();
         $questions_ids= [];
@@ -19,14 +19,14 @@ class DownloadController extends Controller
             $questions_ids[]+=$question['id'];
         }
 
-        $replys = Reply::whereIn('question_id', $questions_ids)->get();
+        $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/test', compact('request','questions','replys'));
-        return $pdf->download($request['name'].'.pdf');
+        $pdf = Pdf::loadView('exams/pdf/test', compact('exam','questions','replys'));
+        return $pdf->download($exam['title'].'.pdf');
     }
     public function downloadAnswers(){
-        $request= request()->all();
+        $exam= request()->all();
 
         $questions = Question::all();
         $questions_ids= [];
@@ -35,21 +35,17 @@ class DownloadController extends Controller
             $questions_ids[]+=$question['id'];
         }
 
-        $replys = Reply::whereIn('question_id', $questions_ids)->where('valid',1)->get();
+        $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/answers', compact('request','questions','replys','questions_ids'));
-        return $pdf->download('gabarito:'.$request['name'].'.pdf');
+        $pdf = Pdf::loadView('exams/pdf/answers', compact('exam','questions','replys','questions_ids'));
+        return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
     public function saveExam(){
-        $request= request()->all();
-        var_dump($request);
-        //here i have the name of the test and the questions ids. there's nothing about questions
-        //edited yet
-        //i need to get the test id after saving it, so i can pass it to the load and download functions
-
-
-        if($request->testId){
+        // a dayane já fez essa parte no ExamController store, vou tentar chamar o dela
+        // mas esse estava funcionando também
+        $examInfo= request()->all();
+        if(isset($examInfo['testId'])){
             $exam = Exam::find($request->testId);
             $exam->updated_at = now();
         }else{
@@ -57,24 +53,51 @@ class DownloadController extends Controller
             $exam->created_at = now();
         }
 
-        $exam->title = $request->name;
-        $exam->number_of_questions = $request->number_of_questions;
-        $exam->date = $request->date;
+        $exam->title = $examInfo['title'];
+        $exam->number_of_questions = $examInfo['number_of_questions'];
+        $exam->category_id = $examInfo['category_id'];
+        $exam->user_id = Auth::user()->id;
+        $exam->date = now();
+        $exam->created_at = now();
+        $exam->updated_at = now();
+        $exam->tags= 'teste';
 
-
-
-        $post->save();
+        $exam->save();
         // after saving the id is saved here, return the id and pass it to js
-        $post->id;
-        return true;
+
+        $exam->id;
+        return $exam->id;
     }
     public function loadTest(){
+        $exam= request()->all();
 
+        $questions = Question::all();
+        $questions_ids= [];
 
-        $returnHTML = view('exams/pdf/teste')->compact('request','questions','replys')->render();
+        foreach($questions as $question){
+            $questions_ids[]+=$question['id'];
+        }
+
+        $replys = Answer::whereIn('question_id', $questions_ids)->get();
+
+        $returnHTML = view('exams/pdf/test', compact('exam','questions','replys'))->render();
+
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
     public function loadAnswers(){
+        //i am not saving the exam questions rn, the answers are kinda broken
+        $exam= request()->all();
 
+        $questions = Question::all();
+        $questions_ids= [];
+
+        foreach($questions as $question){
+            $questions_ids[]+=$question['id'];
+        }
+
+        $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
+
+        $returnHTML = view('exams/pdf/answers',compact('exam','questions','replys','questions_ids'))->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 }

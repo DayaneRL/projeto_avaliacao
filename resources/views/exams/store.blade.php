@@ -13,7 +13,7 @@
             border: 0;
             font-size: 100%;
             font: inherit;
-            vertical-align: baseline;
+            vertil-align: baseline;
         }
     </style>
 @endsection
@@ -39,13 +39,16 @@
                         <div class="card-body text-dark" id="pdfViewer">
 
                             {{-- include exam --}}
-                            @include('exams.pdf.test');
+                            @include('exams.pdf.test')
+
 
                         </div>
 
                     </div>
                 </div>
             </div>
+
+            <input type="hidden" value="{{json_encode($exam['tags'])}}" id="tags">
         </div>
     </div>
 
@@ -71,6 +74,7 @@
                 downloadTest();
                 return;
             }else{
+                loadTest();
                 if(testSaved){
                     btnTest.innerHTML='<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
                 }
@@ -91,6 +95,7 @@
 
             if(visualizingTest){
                 btnAnswers.disabled=true;
+                loadAnswers();
 
                 if(testSaved){
                     btnAnswers.innerHTML='<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
@@ -117,24 +122,29 @@
                 btnAnswers.disabled=false;
                 btnAnswers.innerHTML='<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
             }
+
             //function to save the test
             $.ajax({
-                url: "save_exam",
+                url: window.location.origin+'/exams',
                 type: 'POST',
                 data:
                     {
                         _token: "{{ csrf_token() }}",
-                        name: "{{$request->name}}",
-                        number_of_questions: "{{$request->number_of_questions}}",
-                        date: "{{$request->date}}",
-                        questions: "{{json_encode($questions_ids)}}"
+                        exam: {
+                            title: "{{$exam['title']}}",
+                            number_of_questions: "{{$exam['number_of_questions']}}",
+                            category_id: "{{$exam['category_id']}}",
+                            tags: JSON.parse(document.getElementById('tags').value),
+                            date: "{{$exam['date']}}",
+                            questions: "{{json_encode($questions_ids)}}"
+                        }
                     },
                 success: function(response){
                     // handle this success and error
                     console.log(response);
                 },
                 error: function(response){
-                    console.log(response);
+                    //console.log(response);
                 }
             });
         }
@@ -143,7 +153,7 @@
             $.ajax({
                 url: "download_exam",
                 type: 'POST',
-                data: { _token: "{{ csrf_token() }}", name: "{{$request->name}}", },
+                data: { _token: "{{ csrf_token() }}", title: "{{$exam['title']}}", },
                 xhrFields: {
                     responseType: 'blob'
                 },
@@ -151,7 +161,7 @@
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "{{$request->name . '.pdf'}}";
+                    link.download = "{{$exam['title'] . '.pdf'}}";
                     link.click();
                 },
                 error: function(blob){
@@ -164,7 +174,7 @@
             $.ajax({
                 url: "download_answers",
                 type: 'POST',
-                data: { _token: "{{ csrf_token() }}", name: "{{$request->name}}", },
+                data: { _token: "{{ csrf_token() }}", title: "{{$exam['title']}}", },
                 xhrFields: {
                     responseType: 'blob'
                 },
@@ -172,7 +182,7 @@
                     var blob = new Blob([response]);
                     var link = document.createElement('a');
                     link.href = window.URL.createObjectURL(blob);
-                    link.download = "{{'Gabarito da '.$request->name . '.pdf'}}";
+                    link.download = "{{'Gabarito da '.$exam['title'] . '.pdf'}}";
                     link.click();
                 },
                 error: function(blob){
@@ -181,9 +191,34 @@
             });
         }
         function loadTest(){
-
+            $.ajax({
+                url: "load_test",
+                type: 'POST',
+                data: { _token: "{{ csrf_token() }}", title: "{{$exam['title']}}", },
+                success: function(response){
+                    if(response['success']){
+                        document.getElementById('pdfViewer').innerHTML=response['html'];
+                    }
+                },
+                error: function(response){
+                    console.log('loadTest error');
+                }
+            });
         }
         function loadAnswers(){
+            $.ajax({
+                url: "load_answers",
+                type: 'POST',
+                data: { _token: "{{ csrf_token() }}", title: "{{$exam['title']}}", },
+                success: function(response){
+                    if(response['success']){
+                        document.getElementById('pdfViewer').innerHTML=response['html'];
+                    }
+                },
+                error: function(blob){
+                    console.log('loadanswer error')
+                }
+            });
 
         }
     </script>

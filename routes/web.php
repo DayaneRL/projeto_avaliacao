@@ -31,16 +31,21 @@ Route::group([ 'middleware'=>'guest'], function(){
 
 Route::group(['middleware'=>'auth'], function(){
 
-    Route::resource('/dashboard', DashboardController::class);
-    Route::post('/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
-    Route::post('/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');
-    Route::post('/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
 
-    Route::post('logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
+    Route::post('/exams/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
+    Route::post('/exams/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
+    Route::post('/exams/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');
+    Route::post('/exams/load_test', [DownloadController::class , 'loadTest'])->name('loadTest.exam');
+    Route::post('/exams/load_answers', [DownloadController::class , 'loadAnswers'])->name('loadAnswers.exam');
+
+    Route::post('/logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 
     Route::post('/profile', [UserController::class,'show'])->name('profile');
 
+    Route::resource('/dashboard', DashboardController::class);
+
     Route::group(['middleware' => 'admin:false'], function() {
+        Route::post('/exams/view',[ExamController::class, 'preview'])->name('exams.preview');
         Route::resource('/exams', ExamController::class);
         Route::get('/findExam/{id}', [ExamController::class,'find']);
         Route::resource('/headers', HeaderController::class);

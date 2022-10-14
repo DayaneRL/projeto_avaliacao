@@ -12,6 +12,7 @@ class ExamService
 
     public static function storeExam(array $request): Exam
     {
+        return var_dump($request['exam']);
         $tags = count($request['exam']['tags']) > 1 ? implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0];
         $dt_exam = explode('/', $request['exam']['date']);
 

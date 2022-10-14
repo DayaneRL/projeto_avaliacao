@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level, Reply};
+use App\Models\{Exam, Question, Category, Level, Answer};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -33,6 +33,9 @@ class ExamController extends Controller
     public function store(ExamRequest $request)
     {
         try{
+
+            return $request;
+
             DB::beginTransaction();
 
             $exam = ExamService::storeExam(
@@ -45,23 +48,27 @@ class ExamController extends Controller
         }catch (\Throwable $e) {
             return $e->getMessage();
             DB::rollBack();
-            return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
+            return back()->withInput($request->input())->with('warning', "Algo deu errado" );
         }
     }
 
     public function preview(ExamRequest $request)
     {
+        $request->validated();
         $request->all();
+        // return $request->name;
+        $exam=$request['exam'];
         $questions = Question::all();
         $questions_ids= [];
+
+        // return var_dump($exam);
+
         foreach($questions as $question){
             $questions_ids[]+=$question['id'];
         }
+        $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
-
-        $replys = Reply::whereIn('question_id', $questions_ids)->get();
-
-        return view('exams.store', compact('request', 'questions','replys', 'questions_ids'));
+        return view('exams.store', compact('exam', 'questions','replys', 'questions_ids'));
 
     }
 
