@@ -31,7 +31,6 @@ Route::group([ 'middleware'=>'guest'], function(){
 
 Route::group(['middleware'=>'auth'], function(){
 
-
     Route::post('/exams/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
     Route::post('/exams/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
     Route::post('/exams/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');

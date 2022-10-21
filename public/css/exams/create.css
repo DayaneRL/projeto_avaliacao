@@ -1,0 +1,36 @@
+.select2-selection{
+    border: 1px solid #d1d3e2 !important;
+}
+.select2-container--default.select2-container--focus .select2-selection--multiple{
+    color:#6e707e;
+    background-color:#fff;
+    border-color:#bac8f3;
+    outline:0;
+    box-shadow:0 0 0 .2rem rgba(78,115,223,.25)
+}
+
+.select2-container .select2-selection--single{
+    padding: 4px !important;
+    height: 37px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow{
+    top: 5px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #6e707e;
+}
+
+
+.exam-attributes{
+    /* border: 1px solid #ddd; */
+    /* border-radius: 5px; */
+    /* padding: 5px 20px; */
+    margin-bottom: 5px;
+}
+
+.trumbowyg-box,
+.trumbowyg-editor {
+min-height: 150px;
+}

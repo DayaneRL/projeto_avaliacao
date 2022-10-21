@@ -16,8 +16,6 @@ var sum_questions = 0;
 
 $(document).on('click', '.add-row-exam', function(){
     checkFields();
-    // console.log(totalQuestions, sum_questions);
-    // console.log($('.exam-attributes').find('span').length);
 
     if(
         totalQuestions!='' &&
@@ -36,12 +34,12 @@ $(document).on('click', '.add-row-exam', function(){
                     <label for="inputQuant">Qtd. de questões</label>
                     <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[${quant_attributes}][number_of_questions]">
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-4">
                     <label for="inputState_${quant_attributes}">Nível</label>
                     <select id="inputState_${quant_attributes}" class="form-control level_select" name="exam_attributes[${quant_attributes}][level_id]">
                     </select>
                 </div>
-                <div class="form-group col-md-3 pt-3">
+                <div class="form-group col-md-5 pt-3">
                     <button type="button" class="btn btn-primary mt-3 btn-icon-split p-2 pr-3 pl-3 add-row-exam">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -98,8 +96,6 @@ function checkFields(){
             }
         }
     })
-
-    // console.log(totalQuestions, sum_questions, has_empty_field);
 
     if(sum_questions==0){
         $('.input-quant').addClass('is-invalid');
@@ -166,6 +162,25 @@ $(document).on('change','#inputCategory', function(){
     $(filtered).each( function(i, e){
         $('#tags').append(`<option value="${e.value}">${e.label}</option>`);
     });
-    console.log(filtered);
-    //each filter substituir options
 });
+
+
+$(document).on('click','#add_priv_question', function(){
+    checkFields();
+    if(
+        totalQuestions!='' &&
+        totalQuestions>1 &&
+        sum_questions != 0 &&
+        sum_questions<totalQuestions &&
+        has_empty_field==false
+    ){
+        let div =
+            `<div>Teste</div>`;
+        $(this).parent().prepend(div);
+    }else{
+        $('.exam-attributes').find('span').remove();
+        $('.exam-attributes').append('<span class="text-danger mb-2">Preencha corretamente as questões</span>');
+        $('#submit-exam').attr('disabled', true);
+        $('.add-row-exam').attr('disabled', true);
+    }
+})

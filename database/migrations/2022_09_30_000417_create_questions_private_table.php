@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('questions_private', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->text('description');
             $table->string('image');
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Question::class);

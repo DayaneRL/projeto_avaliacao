@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Visualizar Prova
+    Visualizar Avaliação
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
                 <div class="row no-gutters align-items-center mb-3">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            PROVA - {{$exam->title}}
+                            Avaliação - {{$exam->title}}
                         </div>
                     </div>
                     <div class="col-auto">
