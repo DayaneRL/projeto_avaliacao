@@ -46,6 +46,7 @@ Route::group(['middleware'=>'auth'], function(){
     Route::group(['middleware' => 'admin:false'], function() {
         Route::post('/exams/view',[ExamController::class, 'preview'])->name('exams.preview');
         Route::resource('/exams', ExamController::class);
+        Route::get('/examss/create', [ExamController::class,'create2']);
         Route::get('/findExam/{id}', [ExamController::class,'find']);
         Route::resource('/headers', HeaderController::class);
         Route::get('/findHeader/{id}', [HeaderController::class,'find']);

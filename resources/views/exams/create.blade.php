@@ -38,7 +38,7 @@
                                 <div class="row no-gutters align-items-center mb-3">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Dados
+                                            Dados Gerais
                                         </div>
                                     </div>
                                 </div>
@@ -88,11 +88,11 @@
                             </div>
                         </div>
 
-                        <div class="card border-left-secondary py-2 mb-4">
+                        <div class="card border-left-primary py-2 mb-4">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center mb-3">
                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             questões
                                         </div>
                                     </div>
@@ -106,7 +106,7 @@
                                     </div>
                                 </div>
 
-                                    <div class="exam-attributes">
+                                    <div class="exam-attributes mb-4">
                                         @if(isset($exam->Attributes))
                                             @foreach ($exam->Attributes as $key => $attribute)
                                                 <div class="form-row attribute">
@@ -136,10 +136,10 @@
                                                         </button>
                                                     </div>
                                                 </div>
-
                                             @endforeach
                                         @else
-                                            <div class="form-row attribute">
+
+                                            {{-- <div class="form-row border-left-info rounded attribute">
                                                 <div class="form-group col-md-3">
                                                     <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
                                                     <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[0][number_of_questions]"
@@ -150,61 +150,38 @@
                                                     <label for="inputState_0">Nível <span class="text-danger">*</span></label>
                                                     <select id="inputState_0" class="form-control" name="exam_attributes[0][level_id]">
                                                         @foreach ($levels as $level)
-                                                        <option value="{{$level->id}}"
-                                                            @if(old('exam_attributes.0.level_id')==$level->id) selected @endif>{{$level->name}}</option>
+                                                            <option value="{{$level->id}}"
+                                                                @if(old('exam_attributes.0.level_id')==$level->id) selected @endif
+                                                            >{{$level->name}}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-5 pt-3">
-                                                    <button type="button" class="btn btn-primary mt-3 btn-icon-split py-2 px-3 add-row-exam">
+                                                    <button type="button" class="btn btn-info mt-3 btn-icon-split py-2 px-3 add-row-exam">
                                                         <i class="fas fa-plus"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-danger mt-3 btn-icon-split py-2 px-3 rm-row-exam disabled" disabled="true">
+                                                    <button type="button" class="btn btn-info mt-3 btn-icon-split py-2 px-3 rm-row-exam disabled" disabled="true">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </div>
-                                                <button type="button" class="btn btn-primary m-2 add-row-exam">
-                                                    <i class="fas fa-plus"></i> Adicionar questão
-                                                </button>
-                                                <button type="button" class="btn btn-info m-2">
-                                                    <i class="fas fa-plus"></i> Adicionar questao personalizada
-                                                </button>
-                                            </div>
+
+                                            </div> --}}
                                         @endif
                                     </div>
-                            </div>
-                        </div>
+                                    <div class="row mb-2 private_questions">
 
-                        <div class="card border-left-info py-2 mb-4">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center mb-3">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Personalizar
-                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-row attribute">
-                                            <div class="form-group col-md-12">
-                                                <label>Descrição</label>
-                                                <textarea class="form-control" name="exam[0][private_questions][description]" id="editor">
-                                                </textarea>
-                                            </div>
-                                            <div class="form-group col-md-12">
-                                                <label>Imagem</label><br/>
-                                                <input type="file" name="exam[0][private_questions][image]">
-                                            </div>
-                                        </div>
-                                        <button type="button" class="btn btn-info" id="add_priv_question">
-                                            <i class="fas fa-plus"></i> Adicionar Pergunta Privada
+                                    <div class="form-row">
+                                        <button type="button" class="btn btn-info m-2 add-row-exam">
+                                            <i class="fas fa-plus"></i> Adicionar questões aleatórias
+                                        </button>
+                                        <button type="button" class="btn btn-secondary m-2" id="add_priv_question">
+                                            <i class="fas fa-plus"></i> Adicionar questao personalizada
                                         </button>
                                     </div>
-                                </div>
                             </div>
                         </div>
+
 
                         <div class="form-group mt-2">
                             <div class="form-check">

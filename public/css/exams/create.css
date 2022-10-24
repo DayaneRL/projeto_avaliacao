@@ -24,13 +24,18 @@
 
 
 .exam-attributes{
-    /* border: 1px solid #ddd; */
-    /* border-radius: 5px; */
-    /* padding: 5px 20px; */
     margin-bottom: 5px;
 }
 
 .trumbowyg-box,
 .trumbowyg-editor {
-min-height: 150px;
+    min-height: 100px;
+}
+
+.trumbowyg-editor p{
+    margin-bottom: 9px;
+}
+
+.custom-file-input ~ .custom-file-label::after {
+    content: "Buscar";
 }

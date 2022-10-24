@@ -31,6 +31,14 @@ class ExamController extends Controller
         $tags = Tag::all();
         return view('exams.create', compact('categories', 'levels','tags'));
     }
+    public function create2()
+    {
+        //View
+        $categories = Category::all();
+        $levels = Level::select('id','name')->get();
+        $tags = Tag::all();
+        return view('exams.create2', compact('categories', 'levels','tags'));
+    }
 
     public function store(ExamRequest $request)
     {
