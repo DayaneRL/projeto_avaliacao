@@ -27,7 +27,7 @@
                 <div class="col-12 text-center">
                     <h3>{{$exam->title}}</h3>
 
-                    <p><b>Tags:</b> {{$exam->tags}} </p>
+                    <p><b>Tags:</b> {{$exam->tags_list}} </p>
                     <p><b>Total de questões:</b> {{$exam->number_of_questions}} </p>
                     <p><b>Categoria:</b> {{$exam->Category->name}} </p>
                     <p><b>Data da prova:</b> {{$exam->exam_date}} </p>
@@ -35,7 +35,7 @@
                     <hr/>
                     @foreach ($exam->Attributes as $attribute)
                         <p><b>Qtd. de questões:</b> {{$attribute->number_of_questions}},
-                           <b>Nível:</b> {{$attribute->level_name}} </p>
+                           <b>Nível:</b> {{$attribute->Level->name}} </p>
                     @endforeach
                     <hr/>
 

@@ -96,7 +96,7 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary shadow" onclick="$('#preview-tab').click()">Gerar</button>
+        <button type="submit" class="btn btn-primary shadow" id="submit-exam" onclick="$('#preview-tab').click()">Gerar</button>
     </div>
 
 </div>

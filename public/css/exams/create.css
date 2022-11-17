@@ -39,3 +39,7 @@
 .custom-file-input ~ .custom-file-label::after {
     content: "Buscar";
 }
+
+.add_q_answer, .rm_q_answer{
+    margin-top: 1em;
+}

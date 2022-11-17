@@ -44,13 +44,12 @@ class ExamController extends Controller
     {
         try{
 
-            return $request;
-
             DB::beginTransaction();
 
             $exam = ExamService::storeExam(
                 $request->validated()
             );
+            // return $exam;
 
             DB::commit();
             return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
@@ -147,11 +146,12 @@ class ExamController extends Controller
                 'exam'      => $exam,
                 'category'  => $exam->Category,
                 'exam_date' => $exam->exam_date,
-                'levels'    => $exam->levels
+                'levels'    => $exam->levels,
+                'tags_list' => $exam->tags_list
             ], 200);
         }catch (\Exception $ex) {
             return response()->json([
-                'data'  => 'Algo deu errado.'
+                $ex->getMessage()
             ], 500);
         }
     }

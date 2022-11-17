@@ -14,22 +14,19 @@ $(document).ready(function() {
 
 var totalQuestions = $('#inputTotQuant').val()==''? 0 : parseInt($('#inputTotQuant').val());
 var sum_questions = 0;
+var sum_priv_questions = 0;
 var has_empty_field = false;
 
 //beggin - exam-attributes
 $(document).on('click', '.add-row-exam', function(){
 
     let quant_attributes = $('.attribute').length;
-    if(quant_attributes>0){
-        checkFields();
-    }
-
+    checkFields();
+    //ver pq nao ta entrando quando só tem 1 questao
     if(
-        totalQuestions!='' &&
-        totalQuestions>1 &&
-        // sum_questions != 0 &&
-        sum_questions<totalQuestions &&
-        ((quant_attributes==0||quant_attributes>0)&&has_empty_field==false)
+        totalQuestions>0 &&
+        (quant_attributes>=0&&has_empty_field==false)&&
+        (sum_questions+sum_priv_questions)<totalQuestions
     ){
         $('.exam-attributes').find('span').remove();
         $('#submit-exam').attr('disabled', false);
@@ -70,7 +67,7 @@ $(document).on('click', '.add-row-exam', function(){
     }
 
     checkTotField();
-
+    checkTotQuestions();
 })
 
 $(document).on('click', '.rm-row-exam', function(){
@@ -78,6 +75,7 @@ $(document).on('click', '.rm-row-exam', function(){
     div.slideUp( "slow", function() {
         div.remove();
         checkFields();
+        checkTotQuestions();
     });
 })
 
@@ -89,6 +87,7 @@ function checkFields(){
     totalQuestions = $('#inputTotQuant').val()==''? 0 : parseInt($('#inputTotQuant').val());
     sum_questions = 0;
     has_empty_field = false;
+    sum_priv_questions = $('.question').length;
 
     $('.input-quant').each(function(i, e){
         sum_questions += $(e).val() != '' ? parseInt($(e).val()) : 0;
@@ -130,6 +129,8 @@ function checkFields(){
         $('#submit-exam').attr('disabled', false);
         $('.add-row-exam').attr('disabled', false);
     }
+    console.log(totalQuestions, sum_questions, sum_priv_questions);
+    console.log((sum_questions+sum_priv_questions));
 }
 
 $(document).on('keyup', '#inputTotQuant', function(){
@@ -174,31 +175,36 @@ $(document).on('change','#inputCategory', function(){
 // Beggin - private questions
 $(document).on('click','#add_priv_question', function(){
 
-    checkTotField();
-    if( totalQuestions!='' && totalQuestions>0 )
+    // let quant_questions = $('.question').length;
+    $('.private_questions').find('span.limit-error').remove();
+    // checkTotField();
+    checkFields();
+    if(
+        totalQuestions>0 &&
+        (sum_questions+sum_priv_questions)<totalQuestions
+        )
     {
-        let quant_questions = $('.question').length;
         let div = `<div class="col-md-12 question mb-2 p-0 border rounded">
-            <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-${quant_questions}" aria-expanded="true" aria-controls="question-${quant_questions}">
+            <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-${sum_priv_questions}" aria-expanded="true" aria-controls="question-${sum_priv_questions}">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="toggle">
-                        Questão - ${(quant_questions + 1)} <i class="fas fa-chevron-down"></i>
+                        Questão - ${(sum_priv_questions + 1)} <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="btn border py-1 rm-question">
                         <i class="fas fa-trash" style="color:#fff"></i>
                     </div>
                 </div>
             </button>
-            <div class="form-row p-3 multi-collapse collapse show" id="question-${quant_questions}">
+            <div class="form-row p-3 multi-collapse collapse show" id="question-${sum_priv_questions}">
                 <div class="form-group col-md-12">
                     <label>Descrição da pergunta<span class="text-danger">*</span></label>
-                    <textarea class="form-control" name="exam[private_questions][${quant_questions}][description]" id="editor"></textarea>
+                    <textarea class="form-control" name="exam[private_questions][${sum_priv_questions}][description]" id="editor"></textarea>
                 </div>
                 <div class="form-group col-md-6">
                     <label>Imagem</label><br/>
                     <div class="input-group mb-3">
                         <div class="custom-file" id="customFile">
-                            <input type="file" class="custom-file-input" id="imagem" name="exam[private_questions][${quant_questions}][image]">
+                            <input type="file" class="custom-file-input" id="imagem" name="exam[private_questions][${sum_priv_questions}][image]">
                             <label class="custom-file-label" for="imagem"> Selecionar Arquivo </label>
                         </div>
                     </div>
@@ -219,11 +225,11 @@ $(document).on('click','#add_priv_question', function(){
             autogrow: true,
             removeformatPasted: true,
         });
+    }else{
+        $('.private_questions').append('<span class="limit-error text-danger mb-2">As quantidades ultrapassaram o número Total de questões</span>');
     }
 
-    if($('.question').length==totalQuestions){
-        $('#add_priv_question').attr('disabled', false);
-    }
+    checkTotQuestions();
 })
 
 $(document).on("change","#imagem", function(){
@@ -243,15 +249,15 @@ $(document).on("change","#choose-question-type", function(e){
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">a)</span>
                     </div>
-                    <input type="hidden" name="exam[private_questions][${quant_questions}][answer][alternativa" value="a"/>
+                    <input type="hidden" name="exam[private_questions][${quant_questions}][answer][alternative]" value="a"/>
                     <input type="number" class="form-control" name="exam[private_questions][${quant_questions}][answer][description]" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="form-group col-md-2 pt-3">
-                <button type="button" class="btn btn-secondary mt-3 py-2 px-3 add_q_answer">
+                <button type="button" class="btn btn-secondary add_q_answer">
                     <i class="fas fa-plus"></i>
                 </button>
-                <button type="button" class="btn btn-secondary mt-3 py-2 px-3 disabled rm_q_answer" disabled="true">
+                <button type="button" class="btn btn-secondary disabled rm_q_answer" disabled="true">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -260,7 +266,7 @@ $(document).on("change","#choose-question-type", function(e){
     }else if($(e.target).val()=="Descritiva"){
         let div =  `<div class="form-group col-md-6 q_answer">
                         <label> Qtd. de linhas <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="">
+                        <input type="number" class="form-control" name="exam[private_questions][${quant_questions}][answer][rows]">
                         <small>Quantidades de linhas disponível para resposta do aluno</small>
                     </div>`;
         $(this).parents('.question').find('.form-row').append(div);
@@ -269,7 +275,7 @@ $(document).on("change","#choose-question-type", function(e){
 
 $(document).on("click",".add_q_answer", function(){
     let qtd_answers = $('.q_answer').length;
-    let alternatives = ['a)','b)','c)','d)'];
+    let alternatives = ['a','b','c','d'];
     let quant_questions = $('.question').length -1;
 
     if(qtd_answers < 4){
@@ -278,17 +284,17 @@ $(document).on("click",".add_q_answer", function(){
                 <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">${alternatives[qtd_answers]}</span>
+                        <span class="input-group-text" id="basic-addon1">${alternatives[qtd_answers]})</span>
                     </div>
-                    <input type="hidden" name="exam[private_questions][${quant_questions}][answer][alternativa" value="${alternatives[qtd_answers]}"/>
+                    <input type="hidden" name="exam[private_questions][${quant_questions}][answer][alternative]" value="${alternatives[qtd_answers]}"/>
                     <input type="number" class="form-control" name="exam[private_questions][${quant_questions}][answer][description]" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="form-group col-md-2 pt-3">
-                <button type="button" class="btn btn-secondary mt-3 py-2 px-3 add_q_answer">
+                <button type="button" class="btn btn-secondary add_q_answer">
                     <i class="fas fa-plus"></i>
                 </button>
-                <button type="button" class="btn btn-secondary mt-3 py-2 px-3 rm_q_answer">
+                <button type="button" class="btn btn-secondary rm_q_answer">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -321,6 +327,25 @@ $(document).on('click','.rm-question',function(){
     let div = $(this).parents('.question');
     div.slideUp( "slow", function() {
         div.remove();
+        $('.private_questions').find('span.limit-error').remove();
+        checkTotQuestions();
     });
 })
 // End - private questions
+
+function checkTotQuestions(){
+    totalQuestions = $('#inputTotQuant').val()==''? 0 : parseInt($('#inputTotQuant').val());
+    sum_questions = 0;
+    sum_priv_questions = $('.question').length;
+    $('.input-quant').each(function(i, e){
+        sum_questions += $(e).val() != '' ? parseInt($(e).val()) : 0;
+    });
+    console.log(totalQuestions,sum_questions,sum_priv_questions);
+    if(totalQuestions==(sum_questions+sum_priv_questions)){
+        $('.add-row-exam').attr('disabled', true);
+        $('#add_priv_question').attr('disabled', true);
+    }else{
+        $('.add-row-exam').attr('disabled', false);
+        $('#add_priv_question').attr('disabled', false);
+    }
+}

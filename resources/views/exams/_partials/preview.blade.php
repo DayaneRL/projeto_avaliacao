@@ -13,6 +13,6 @@
 
     <div class="d-flex justify-content-end">
         {{-- <a href="{{route('exams.index')}}" class="btn btn-light border">Cancelar</a> --}}
-        <button type="submit" class="btn btn-primary shadow" id="submit-exam">Salvar Prova</button>
+        <button type="button" class="btn btn-primary shadow" >Salvar Prova</button>
     </div>
 </div>
