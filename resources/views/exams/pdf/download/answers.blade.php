@@ -86,7 +86,6 @@
 
 
     <div class="answers">
-
             <table>
                 <thead>
                     <tr>
@@ -97,7 +96,7 @@
                 <tbody>
                     @foreach ($questions as $question)
                     <tr>
-                        <td>{{ $question->number }}</td>
+                        <td>{{ $questionNumber++ }}</td>
                         <td>
                             @foreach ($replys as $reply)
                                 @if ($reply->question_id == $question->id)
@@ -111,12 +110,5 @@
             </table>
 
     </div>
-        {{-- @foreach ($questions as $question)
-
-
-
-        @endforeach --}}
-
-
 </body>
 </html>

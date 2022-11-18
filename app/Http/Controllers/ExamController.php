@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level, Tag, Answer};
+use App\Models\{Exam,ExamQuestion, Question, Category, Level, Tag, Answer};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -32,11 +32,15 @@ class ExamController extends Controller
         return view('exams.create', compact('categories', 'levels','tags'));
     }
 
+    public function createQuestion(){
+        echo "Consigo pegar a id: ".Auth::user()->id;
+        return 'chamou a funcao';
+    }
+
     public function store(ExamRequest $request)
     {
         try{
-
-            return $request;
+            // return $request['exam']['questions'];
 
             DB::beginTransaction();
 
@@ -44,8 +48,28 @@ class ExamController extends Controller
                 $request->validated()
             );
 
+            // that's me trying to save the exam questions
+
+            $question_ids =  $request['exam']['questions'];
+
+            $i=1;
+            foreach($question_ids as $question_id){;
+                $exam_question = new ExamQuestion;
+                $exam_question->number=$i;
+                $exam_question->private = 0;
+                $exam_question->exam_id = $exam;
+                $exam_question->question_id = $question_id;
+                $exam_question->created_at = now();
+                $exam_question->updated_at = now();
+                $exam_question->save();
+                $i++;
+            }
+
+
+
             DB::commit();
-            return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
+            return true;
+            // return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 
         }catch (\Throwable $e) {
             return $e->getMessage();
@@ -56,10 +80,12 @@ class ExamController extends Controller
 
     public function preview(ExamRequest $request)
     {
+        // return $request;
         $request->validated();
         $request->all();
         // return $request->name;
         $exam=$request['exam'];
+        $exam_attributes = $request['exam_attributes'];
         $questions = Question::all();
         $questions_ids= [];
 
@@ -70,7 +96,9 @@ class ExamController extends Controller
         }
         $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
-        return view('exams.store', compact('exam', 'questions','replys', 'questions_ids'));
+        // return $replys;
+
+        return view('exams.preview', compact('exam','exam_attributes', 'questions','replys', 'questions_ids'));
 
     }
 
@@ -104,6 +132,7 @@ class ExamController extends Controller
             );
 
             DB::commit();
+            return back()->with('success', "Prova atualizada com sucesso" );
             return redirect()->route('exams.index')->with('success', "Prova atualizada com sucesso" );
 
         }catch (\Throwable $e) {

@@ -22,7 +22,7 @@ class DownloadController extends Controller
         $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/test', compact('exam','questions','replys'));
+        $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','replys'));
         return $pdf->download($exam['title'].'.pdf');
     }
     public function downloadAnswers(){
@@ -38,7 +38,7 @@ class DownloadController extends Controller
         $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/answers', compact('exam','questions','replys','questions_ids'));
+        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids'));
         return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
     public function saveExam(){
@@ -80,7 +80,7 @@ class DownloadController extends Controller
 
         $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
-        $returnHTML = view('exams/pdf/test', compact('exam','questions','replys'))->render();
+        $returnHTML = view('exams/pdf/preview/exam', compact('exam','questions','replys'))->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
@@ -97,7 +97,7 @@ class DownloadController extends Controller
 
         $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
-        $returnHTML = view('exams/pdf/answers',compact('exam','questions','replys','questions_ids'))->render();
+        $returnHTML = view('exams/pdf/preview/answers',compact('exam','questions','replys','questions_ids'))->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 }

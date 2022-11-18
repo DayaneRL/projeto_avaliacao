@@ -10,8 +10,12 @@ use App\Models\{Exam, Question, ExamAttribute, Reply, User};
 class ExamService
 {
 
-    public static function storeExam(array $request): Exam
+    public static function storeExam(array $request)
     {
+        // var_dump($request);
+        // está faltando o exam_attributes aqui por algum motivo, mas ele tá sendo recebido no store() do
+        // ExamController
+        // return null;
         $tags = count($request['exam']['tags']) > 1 ?
                 implode(', ', $request['exam']['tags']) :
                 $request['exam']['tags'][0];
@@ -28,14 +32,14 @@ class ExamService
             )
         );
 
-        foreach($request['exam_attributes'] as $attribute){
-            ExamAttribute::create(
-                array_merge(
-                    $attribute,
-                    ['exam_id' => $exam->id]
-                )
-            );
-        }
+        // foreach($request['exam_attributes'] as $attribute){
+        //     ExamAttribute::create(
+        //         array_merge(
+        //             $attribute,
+        //             ['exam_id' => $exam->id]
+        //         )
+        //     );
+        // }
 
         // for($i=0; $i<$request['exam']['number_of_questions']; $i++){
         //     $question = new Question();
@@ -44,16 +48,16 @@ class ExamService
         //     $question->exam_id = $exam->id;
         //     $question->save();
 
-            // $reply = new Reply();
-            // $reply->question_id = $question->id;
-            // $question->text = 'Resposta da questão '
-            // $reply->alternative = 'a';
-            // $reply->valid = 'a';
-            // $reply->exam_id = $exam->id;
-            // $reply->save();
+        //     $reply = new Reply();
+        //     $reply->question_id = $question->id;
+        //     $question->text = 'Resposta da questão ';
+        //     $reply->alternative = 'a';
+        //     $reply->valid = 'a';
+        //     $reply->exam_id = $exam->id;
+        //     $reply->save();
         // }
 
-        return $exam;
+        return $exam->id;
     }
 
     public static function updateExam(array $request, Exam $exam): Exam

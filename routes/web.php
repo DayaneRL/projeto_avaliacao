@@ -38,6 +38,7 @@ Route::group(['middleware'=>'auth'], function(){
     Route::post('/exams/load_test', [DownloadController::class , 'loadTest'])->name('loadTest.exam');
     Route::post('/exams/load_answers', [DownloadController::class , 'loadAnswers'])->name('loadAnswers.exam');
 
+
     Route::post('/logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 
     Route::get('/profile', [UserController::class,'show'])->name('profile');
@@ -46,6 +47,8 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::group(['middleware' => 'admin:false'], function() {
         Route::post('/exams/view',[ExamController::class, 'preview'])->name('exams.preview');
+        // nao ta chamando
+        Route::post('/exams/create_question',[ExamController::class, 'createQuestion'])->name('exams.createQuestion');
         Route::resource('/exams', ExamController::class);
         Route::get('/findExam/{id}', [ExamController::class,'find']);
         Route::resource('/headers', HeaderController::class);
