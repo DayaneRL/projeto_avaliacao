@@ -31,6 +31,14 @@ class ExamController extends Controller
         $tags = Tag::all();
         return view('exams.create', compact('categories', 'levels','tags'));
     }
+    public function create2()
+    {
+        //View
+        $categories = Category::all();
+        $levels = Level::select('id','name')->get();
+        $tags = Tag::all();
+        return view('exams.create2', compact('categories', 'levels','tags'));
+    }
 
     public function createQuestion(){
         echo "Consigo pegar a id: ".Auth::user()->id;
@@ -40,13 +48,15 @@ class ExamController extends Controller
     public function store(ExamRequest $request)
     {
         try{
-            // return $request['exam']['questions'];
+
+            return $request;
 
             DB::beginTransaction();
 
             $exam = ExamService::storeExam(
                 $request->validated()
             );
+            // return $exam;
 
             // that's me trying to save the exam questions
 
@@ -168,11 +178,12 @@ class ExamController extends Controller
                 'exam'      => $exam,
                 'category'  => $exam->Category,
                 'exam_date' => $exam->exam_date,
-                'levels'    => $exam->levels
+                'levels'    => $exam->levels,
+                'tags_list' => $exam->tags_list
             ], 200);
         }catch (\Exception $ex) {
             return response()->json([
-                'data'  => 'Algo deu errado.'
+                $ex->getMessage()
             ], 500);
         }
     }

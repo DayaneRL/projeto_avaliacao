@@ -31,7 +31,6 @@ Route::group([ 'middleware'=>'guest'], function(){
 
 Route::group(['middleware'=>'auth'], function(){
 
-
     Route::post('/exams/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
     Route::post('/exams/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
     Route::post('/exams/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');
@@ -50,6 +49,7 @@ Route::group(['middleware'=>'auth'], function(){
         // nao ta chamando
         Route::post('/exams/create_question',[ExamController::class, 'createQuestion'])->name('exams.createQuestion');
         Route::resource('/exams', ExamController::class);
+        Route::get('/examss/create', [ExamController::class,'create2']);
         Route::get('/findExam/{id}', [ExamController::class,'find']);
         Route::resource('/headers', HeaderController::class);
         Route::get('/findHeader/{id}', [HeaderController::class,'find']);

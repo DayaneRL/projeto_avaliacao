@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Prova
+    Avaliações
 @endsection
 
 @section('style')
@@ -26,7 +26,7 @@
                             <span class="icon text-white-50">
                                 <i class="fas fa-plus"></i>
                             </span>
-                            <span class="text">Adicionar prova</span>
+                            <span class="text">Adicionar Avaliação</span>
                         </a>
                     </div>
                 </div>
