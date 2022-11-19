@@ -12,8 +12,7 @@ class ExamQuestion extends Model
         'exam_id',
         'number',
         'question_id',
-        'private',
-        'user_id'
+        'private'
     ];
 
     public function Exam()

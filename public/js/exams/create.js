@@ -135,6 +135,7 @@ function checkFields(){
 
 $(document).on('keyup', '#inputTotQuant', function(){
     checkTotField();
+    checkTotQuestions();
 })
 
 function checkTotField(){
@@ -198,13 +199,13 @@ $(document).on('click','#add_priv_question', function(){
             <div class="form-row p-3 multi-collapse collapse show" id="question-${sum_priv_questions}">
                 <div class="form-group col-md-12">
                     <label>Descrição da pergunta<span class="text-danger">*</span></label>
-                    <textarea class="form-control" name="exam[private_questions][${sum_priv_questions}][description]" id="editor"></textarea>
+                    <textarea class="form-control" name="private_questions[${sum_priv_questions}][description]" id="editor"></textarea>
                 </div>
                 <div class="form-group col-md-6">
                     <label>Imagem</label><br/>
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                         <div class="custom-file" id="customFile">
-                            <input type="file" class="custom-file-input" id="imagem" name="exam[private_questions][${sum_priv_questions}][image]">
+                            <input type="file" class="custom-file-input" id="imagem" name="private_questions[${sum_priv_questions}][image]">
                             <label class="custom-file-label" for="imagem"> Selecionar Arquivo </label>
                         </div>
                     </div>
@@ -239,18 +240,23 @@ $(document).on("change","#imagem", function(){
 $(document).on("change","#choose-question-type", function(e){
 
     $(this).parents('.question').find('.q_answer').remove();
-    let quant_questions = $('.question').length -1;
+    let index ;
+    if($(this).parents('.form-row')){
+        index = $(this).parents('.form-row').attr('id').split('-')[1];
+    }
 
     if($(e.target).val()=="Alternativa"){
-        let div = `<div class="form-group col-md-12 row q_answer">
+        let div = `
+        <small class="text-muted mb-1 ml-1">Clique na letra para selecionar a alternativa correta</small>
+        <div class="form-group col-md-12 row q_answer">
             <div class="form-group col-md-10">
                 <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">a)</span>
                     </div>
-                    <input type="hidden" name="exam[private_questions][${quant_questions}][answer][alternative]" value="a"/>
-                    <input type="number" class="form-control" name="exam[private_questions][${quant_questions}][answer][description]" aria-describedby="basic-addon1">
+                    <input type="hidden" name="private_questions[${index}][answer][0][alternative]" value="a"/>
+                    <input type="text" class="form-control" name="private_questions[${index}][answer][0][description]" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="form-group col-md-2 pt-3">
@@ -266,7 +272,7 @@ $(document).on("change","#choose-question-type", function(e){
     }else if($(e.target).val()=="Descritiva"){
         let div =  `<div class="form-group col-md-6 q_answer">
                         <label> Qtd. de linhas <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="exam[private_questions][${quant_questions}][answer][rows]">
+                        <input type="number" class="form-control" name="private_questions[${index}][answer][rows]">
                         <small>Quantidades de linhas disponível para resposta do aluno</small>
                     </div>`;
         $(this).parents('.question').find('.form-row').append(div);
@@ -275,8 +281,11 @@ $(document).on("change","#choose-question-type", function(e){
 
 $(document).on("click",".add_q_answer", function(){
     let qtd_answers = $('.q_answer').length;
-    let alternatives = ['a','b','c','d'];
-    let quant_questions = $('.question').length -1;
+    let alternatives = ['A','B','C','D'];
+    let index ;
+    if($(this).parents('.form-row')){
+        index = $(this).parents('.form-row').attr('id').split('-')[1];
+    }
 
     if(qtd_answers < 4){
         let div = `<div class="form-group col-md-12 row q_answer">
@@ -284,10 +293,10 @@ $(document).on("click",".add_q_answer", function(){
                 <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">${alternatives[qtd_answers]})</span>
+                        <span class="input-group-text" id="basic-addon1">${alternatives[qtd_answers]}</span>
                     </div>
-                    <input type="hidden" name="exam[private_questions][${quant_questions}][answer][alternative]" value="${alternatives[qtd_answers]}"/>
-                    <input type="number" class="form-control" name="exam[private_questions][${quant_questions}][answer][description]" aria-describedby="basic-addon1">
+                    <input type="hidden" name="private_questions[${index}][answer][${qtd_answers}][alternative]" value="${alternatives[qtd_answers]}"/>
+                    <input type="text" class="form-control" name="private_questions[${index}][answer][${qtd_answers}][description]" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="form-group col-md-2 pt-3">

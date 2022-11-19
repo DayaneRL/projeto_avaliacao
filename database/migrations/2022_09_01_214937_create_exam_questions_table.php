@@ -19,7 +19,7 @@ class CreateExamQuestionsTable extends Migration
             $table->string('number');
             $table->tinyInteger('private')->nullable(); //0 or 1
             $table->foreignIdFor(Exam::class);
-            $table->foreignIdFor(Question::class);
+            $table->foreignIdFor(Question::class)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

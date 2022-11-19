@@ -11,6 +11,7 @@ use App\Models\{Exam, Question, Category, Level, Tag, Answer};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Hamcrest\Arrays\IsArray;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,26 +32,17 @@ class ExamController extends Controller
         $tags = Tag::all();
         return view('exams.create', compact('categories', 'levels','tags'));
     }
-    public function create2()
-    {
-        //View
-        $categories = Category::all();
-        $levels = Level::select('id','name')->get();
-        $tags = Tag::all();
-        return view('exams.create2', compact('categories', 'levels','tags'));
-    }
 
     public function store(ExamRequest $request)
     {
         try{
 
+            // return $request->validated();
             DB::beginTransaction();
-
             $exam = ExamService::storeExam(
                 $request->validated()
             );
-            // return $exam;
-
+            return $exam;
             DB::commit();
             return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 

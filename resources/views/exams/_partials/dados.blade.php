@@ -39,7 +39,7 @@
                 </div>
                 <div class="form-group col-md-7">
                     <label for="inputName">Tags</label>
-                    <select class="js-select2 form-control" id="tags" name="exam[tags][]" multiple="multiple" required>
+                    <select class="js-select2 form-control" id="tags" name="exam[tags][]" multiple="multiple">
                         @foreach ($tags as $key => $tag)
                         <option value="{{$tag->id}}-{{$tag->category_id}}"
                             @if(isset($exam)&&in_array($tag->description, $exam->tags_list))
