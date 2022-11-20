@@ -26,7 +26,7 @@ class ExamRequest extends FormRequest
         $rules = [
             'exam.title'=>'required|max:255',
             'exam.number_of_questions'=>'required',
-            // 'exam.tags'=>'required',
+            'exam.tags'=>'nullable',
             'exam.category_id'=>'required',
             'exam.date'=>'required',
         ];
@@ -54,6 +54,7 @@ class ExamRequest extends FormRequest
                     foreach($val["answer"] as $key2 => $answer){
                         $rules["private_questions.{$key}.answer.{$key2}.alternative"] = ['required'];
                         $rules["private_questions.{$key}.answer.{$key2}.description"] = ['required'];
+                        $rules["private_questions.{$key}.answer.{$key2}.valid"] = ['required'];
                     }
                 }
 

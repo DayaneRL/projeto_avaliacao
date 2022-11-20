@@ -24,6 +24,20 @@ class ExamController extends Controller
         return view('exams.index', compact('exams'));
     }
 
+    public function indexFilter(Request $request):View
+    {
+        $lastSundary = date('Y-m-d', strtotime("sunday -1 week"));
+        $nexSunday   = date('Y-m-d', strtotime("sunday 0 week"));
+        if($request["filters"] == 'passed'){
+            $exams = Exam::where('date','<', date('Y-m-d'))->where('user_id','=',Auth::user()->id)->get();
+        }else if($request["filters"] == 'this_week'){
+            $exams = Exam::where('date','>', $lastSundary)->where('date','<',$nexSunday)->where('user_id','=',Auth::user()->id)->get();
+        }else if($request["filters"] == 'yet_to_come'){
+            $exams = Exam::where('date','>', $nexSunday)->where('user_id','=',Auth::user()->id)->get();
+        }
+        return view('exams.index', compact('exams'));
+    }
+
     public function create()
     {
         //View
@@ -37,12 +51,11 @@ class ExamController extends Controller
     {
         try{
 
-            // return $request->validated();
             DB::beginTransaction();
             $exam = ExamService::storeExam(
                 $request->validated()
             );
-            return $exam;
+            // return $exam;
             DB::commit();
             return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 

@@ -129,8 +129,6 @@ function checkFields(){
         $('#submit-exam').attr('disabled', false);
         $('.add-row-exam').attr('disabled', false);
     }
-    console.log(totalQuestions, sum_questions, sum_priv_questions);
-    console.log((sum_questions+sum_priv_questions));
 }
 
 $(document).on('keyup', '#inputTotQuant', function(){
@@ -253,9 +251,10 @@ $(document).on("change","#choose-question-type", function(e){
                 <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">a)</span>
+                        <span class="input-group-text alternative_option" id="basic-addon1">A</span>
                     </div>
-                    <input type="hidden" name="private_questions[${index}][answer][0][alternative]" value="a"/>
+                    <input type="hidden" name="private_questions[${index}][answer][0][alternative]" value="A"/>
+                    <input type="hidden" class="alternative_valid" name="private_questions[${index}][answer][0][valid]" value="0"/>
                     <input type="text" class="form-control" name="private_questions[${index}][answer][0][description]" aria-describedby="basic-addon1">
                 </div>
             </div>
@@ -293,9 +292,10 @@ $(document).on("click",".add_q_answer", function(){
                 <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">${alternatives[qtd_answers]}</span>
+                        <span class="input-group-text alternative_option" id="basic-addon1">${alternatives[qtd_answers]}</span>
                     </div>
                     <input type="hidden" name="private_questions[${index}][answer][${qtd_answers}][alternative]" value="${alternatives[qtd_answers]}"/>
+                    <input type="hidden" class="alternative_valid" name="private_questions[${index}][answer][${qtd_answers}][valid]" value="0"/>
                     <input type="text" class="form-control" name="private_questions[${index}][answer][${qtd_answers}][description]" aria-describedby="basic-addon1">
                 </div>
             </div>
@@ -340,6 +340,17 @@ $(document).on('click','.rm-question',function(){
         checkTotQuestions();
     });
 })
+
+$(document).on('click', '.alternative_option', function(){
+    if($(this).parents('.question')){
+        $(this).parents('.question').find('.alternative_option').removeClass('bg-success');
+        $(this).parents('.question').find('.alternative_option').css('color','#000');
+        $(this).parents('.question').find('.q_answer').find('.alternative_valid').val("0");
+    }
+    $(this).addClass('bg-success');
+    $(this).css('color','#fff');
+    $(this).parents('.q_answer').find('.alternative_valid').val("1");
+})
 // End - private questions
 
 function checkTotQuestions(){
@@ -349,7 +360,7 @@ function checkTotQuestions(){
     $('.input-quant').each(function(i, e){
         sum_questions += $(e).val() != '' ? parseInt($(e).val()) : 0;
     });
-    console.log(totalQuestions,sum_questions,sum_priv_questions);
+
     if(totalQuestions==(sum_questions+sum_priv_questions)){
         $('.add-row-exam').attr('disabled', true);
         $('#add_priv_question').attr('disabled', true);

@@ -45,8 +45,11 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::group(['middleware' => 'admin:false'], function() {
         Route::post('/exams/view',[ExamController::class, 'preview'])->name('exams.preview');
-        Route::resource('/exams', ExamController::class);
+        Route::resource('/exams', ExamController::class,['except' => ['index']]);
+        Route::get('/exams', [ExamController::class,'index'])->name('exams.index');
+        Route::post('/exams/filters', [ExamController::class,'indexFilter'])->name('exams.filter');
         Route::get('/findExam/{id}', [ExamController::class,'find']);
+
         Route::resource('/headers', HeaderController::class);
         Route::get('/findHeader/{id}', [HeaderController::class,'find']);
         Route::post('/updateLogo', [HeaderController::class,'updateLogo']);

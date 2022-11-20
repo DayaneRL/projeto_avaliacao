@@ -9,7 +9,7 @@ use App\Models\{
     Exam,
     Question,
     ExamAttribute,
-    Reply,
+    Answer,
     User,
     ExamQuestion,
     QuestionsPrivate,
@@ -38,9 +38,6 @@ class ExamService
             )
         );
 
-        //se ele quiser adicionar privado e aleatorias,
-        //ele vai adicionar as privadas primeiro
-
         $number = 0;
 
         if(isset($request['private_questions'])){
@@ -52,40 +49,28 @@ class ExamService
                     'number'=>$number,
                     'private'=>true
                 ]);
-                print_r($examQuestion);
+
                 $questPrivate = QuestionsPrivate::create([
                     'description'=>$question["description"],
                     'image'=>$question["image"],
                     'user_id'=>Auth::user()->id,
                     'exam_question_id'=>$examQuestion->id
                 ]);
-                print_r($questPrivate);
-                //answerPrivate
-                // AnswerPrivate::create([
-                //     'answer_id',
-                //     'exam_question_id',
-                //     'user_id',
-                //     'description',
-                //     'alternative',
-                //     'valid'
-                // ]);
+
+                print_r($question);
+                foreach($question["answer"] as $answer){
+                    AnswerPrivate::create(
+                        array_merge(
+                            $answer,
+                            [
+                                'exam_question_id'=>$examQuestion->id,
+                                'user_id'=>Auth::user()->id,
+                            ]
+                        )
+                    );
+                }
             }
         }
-
-        //     $question = new Question();
-        //     $question->number = ($i+1);
-        //     $question->text = 'Descrição da pergunta '.($i+1);
-        //     $question->exam_id = $exam->id;
-        //     $question->save();
-
-        //     $reply = new Reply();
-        //     $reply->question_id = $question->id;
-        //     $question->text = 'Resposta da questão '
-        //     $reply->alternative = 'a';
-        //     $reply->valid = 'a';
-        //     $reply->exam_id = $exam->id;
-        //     $reply->save();
-
 
         if(isset($request['exam_attributes'])){
             foreach($request['exam_attributes'] as $attribute){
@@ -95,10 +80,19 @@ class ExamService
                         ['exam_id' => $exam->id]
                     )
                 );
+
+                $questions = Question::where('level_id','=',$attribute["level_id"])->take($attribute["number_of_questions"])->get();
+                foreach($questions as $question){
+                    $number+=1;
+                    $examQuestion = ExamQuestion::create([
+                        'exam_id'=>$exam->id,
+                        'number'=>$number,
+                        'question_id'=>$question->id,
+                        'private'=>false
+                    ]);
+                }
             }
         }
-
-
 
         return $exam;
     }

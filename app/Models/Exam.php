@@ -46,7 +46,7 @@ class Exam extends Model
     {
         $tags = explode(',', $this->tags);
         return Attribute::make(
-            get: fn ($value) => count($tags)>2 ? Tag::find($tags[0])->description.', '.Tag::find($tags[1])->description.', ...' : Tag::find($tags[0])->description
+            get: fn ($value) => count($tags)>2 ? Tag::find($tags[0])->description.', '.Tag::find($tags[1])->description.', ...' : ($tags[0]?Tag::find($tags[0])->description:'-')
         );
     }
 

@@ -43,3 +43,7 @@
 .add_q_answer, .rm_q_answer{
     margin-top: 1em;
 }
+
+.alternative_option{
+    cursor: pointer;
+}

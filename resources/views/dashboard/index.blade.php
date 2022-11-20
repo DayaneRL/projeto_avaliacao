@@ -138,20 +138,38 @@
             </div>
             <!-- Card Body -->
             <div class="card-body">
-                <h4 class="small font-weight-bold">Estão por vir  ({{$deadlines['yet_to_come'][0]}})<span
-                    class="float-right">{{$deadlines['yet_to_come'][1]}}%</span></h4>
+                <form action="{{route('exams.filter')}}" method="POST">
+                    @csrf
+                    <input type="hidden" name="filters" value='yet_to_come' />
+                   <button class="btn w-100 px-0 d-flex justify-content-between" type="submit">
+                       <h4 class="small font-weight-bold mb-0">Estão por vir  ({{$deadlines['yet_to_come'][0]}})</h4>
+                       <span class="small font-weight-bold">{{$deadlines['yet_to_come'][1]}}%</span>
+                   </button>
+                 </form>
                 <div class="progress mb-4">
                     <div class="progress-bar" role="progressbar" style="width: {{$deadlines['yet_to_come'][1]}}%"
                         aria-valuenow="{{$deadlines['yet_to_come'][1]}}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <h4 class="small font-weight-bold">Essa semana ({{$deadlines['this_week'][0]}})<span
+                <form action="{{route('exams.filter')}}" method="POST">
+                    @csrf
+                    <input type="hidden" name="filters" value='this_week' />
+                    <button class="btn w-100" type="submit">
+                        <h4 class="small font-weight-bold">Essa semana ({{$deadlines['this_week'][0]}})<span
                         class="float-right">{{$deadlines['this_week'][1]}}%</span></h4>
+                    </button>
+                </form>
                 <div class="progress mb-4">
                     <div class="progress-bar bg-info" role="progressbar" style="width: {{$deadlines['this_week'][1]}}%"
                         aria-valuenow="{{$deadlines['this_week'][1]}}" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <h4 class="small font-weight-bold">Já foram concluídas ({{$deadlines['passed'][0]}})<span
+                <form action="{{route('exams.filter')}}" method="POST">
+                    @csrf
+                    <input type="hidden" name="filters" value='passed' />
+                    <button class="btn w-100" type="submit">
+                        <h4 class="small font-weight-bold">Já foram concluídas ({{$deadlines['passed'][0]}})<span
                         class="float-right">{{$deadlines['passed'][1]}}%</span></h4>
+                    </button>
+                </form>
                 <div class="progress">
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{$deadlines['passed'][1]}}%"
                         aria-valuenow="{{$deadlines['passed'][1]}}" aria-valuemin="0" aria-valuemax="100"></div>
