@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level, Tag, Answer};
+use App\Models\{Exam, Question, Category, Level, Tag, Answer, ExamQuestion, QuestionsPrivate};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -99,8 +99,13 @@ class ExamController extends Controller
         $exam = Exam::find($id);
         $categories = Category::all();
         $levels = Level::all();
-        $tagsExemple = ['primeira_guerra'=>'Primeira Guerra', 'guerra_fria'=>'Guerra Fria','baskara'=>'Baskara'];
-        return view('exams.create', compact('categories', 'levels', 'exam', 'tagsExemple'));
+        $tags = Tag::all();
+        $exam_questions = ExamQuestion::where('exam_id','=',$exam->id)
+                ->with('Question','Question.Answers')->get();
+
+        $questions_private = QuestionsPrivate::where('exam_question_id','=',$exam->id)->get();
+
+        return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
     }
 
 

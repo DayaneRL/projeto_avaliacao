@@ -47,3 +47,22 @@
 .alternative_option{
     cursor: pointer;
 }
+
+.description_question{
+    min-width: 90%;
+    padding: 0.5rem!important;
+    border: 1px solid #e3e6f0;
+    border-radius: 0.35rem;
+}
+.description_question p{
+    margin-bottom:  0;
+}
+.questionImg{
+    height:100px;
+    max-width: 100px;
+}
+
+.questionNumber{
+    font-weight: bold;
+    margin-bottom: 0;
+}

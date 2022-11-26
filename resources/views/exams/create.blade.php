@@ -61,7 +61,7 @@
     {{-- trumbowyg --}}
     <script src="{{asset('plugins/trumbowyg/trumbowyg.min.js')}}"></script>
     <script>
-        $('#editor').trumbowyg({
+        $('.editor').trumbowyg({
             btns: [['strong', 'em',]],
             autogrow: true,
             removeformatPasted: true,

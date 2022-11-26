@@ -187,7 +187,7 @@ $(document).on('click','#add_priv_question', function(){
             <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-${sum_priv_questions}" aria-expanded="true" aria-controls="question-${sum_priv_questions}">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="toggle">
-                        Questão - ${(sum_priv_questions + 1)} <i class="fas fa-chevron-down"></i>
+                        Questão - ${((sum_questions+sum_priv_questions) + 1)} <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="btn border py-1 rm-question">
                         <i class="fas fa-trash" style="color:#fff"></i>

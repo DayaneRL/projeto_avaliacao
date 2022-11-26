@@ -45,9 +45,11 @@
                             @if(isset($exam)&&in_array($tag->description, $exam->tags_list))
                             selected
                             @endif
-                            >{{$tag->description}}</option>
-                            @endforeach
-                        </select>
+                        >
+                            {{$tag->description}}
+                        </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 

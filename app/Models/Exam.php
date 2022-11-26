@@ -35,10 +35,12 @@ class Exam extends Model
         $tags = explode(',', $this->tags);
         $listTagNames = [];
         foreach($tags as $tag){
-            array_push($listTagNames, Tag::find($tag)->description??null);
+            if(Tag::find($tag)){
+                array_push($listTagNames, Tag::find($tag)->description);
+            }
         }
         return Attribute::make(
-            get: fn ($value) => implode(",", $listTagNames)
+            get: fn ($value) => count($listTagNames)>0 ? implode(",", $listTagNames) : $listTagNames
         );
     }
 
