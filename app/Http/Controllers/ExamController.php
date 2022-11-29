@@ -50,12 +50,13 @@ class ExamController extends Controller
     public function store(ExamRequest $request)
     {
         try{
+            $request->validated();
 
             DB::beginTransaction();
             $exam = ExamService::storeExam(
-                $request->validated()
+                $request
             );
-            // return $exam;
+
             DB::commit();
             return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 

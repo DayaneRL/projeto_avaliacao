@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Support\Facades\{Auth, DB, Storage};
 use App\Models\{
     Exam,
     Question,
@@ -13,13 +13,14 @@ use App\Models\{
     User,
     ExamQuestion,
     QuestionsPrivate,
-    AnswerPrivate
+    AnswersPrivate
 };
+use App\Http\Requests\ExamRequest;
 
 class ExamService
 {
 
-    public static function storeExam(array $request): Exam
+    public static function storeExam(ExamRequest $request): Exam
     {
         $tags = isset($request['exam']['tags']) ?
                 (count($request['exam']['tags']) > 1 ?
@@ -52,22 +53,25 @@ class ExamService
 
                 $questPrivate = QuestionsPrivate::create([
                     'description'=>$question["description"],
-                    'image'=>$question["image"],
+                    // 'image'=>Self::storeImage($question),
+                    'image'=>$question['image'],
                     'user_id'=>Auth::user()->id,
                     'exam_question_id'=>$examQuestion->id
                 ]);
 
-                print_r($question);
-                foreach($question["answer"] as $answer){
-                    AnswerPrivate::create(
-                        array_merge(
-                            $answer,
-                            [
-                                'exam_question_id'=>$examQuestion->id,
-                                'user_id'=>Auth::user()->id,
-                            ]
-                        )
-                    );
+
+                if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
+                    foreach($question["answer"] as $answer){
+                        $ansPrivate = AnswersPrivate::create(
+                            array_merge(
+                                $answer,
+                                [
+                                    'exam_question_id'=>$examQuestion->id,
+                                    'user_id'=>Auth::user()->id,
+                                ]
+                            )
+                        );
+                    }
                 }
             }
         }
@@ -118,6 +122,28 @@ class ExamService
         }
 
         return $exam;
+    }
+
+    private static function storeImage($question, QuestionsPrivate $questionPriv = null): string
+    {
+        if(!is_null($questionPriv) && $questionPriv->image) {
+            $filePath = $questionPriv->getRawOriginal('logo');
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+        }
+
+        // if ( $question->hasFile('image') && $question->file('image') ) {
+        if(isset($question["image"])){
+            $info =new \SplFileInfo($question["image"]);
+            $fileName = uniqid(date('HisYmd')) . ".{$info->getExtension()}";
+            Storage::putFileAs(
+                'storage/exams', $question["image"], $fileName
+            );
+            return 'exams/' . $fileName;
+        }else{
+            return null;
+        }
     }
 
     public static function deadlines(User $user): array

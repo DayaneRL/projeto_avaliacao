@@ -102,15 +102,15 @@
                     @endif
                 @else
                 <input type="hidden" id="exam_levels" value="{{$levels}}"/>
+                <div class="form-row">
+                    <button type="button" class="btn btn-info m-2 add-row-exam">
+                        <i class="fas fa-plus"></i> Adicionar questões aleatórias
+                    </button>
+
+                </div>
                 @endif
             </div>
 
-            {{-- <div class="form-row">
-                <button type="button" class="btn btn-info m-2 add-row-exam">
-                    <i class="fas fa-plus"></i> Adicionar questões aleatórias
-                </button>
-
-            </div> --}}
         </div>
     </div>
 

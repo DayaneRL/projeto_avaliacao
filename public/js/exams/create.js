@@ -197,7 +197,7 @@ $(document).on('click','#add_priv_question', function(){
             <div class="form-row p-3 multi-collapse collapse show" id="question-${sum_priv_questions}">
                 <div class="form-group col-md-12">
                     <label>Descrição da pergunta<span class="text-danger">*</span></label>
-                    <textarea class="form-control" name="private_questions[${sum_priv_questions}][description]" id="editor"></textarea>
+                    <textarea class="form-control editor" name="private_questions[${sum_priv_questions}][description]"></textarea>
                 </div>
                 <div class="form-group col-md-6">
                     <label>Imagem</label><br/>
@@ -219,7 +219,7 @@ $(document).on('click','#add_priv_question', function(){
             </div>
         </div>`;
         $('.private_questions').append(div);
-        $('#editor').trumbowyg({
+        $('.editor').trumbowyg({
             btns: [['strong', 'em',]],
             autogrow: true,
             removeformatPasted: true,
@@ -245,8 +245,8 @@ $(document).on("change","#choose-question-type", function(e){
 
     if($(e.target).val()=="Alternativa"){
         let div = `
-        <small class="text-muted mb-1 ml-1">Clique na letra para selecionar a alternativa correta</small>
         <div class="form-group col-md-12 row q_answer">
+        <small class="text-muted mb-1 ml-3">Clique na letra para selecionar a alternativa correta</small>
             <div class="form-group col-md-10">
                 <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -279,7 +279,8 @@ $(document).on("change","#choose-question-type", function(e){
 })
 
 $(document).on("click",".add_q_answer", function(){
-    let qtd_answers = $('.q_answer').length;
+    console.log($(this).parents('.form-row').find('.q_answer'));
+    let qtd_answers = $(this).parents('.form-row').find('.q_answer').length;
     let alternatives = ['A','B','C','D'];
     let index ;
     if($(this).parents('.form-row')){
