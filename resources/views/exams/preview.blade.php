@@ -62,20 +62,20 @@
         let btnSave = document.getElementById('btnSave');
         let visualizingTest = true;
         let testSaved = false;
-        let initialQuestionText = [];
+
+        let alternatives = ['a','b','c','d'];
+
+        let questionText = [];
+        let editedQuestions = [];
 
         let qtdQuestions = {{ $exam['number_of_questions'] }};
 
-        let initialAlternativeText = new Array(qtdQuestions);
+        let alternativeText = new Array(qtdQuestions);
         for (i = 0; i < qtdQuestions; i++) {
-            initialAlternativeText[i] = new Array(4);
-            // for (j = 0; j < 4; j++) {
-            //     a[i][j] = '[' + i + ',' + j + ']';
-            // }
+            alternativeText[i] = new Array(4);
         }
 
 
-        // console.log(population);
         let testId = -1;
 
         btnTest.addEventListener("click", btnTestClick);
@@ -125,6 +125,16 @@
         }
 
         function saveTest() {
+            // showing the edited questions
+            console.log('mostrando as questoes editadas, se tiver');
+            console.log(editedQuestions);
+            editedQuestions.forEach(editedQuestion => {
+                console.log('questao'+ editedQuestion);
+                console.log(questionText[editedQuestion]);
+                console.log(alternativeText[editedQuestion-1]);
+
+            });
+
             testSaved = true;
             btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvando...';
             btnSave.disabled = true;
@@ -213,7 +223,6 @@
                     link.click();
                 },
                 error: function(blob) {
-                    console.log(blob);
                 }
             });
         }
@@ -235,7 +244,6 @@
                     }
                 },
                 error: function(response) {
-                    console.log('loadTest error');
                 }
             });
 
@@ -264,18 +272,20 @@
         }
 
         function editQuestion(question) {
-            initialQuestionText[question] = $('#question' + question + 'Text').text();
-
+            questionText[question] = $('#question' + question + 'Text').text().trim();
+            saveAlternatives(question);
             //salva o texto das alternativas, remove os elementos li e cria elementos input.
 
-            // erro por aqui? vê o tamanho de initialAlternativeText. No momento tô trazendo todas questões
+            // erro por aqui? vê o tamanho de alternativeText. No momento tô trazendo todas questões
             // do banco ignorando a variavel de quantidade de questões. vai dar erro ao mudar a questão 5
             //se você só criou duas questões na view anterior
 
-            saveAlternatives(question);
+            // verifica se a questão foi editada.
+
+
             let correctAlternative = getCorrectAlternative(question);
 
-            console.log(correctAlternative);
+            // console.log(correctAlternative);
 
             $('#alternativesOfQuestion' + question).empty();
 
@@ -290,31 +300,17 @@
             $('#button' + question + 'Cancel').removeClass("d-none").addClass("d-inline");
         }
 
-        function saveQuestion(question) {
-            console.log('chamou o save pra questao' + question);
-            $('#button' + question).prop("disabled", false);
-            $('#question' + question + 'Text').trumbowyg('destroy');
-            $('#button' + question + 'Save').removeClass("d-inline").addClass("d-none");
-            $('#button' + question + 'Cancel').removeClass("d-inline").addClass("d-none");
 
-            let questionText = $('#question' + question + 'Text').text();
-
-
-            saveEditedAlternatives(question);
-            $('#alternativesOfQuestion' + question).empty();
-            appendList(question);
-
-        }
 
         function getCorrectAlternative(question) {
             let varToReturn = false;
             $('#alternativesOfQuestion' + question).children('li').each(function() {
-                console.log(this);
+                // console.log(this);
                 if (this.value === 1) {
                     // retornando só o "2b"
                     // magia, o console log vai e o return não
                     varToReturn =  this.id.slice(-2);
-                    console.log(varToReturn);
+                    // console.log(varToReturn);
                 }
             });
             return varToReturn;
@@ -327,17 +323,17 @@
         }
 
         function cancelEdit(question) {
-            console.log('chamou o cancelEdit pra questao' + question);
+            // console.log('chamou o cancelEdit pra questao' + question);
 
             $('#button' + question).prop("disabled", false);
             $('#question' + question + 'Text').trumbowyg('destroy');
             $('#button' + question + 'Save').removeClass("d-inline").addClass("d-none");
             $('#button' + question + 'Cancel').removeClass("d-inline").addClass("d-none");
 
-            $('#question' + question + 'Text').text(initialQuestionText[question]);
+            $('#question' + question + 'Text').text(questionText[question]);
 
             correctAlternative = getCorrectAlternativeFromInput(question);
-            console.log(correctAlternative);
+
             $('#alternativesOfQuestion' + question).empty();
 
             appendList(question, correctAlternative);
@@ -363,35 +359,35 @@
         function appendList(question, correctAlternative) {
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "a'> <span class='alternative' >A)</span><span id='alternative" + question + "aText'>" +
-                initialAlternativeText[question - 1][0] + "</span> </li> ");
+                alternativeText[question - 1][0] + "</span> </li> ");
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "b'> <span class='alternative' >B)</span><span id='alternative" + question + "bText'>" +
-                initialAlternativeText[question - 1][1] + "</span> </li> ");
+                alternativeText[question - 1][1] + "</span> </li> ");
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "c'> <span class='alternative' >C)</span><span id='alternative" + question + "cText'>" +
-                initialAlternativeText[question - 1][2] + "</span> </li> ");
+                alternativeText[question - 1][2] + "</span> </li> ");
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "d'> <span class='alternative' >D)</span><span id='alternative" + question + "dText'>" +
-                initialAlternativeText[question - 1][3] + "</span> </li> ");
+                alternativeText[question - 1][3] + "</span> </li> ");
             $('#alternative'+ correctAlternative).attr("value",1);
         }
 
         function appendInput(question) {
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text" id="alternativeOfQuestion' +question + 'a' + '">A</span></div><input type="text" id="inputOfQuestion' +
-                question + 'a' + '" value="' + initialAlternativeText[question - 1][0] + '" class="form-control"></div>'
+                question + 'a' + '" value="' + alternativeText[question - 1][0] + '" class="form-control"></div>'
             );
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text"  id="alternativeOfQuestion' +question + 'b' + '">B</span></div><input type="text" id="inputOfQuestion' +
-                question + 'b' + '" value="' + initialAlternativeText[question - 1][1] + '" class="form-control"></div>'
+                question + 'b' + '" value="' + alternativeText[question - 1][1] + '" class="form-control"></div>'
             );
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text"  id="alternativeOfQuestion' +question + 'c' + '">C</span></div><input type="text" id="inputOfQuestion' +
-                question + 'c' + '" value="' + initialAlternativeText[question - 1][2] + '" class="form-control"></div>'
+                question + 'c' + '" value="' + alternativeText[question - 1][2] + '" class="form-control"></div>'
             );
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text"  id="alternativeOfQuestion' +question + 'd' + '">D</span></div><input type="text" id="inputOfQuestion' +
-                question + 'd' + '" value="' + initialAlternativeText[question - 1][3] + '" class="form-control"></div>'
+                question + 'd' + '" value="' + alternativeText[question - 1][3] + '" class="form-control"></div>'
             );
         }
 
@@ -423,23 +419,48 @@
             });
         }
 
+        function saveQuestion(question) {
+            // console.log('chamou o save pra questao' + question);
+            $('#button' + question).prop("disabled", false);
+            $('#question' + question + 'Text').trumbowyg('destroy');
+            $('#button' + question + 'Save').removeClass("d-inline").addClass("d-none");
+            $('#button' + question + 'Cancel').removeClass("d-inline").addClass("d-none");
+
+            // update the question text
+            let thisQuestionText = $('#question' + question + 'Text').text().trim();
+
+            alternativeWasEdited = saveEditedAlternatives(question);
+
+            if((thisQuestionText != questionText[question]) || alternativeWasEdited ){
+                editedQuestions[question]=question;
+            }
+
+            questionText[question] = thisQuestionText;
+
+            $('#alternativesOfQuestion' + question).empty();
+            appendList(question);
+
+            // console.log(questionText);
+            // console.log(alternativeText);
+
+        }
+
         function saveAlternatives(question) {
-            initialAlternativeText[question - 1][0] = $('#alternative' + question + 'aText').text();
-            initialAlternativeText[question - 1][1] = $('#alternative' + question + 'bText').text();
-            initialAlternativeText[question - 1][2] = $('#alternative' + question + 'cText').text();
-            initialAlternativeText[question - 1][3] = $('#alternative' + question + 'dText').text();
+            alternativeText[question - 1][0] = $('#alternative' + question + 'aText').text();
+            alternativeText[question - 1][1] = $('#alternative' + question + 'bText').text();
+            alternativeText[question - 1][2] = $('#alternative' + question + 'cText').text();
+            alternativeText[question - 1][3] = $('#alternative' + question + 'dText').text();
         }
 
         function saveEditedAlternatives(question) {
-            console.log('atualizou');
-            console.log(question);
-            console.log($('#inputOfQuestion' + question + 'a').val());
-            initialAlternativeText[question - 1][0] = $('#inputOfQuestion' + question + 'a').val();
-            initialAlternativeText[question - 1][1] = $('#inputOfQuestion' + question + 'b').val();
-            initialAlternativeText[question - 1][2] = $('#inputOfQuestion' + question + 'c').val();
-            initialAlternativeText[question - 1][3] = $('#inputOfQuestion' + question + 'd').val();
-
-            console.log(initialAlternativeText);
+            let wasEdited = false;
+            for(let i=0; i<4; i++){
+                if(alternativeText[question - 1][i] != $('#inputOfQuestion' + question + alternatives[i]).val()){
+                    wasEdited=true;
+                }
+                alternativeText[question - 1][i] = $('#inputOfQuestion' + question + alternatives[i]).val()
+            }
+            return wasEdited;
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.2/trumbowyg.min.js"
