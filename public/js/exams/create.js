@@ -122,10 +122,10 @@ function checkFields(){
     }else if(sum_questions == totalQuestions){
         $('.add-row-exam').attr('disabled', true);
         if($('.exam-attributes').find('span')){
-            $('.exam-attributes').find('span').remove();
+            $('.exam-attributes').find('span.obg').remove();
         }
     } else if(sum_questions < totalQuestions && has_empty_field==false){
-        $('.exam-attributes').find('span').remove();
+        $('.exam-attributes').find('span.obg').remove();
         $('#submit-exam').attr('disabled', false);
         $('.add-row-exam').attr('disabled', false);
     }
@@ -174,9 +174,8 @@ $(document).on('change','#inputCategory', function(){
 // Beggin - private questions
 $(document).on('click','#add_priv_question', function(){
 
-    // let quant_questions = $('.question').length;
     $('.private_questions').find('span.limit-error').remove();
-    // checkTotField();
+
     checkFields();
     if(
         totalQuestions>0 &&
@@ -199,15 +198,7 @@ $(document).on('click','#add_priv_question', function(){
                     <label>Descrição da pergunta<span class="text-danger">*</span></label>
                     <textarea class="form-control editor" name="private_questions[${sum_priv_questions}][description]"></textarea>
                 </div>
-                <div class="form-group col-md-6">
-                    <label>Imagem</label><br/>
-                    <div class="input-group mb-2">
-                        <div class="custom-file" id="customFile">
-                            <input type="file" class="custom-file-input" id="imagem" name="private_questions[${sum_priv_questions}][image]">
-                            <label class="custom-file-label" for="imagem"> Selecionar Arquivo </label>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="form-group col-md-6">
                     <label>Tipo da resposta<span class="text-danger">*</span></label>
                     <select class="form-control" id="choose-question-type">
@@ -225,7 +216,7 @@ $(document).on('click','#add_priv_question', function(){
             removeformatPasted: true,
         });
     }else{
-        $('.private_questions').append('<span class="limit-error text-danger mb-2">As quantidades ultrapassaram o número Total de questões</span>');
+        $('.private_questions').append('<span class="limit-error text-danger mb-2 ml-1">As quantidades ultrapassaram o número Total de questões</span>');
     }
 
     checkTotQuestions();
@@ -345,7 +336,7 @@ $(document).on('click','.rm-question',function(){
 $(document).on('click', '.alternative_option', function(){
     if($(this).parents('.question')){
         $(this).parents('.question').find('.alternative_option').removeClass('bg-success');
-        $(this).parents('.question').find('.alternative_option').css('color','#000');
+        $(this).parents('.question').find('.alternative_option').css('color','#6e707e');
         $(this).parents('.question').find('.q_answer').find('.alternative_valid').val("0");
     }
     $(this).addClass('bg-success');
@@ -370,3 +361,56 @@ function checkTotQuestions(){
         $('#add_priv_question').attr('disabled', false);
     }
 }
+
+
+$(document).on('click', '.edit-exam_question', function(){
+    let id = $(this).parents('.exam_question').attr('id').split('-')[1];
+    let description = $(this).parents('.exam_question').find(".description_question").val();
+    let answers = $(this).parents('.exam_question').find(".anwers");
+
+    let div = `<div class="col-md-12 question mb-2 p-0 border rounded">
+        <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-${id}" aria-expanded="true" aria-controls="question-${id}">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="toggle">
+                    Questão - ${id} <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="btn border py-1 rm-question">
+                    <i class="fas fa-trash" style="color:#fff"></i>
+                </div>
+            </div>
+        </button>
+        <div class="form-row p-3 multi-collapse collapse show" id="question-${id}">
+            <div class="form-group col-md-12">
+                <label>Descrição da pergunta<span class="text-danger">*</span></label>
+                <textarea class="form-control editor" name="private_questions[${sum_priv_questions+1}][description]">${description}</textarea>
+            </div>`;
+            $(answers).each(function(index){
+                let answer_alternative = $(this).find(".answer_alternative").text();
+                let answer_description = $(this).find(".answer_description").val();
+                div += `<div class="form-group col-md-12 row q_answer">
+                    <div class="form-group col-md-10">
+                        <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text alternative_option" id="basic-addon1">${answer_alternative}</span>
+                            </div>
+                            <input type="hidden" name="private_questions[${sum_priv_questions+1}][answer][${index}][alternative]" value="${answer_alternative}"/>
+                            <input type="hidden" class="alternative_valid" name="private_questions[${sum_priv_questions+1}][answer][${index}][valid]" value="0"/>
+                            <input type="text" class="form-control" name="private_questions[${sum_priv_questions+1}][answer][${index}][description]" value="${answer_description}">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2 pt-3">
+                        <button type="button" class="btn btn-secondary add_q_answer" disabled>
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button type="button" class="btn btn-secondary rm_q_answer">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>`;
+            });
+    div += `</div>
+    </div>`;
+    $('.private_questions').append(div);
+
+})

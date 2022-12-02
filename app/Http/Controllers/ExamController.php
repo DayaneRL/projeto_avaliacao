@@ -102,9 +102,12 @@ class ExamController extends Controller
         $levels = Level::all();
         $tags = Tag::all();
         $exam_questions = ExamQuestion::where('exam_id','=',$exam->id)
+            ->where('private','=','0')
                 ->with('Question','Question.Answers')->get();
 
-        $questions_private = QuestionsPrivate::where('exam_question_id','=',$exam->id)->get();
+        $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
+            ->where('private','=','1')
+            ->with('QuestionsPrivate','AnswersPrivate')->get();
 
         return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
     }

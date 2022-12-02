@@ -25,6 +25,16 @@ class ExamQuestion extends Model
         return $this->belongsTo(Question::class);
     }
 
+    public function QuestionsPrivate()
+    {
+        return $this->hasOne(QuestionsPrivate::class);
+    }
+
+    public function AnswersPrivate()
+    {
+        return $this->hasMany(AnswersPrivate::class);
+    }
+
     public function User()
     {
         return $this->belongsTo(User::class);

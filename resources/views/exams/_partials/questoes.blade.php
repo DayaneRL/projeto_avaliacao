@@ -33,17 +33,17 @@
             <div class="exam-attributes mb-4">
                 @if(isset($exam->Attributes))
                     @foreach ($exam->Attributes as $key => $attribute)
-                    {{-- <div class="form-row attribute">
+                    <div class="form-row attribute">
                         <input type="hidden" name="exam_attributes[{{$key}}][id]" value="{{$attribute->id}}">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-3 col-sm-4">
                             <label for="inputQuant">Qtd. de questões <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control input-quant" id="inputQuant" name="exam_attributes[{{$key}}][number_of_questions]"
-                                value="{{ $attribute->number_of_questions}}">
+                                value="{{ $attribute->number_of_questions}}" readonly>
                         </div>
 
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-4  col-sm-5">
                             <label for="inputState_0">Nível <span class="text-danger">*</span></label>
-                            <select id="inputState_0" class="form-control" name="exam_attributes[{{$key}}][level_id]">
+                            <select id="inputState_0" class="form-control" name="exam_attributes[{{$key}}][level_id]" readonly>
                                 @foreach ($levels as $level)
                                 <option value="{{$level->id}}"
                                     @if(old('exam_attributes.0.level_id')==$level->id || $attribute->level_id==$level->id) selected @endif
@@ -51,64 +51,58 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group col-md-5 pt-3">
+                        {{-- <div class="form-group col-md-5 pt-3">
                             <button type="button" class="btn btn-primary mt-3 btn-icon-split p-2 pr-3 pl-3 add-row-exam">
                                 <i class="fas fa-plus"></i>
                             </button>
                             <button type="button" class="btn btn-danger mt-3 btn-icon-split p-2 pr-3 pl-3 rm-row-exam {{$key==0?'disabled':''}}" {{$key==0?'disabled':''}}>
                                 <i class="fas fa-trash"></i>
                             </button>
-                        </div>
-                    </div> --}}
+                        </div> --}}
+                    </div>
                     @endforeach
 
                     @if(isset($exam_questions))
                         @foreach ($exam_questions as $key=> $exam_question)
-                        @if($key>0) <hr/> @endif
-                        <div class="m-1">
+                         <hr/>
+                        <div class="m-1 exam_question" id="exam_question-{{$exam_question->number}}">
                             <div class="row">
                                 <div class="col-md-11">
                                     <p class="questionNumber">Questão {{$exam_question->number}}</p>
                                 </div>
                                 <div class="col-md-1 d-flex justify-content-end">
-                                    <button class="btn btn-info btn-sm"><i class="fas fa-pen"></i></button>
+                                    <button type="button" class="btn btn-info btn-sm edit-exam_question"><i class="fas fa-pen"></i></button>
                                 </div>
                             </div>
 
-                            @if ($exam_question->question->image)
-                                <label >Imagem </label>
-                                <input type="text"class="form-control" value="{{ $exam_question->question->image}} " disabled>
-                            @endif
-
                             <label>Descrição </label>
-                            <textarea rows="3" class="form-control description_question text-secondary" disabled> @php echo $exam_question->question->description_read; @endphp </textarea>
+                            <textarea rows="3" class="form-control description_question text-secondary" disabled>@if(isset($exam_question->question->description_read)){{$exam_question->question->description_read}}@endif</textarea>
 
                             @if (isset($exam_question->question->answers))
                             <div class="row mt-3">
                                 @foreach ($exam_question->question->answers as $answer)
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-6 anwers">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text alternative_option">{{$answer->alternative}}</span>
+                                                <span class="input-group-text answer_alternative">{{$answer->alternative}}</span>
                                             </div>
-                                            <input type="text" class="form-control" value="{{$answer->description}}" disabled/>
+                                            <input type="text" class="form-control answer_description" value="{{$answer->description}}" disabled/>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                             @endif
                         </div>
-                       @endforeach
+                        @endforeach
                     @endif
                 @else
-                <input type="hidden" id="exam_levels" value="{{$levels}}"/>
                 <div class="form-row">
                     <button type="button" class="btn btn-info m-2 add-row-exam">
                         <i class="fas fa-plus"></i> Adicionar questões aleatórias
                     </button>
-
                 </div>
                 @endif
+                <input type="hidden" id="exam_levels" value="{{$levels}}"/>
             </div>
 
         </div>
@@ -124,7 +118,66 @@
                 </div>
             </div>
             <div class="row mb-2 private_questions">
+                @if(isset($questions_private))
+                    @foreach ($questions_private as $key=> $question_private)
+                    <div class="col-md-12 question mb-2 p-0 border rounded">
+                        <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-{{$question_private->number}}" aria-expanded="true" aria-controls="question-{{$question_private->number}}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="toggle">
+                                    Questão - {{$question_private->number}} <i class="fas fa-chevron-down"></i>
+                                </div>
+                                <div class="btn border py-1 rm-question">
+                                    <i class="fas fa-trash" style="color:#fff"></i>
+                                </div>
+                            </div>
+                        </button>
+                        <div class="form-row p-3 multi-collapse collapse show" id="question-{{$question_private->number}}">
+                            <div class="form-group col-md-12">
+                                <label>Descrição da pergunta<span class="text-danger">*</span></label>
+                                <textarea class="form-control editor" name="private_questions[{{$key}}][description]">
+                                    {{$question_private->QuestionsPrivate->description}}
+                                </textarea>
+                            </div>
 
+                            <div class="form-group col-md-6">
+                                <label>Tipo da resposta<span class="text-danger">*</span></label>
+                                <select class="form-control" id="choose-question-type">
+                                    <option>Selecione...</option>
+                                    <option @if (count($question_private->AnswersPrivate)) selected @endif value="Alternativa">Alternativa</option>
+                                    <option value="Descritiva">Descritiva</option>
+                                </select>
+                            </div>
+                            @if (count($question_private->AnswersPrivate))
+                                @foreach ($question_private->AnswersPrivate as $key_ans => $answer)
+
+                                <div class="form-group col-md-12 row q_answer">
+                                    <div class="form-group col-md-10">
+                                        <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text alternative_option" id="basic-addon1">{{$answer['alternative']}}</span>
+                                            </div>
+                                            <input type="hidden" name="private_questions[{{$key}}][answer][{{$key_ans}}][alternative]" value="{{$answer['alternative']}}"/>
+                                            <input type="hidden" class="alternative_valid" name="private_questions[{{$key}}][answer][{{$key_ans}}][valid]" value="{{$answer['valid']}}"/>
+                                            <input type="text" class="form-control" name="private_questions[{{$key}}][answer][{{$key_ans}}][description]" aria-describedby="basic-addon1" value="{{$answer['description']}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-2 pt-3">
+                                        <button type="button" class="btn btn-secondary add_q_answer">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary rm_q_answer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                    @endforeach
+                @endif
             </div>
             <div class="form-row">
                 <button type="button" class="btn btn-secondary m-2" id="add_priv_question">

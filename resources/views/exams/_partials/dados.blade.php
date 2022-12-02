@@ -42,7 +42,7 @@
                     <select class="js-select2 form-control" id="tags" name="exam[tags][]" multiple="multiple">
                         @foreach ($tags as $key => $tag)
                         <option value="{{$tag->id}}-{{$tag->category_id}}"
-                            @if(isset($exam)&&in_array($tag->description, $exam->tags_list))
+                            @if(isset($exam)&& (is_array($exam->tags_list)&&in_array($tag->description, $exam->tags_list)))
                             selected
                             @endif
                         >
