@@ -196,12 +196,12 @@ $(document).on('click','#add_priv_question', function(){
             <div class="form-row p-3 multi-collapse collapse show" id="question-${sum_priv_questions}">
                 <div class="form-group col-md-12">
                     <label>Descrição da pergunta<span class="text-danger">*</span></label>
-                    <textarea class="form-control editor" name="private_questions[${sum_priv_questions}][description]"></textarea>
+                    <textarea class="form-control editor" name="private_questions[${sum_priv_questions}][description]" required></textarea>
                 </div>
 
                 <div class="form-group col-md-6">
                     <label>Tipo da resposta<span class="text-danger">*</span></label>
-                    <select class="form-control" id="choose-question-type">
+                    <select class="form-control" id="choose-question-type" required>
                         <option>Selecione...</option>
                         <option value="Alternativa">Alternativa</option>
                         <option value="Descritiva">Descritiva</option>
@@ -246,7 +246,7 @@ $(document).on("change","#choose-question-type", function(e){
                     </div>
                     <input type="hidden" name="private_questions[${index}][answer][0][alternative]" value="A"/>
                     <input type="hidden" class="alternative_valid" name="private_questions[${index}][answer][0][valid]" value="0"/>
-                    <input type="text" class="form-control" name="private_questions[${index}][answer][0][description]" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" name="private_questions[${index}][answer][0][description]" aria-describedby="basic-addon1" required>
                 </div>
             </div>
             <div class="form-group col-md-2 pt-3">
@@ -262,7 +262,7 @@ $(document).on("change","#choose-question-type", function(e){
     }else if($(e.target).val()=="Descritiva"){
         let div =  `<div class="form-group col-md-6 q_answer">
                         <label> Qtd. de linhas <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="private_questions[${index}][answer][rows]">
+                        <input type="number" class="form-control" name="private_questions[${index}][answer][rows]" required>
                         <small>Quantidades de linhas disponível para resposta do aluno</small>
                     </div>`;
         $(this).parents('.question').find('.form-row').append(div);
@@ -288,7 +288,7 @@ $(document).on("click",".add_q_answer", function(){
                     </div>
                     <input type="hidden" name="private_questions[${index}][answer][${qtd_answers}][alternative]" value="${alternatives[qtd_answers]}"/>
                     <input type="hidden" class="alternative_valid" name="private_questions[${index}][answer][${qtd_answers}][valid]" value="0"/>
-                    <input type="text" class="form-control" name="private_questions[${index}][answer][${qtd_answers}][description]" aria-describedby="basic-addon1">
+                    <input type="text" class="form-control" name="private_questions[${index}][answer][${qtd_answers}][description]" aria-describedby="basic-addon1" required>
                 </div>
             </div>
             <div class="form-group col-md-2 pt-3">
@@ -364,39 +364,44 @@ function checkTotQuestions(){
 
 
 $(document).on('click', '.edit-exam_question', function(){
-    let id = $(this).parents('.exam_question').attr('id').split('-')[1];
+    let id = $(this).parents('.exam_question').find('.question_id').val();
+    console.log(id);
+    let numero = $(this).parents('.exam_question').attr('id').split('-')[1];
     let description = $(this).parents('.exam_question').find(".description_question").val();
     let answers = $(this).parents('.exam_question').find(".anwers");
+    checkFields();
 
-    let div = `<div class="col-md-12 question mb-2 p-0 border rounded">
-        <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-${id}" aria-expanded="true" aria-controls="question-${id}">
+    let div = `<div class="col-md-12 mb-2 p-0 border rounded">
+        <input type="hidden" name="private_questions[${sum_priv_questions}][id]" value="${id}"/>
+        <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-${numero}" aria-expanded="true" aria-controls="question-${numero}">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="toggle">
-                    Questão - ${id} <i class="fas fa-chevron-down"></i>
+                    Questão - ${numero} <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="btn border py-1 rm-question">
                     <i class="fas fa-trash" style="color:#fff"></i>
                 </div>
             </div>
         </button>
-        <div class="form-row p-3 multi-collapse collapse show" id="question-${id}">
+        <div class="form-row p-3 multi-collapse collapse show" id="question-${numero}">
             <div class="form-group col-md-12">
                 <label>Descrição da pergunta<span class="text-danger">*</span></label>
-                <textarea class="form-control editor" name="private_questions[${sum_priv_questions+1}][description]">${description}</textarea>
+                <textarea class="form-control editor" name="private_questions[${sum_priv_questions}][description]" required>${description}</textarea>
             </div>`;
             $(answers).each(function(index){
                 let answer_alternative = $(this).find(".answer_alternative").text();
                 let answer_description = $(this).find(".answer_description").val();
+                let answer_valid = $(this).find(".answer_valid").val();
                 div += `<div class="form-group col-md-12 row q_answer">
                     <div class="form-group col-md-10">
                         <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text alternative_option" id="basic-addon1">${answer_alternative}</span>
+                                <span class="input-group-text alternative_option ${(answer_valid==1?'bg-success':'')}" ${(answer_valid==1?'style="color:#fff"':'')} >${answer_alternative}</span>
                             </div>
-                            <input type="hidden" name="private_questions[${sum_priv_questions+1}][answer][${index}][alternative]" value="${answer_alternative}"/>
-                            <input type="hidden" class="alternative_valid" name="private_questions[${sum_priv_questions+1}][answer][${index}][valid]" value="0"/>
-                            <input type="text" class="form-control" name="private_questions[${sum_priv_questions+1}][answer][${index}][description]" value="${answer_description}">
+                            <input type="hidden" name="private_questions[${sum_priv_questions}][answer][${index}][alternative]" value="${answer_alternative}"/>
+                            <input type="hidden" class="alternative_valid" name="private_questions[${sum_priv_questions}][answer][${index}][valid]" value="${answer_valid}"/>
+                            <input type="text" class="form-control" name="private_questions[${sum_priv_questions}][answer][${index}][description]" value="${answer_description}" required>
                         </div>
                     </div>
                     <div class="form-group col-md-2 pt-3">
@@ -412,5 +417,9 @@ $(document).on('click', '.edit-exam_question', function(){
     div += `</div>
     </div>`;
     $('.private_questions').append(div);
-
+    $('.editor').trumbowyg({
+        btns: [['strong', 'em',]],
+        autogrow: true,
+        removeformatPasted: true,
+    });
 })

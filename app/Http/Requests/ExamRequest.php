@@ -48,10 +48,13 @@ class ExamRequest extends FormRequest
         {
             foreach($this->input('private_questions') as $key => $val){
 
+                $rules["private_questions.{$key}.id"] = ['nullable','sometimes'];
+                $rules["private_questions.{$key}.question_private_id"] = ['nullable','sometimes'];
                 $rules["private_questions.{$key}.description"] = ['required'];
-                $rules["private_questions.{$key}.image"] = ['nullable','sometimes'];
+                // $rules["private_questions.{$key}.image"] = ['nullable','sometimes'];
                 if(isset($val["answer"]) && !isset($val["answer"]['rows'])){
                     foreach($val["answer"] as $key2 => $answer){
+                        $rules["private_questions.{$key}.answer.{$key2}.answer_private_id"] = ['nullable','sometimes'];
                         $rules["private_questions.{$key}.answer.{$key2}.alternative"] = ['required'];
                         $rules["private_questions.{$key}.answer.{$key2}.description"] = ['required'];
                         $rules["private_questions.{$key}.answer.{$key2}.valid"] = ['required'];

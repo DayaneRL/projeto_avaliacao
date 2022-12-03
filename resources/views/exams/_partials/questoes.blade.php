@@ -66,6 +66,7 @@
                         @foreach ($exam_questions as $key=> $exam_question)
                          <hr/>
                         <div class="m-1 exam_question" id="exam_question-{{$exam_question->number}}">
+                            <input type="hidden" class="question_id" value="{{$exam_question->id}}"/>
                             <div class="row">
                                 <div class="col-md-11">
                                     <p class="questionNumber">Questão {{$exam_question->number}}</p>
@@ -86,6 +87,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text answer_alternative">{{$answer->alternative}}</span>
                                             </div>
+                                            <input type="hidden" class="answer_valid" value="{{$answer->valid}}"/>
                                             <input type="text" class="form-control answer_description" value="{{$answer->description}}" disabled/>
                                         </div>
                                     </div>
@@ -121,6 +123,8 @@
                 @if(isset($questions_private))
                     @foreach ($questions_private as $key=> $question_private)
                     <div class="col-md-12 question mb-2 p-0 border rounded">
+                        <input type="hidden" name="private_questions[{{$key}}][id]" value="{{$question_private->id}}"/>
+                        <input type="hidden" name="private_questions[{{$key}}][question_private_id]" value="{{$question_private->QuestionsPrivate->id}}"/>
                         <button class="btn btn-secondary border col-md-12 private_toggle" type="button" data-toggle="collapse" data-target="#question-{{$question_private->number}}" aria-expanded="true" aria-controls="question-{{$question_private->number}}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="toggle">
@@ -149,13 +153,15 @@
                             </div>
                             @if (count($question_private->AnswersPrivate))
                                 @foreach ($question_private->AnswersPrivate as $key_ans => $answer)
-
+                                <input type="hidden" name="private_questions[{{$key}}][answer][{{$key_ans}}][answer_private_id]" value="{{$answer->id}}"/>
                                 <div class="form-group col-md-12 row q_answer">
                                     <div class="form-group col-md-10">
                                         <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text alternative_option" id="basic-addon1">{{$answer['alternative']}}</span>
+                                                <span class="input-group-text alternative_option @if($answer['valid']==1) bg-success @endif"
+                                                    @if($answer['valid']==1) style="color:#fff" @endif id="basic-addon1"
+                                                >{{$answer['alternative']}}</span>
                                             </div>
                                             <input type="hidden" name="private_questions[{{$key}}][answer][{{$key_ans}}][alternative]" value="{{$answer['alternative']}}"/>
                                             <input type="hidden" class="alternative_valid" name="private_questions[{{$key}}][answer][{{$key_ans}}][valid]" value="{{$answer['valid']}}"/>

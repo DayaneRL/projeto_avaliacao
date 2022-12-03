@@ -33,7 +33,6 @@ $(document).on('click','.show_exam', function(){
                     <p id="exam_total"><b>Total de questões:</b> ${exam.number_of_questions} </p>
                     <p id="exam_categoria"><b>Categoria:</b> ${exam.category.name} </p>
                     <p id="exam_data"><b>Data da prova:</b> ${response.exam_date} </p>
-                    <p><b>Níveis:</b> ${response.levels} </p>
                     <hr/>
                     <div class="mt-2">
                         <button type="button" class="btn btn-info p-2">

@@ -53,8 +53,7 @@ class ExamService
 
                 $questPrivate = QuestionsPrivate::create([
                     'description'=>$question["description"],
-                    // 'image'=>Self::storeImage($question),
-                    'image'=>$question['image'],
+                    // 'image'=>$question['image'],
                     'user_id'=>Auth::user()->id,
                     'exam_question_id'=>$examQuestion->id
                 ]);
@@ -101,27 +100,70 @@ class ExamService
         return $exam;
     }
 
-    public static function updateExam(array $request, Exam $exam): Exam
+    public static function updateExam(array $request, Exam $exam)
     {
-        $tags = count($request['exam']['tags']) > 1 ? implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0];
+        //:Exam
+        $tags = isset($request['exam']['tags']) ?
+                (count($request['exam']['tags']) > 1 ?
+                    implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0])
+            : '';
         $dt_exam = explode('/', $request['exam']['date']);
-        $exam->update(
-            array_merge(
-                $request['exam'],
-                ['tags'=>$tags,
-                 'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
-                ]
-            )
-        );
+        // $exam->update(
+        //     array_merge(
+        //         $request['exam'],
+        //         ['tags'=>$tags,
+        //          'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
+        //         ]
+        //     )
+        // );
 
-        foreach($request['exam_attributes'] as $attribute){
-            $examAttribute = ExamAttribute::find($attribute['id']);
-            $examAttribute->update(
-                $attribute
-            );
+        // foreach($request['exam_attributes'] as $attribute){
+        //     $examAttribute = ExamAttribute::find($attribute['id']);
+        //     $examAttribute->update(
+        //         $attribute
+        //     );
+        // }
+
+        if(isset($request['private_questions'])){
+            foreach($request['private_questions'] as $key => $question){
+                if(isset($question['id'])){
+                    $examQuestion = ExamQuestion::find($question['id']);
+                    if($examQuestion->private==1){
+                        echo "<br/>";
+                        echo $question['id']." - editar pergunta privada";
+
+                        echo $question['question_private_id']." - question_private_id";
+                        $QuestionsPrivate = QuestionsPrivate::find($question['question_private_id']);
+                        $QuestionsPrivate->update([
+                            'description'=>$question["description"]
+                        ]);
+                        echo "<br/>";
+                        print_r($QuestionsPrivate);
+                        echo "<br/>";
+
+                        if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
+                            foreach($question["answer"] as $answer){
+                                echo $answer['answer_private_id']." - answer_private_id";
+                        //         $ansPrivate = AnswersPrivate::create(
+                        //             array_merge(
+                        //                 $answer,
+                        //                 [
+                        //                     'exam_question_id'=>$examQuestion->id,
+                        //                     'user_id'=>Auth::user()->id,
+                        //                 ]
+                        //             )
+                        //         );
+                            }
+                        }
+                    }else{
+                        echo $question['id']." - trocar pergunta aleatoria para privada";
+                    }
+                }else{
+                    echo "!!!Adicionado mais uma pergunta privada!!!";
+                }
+            }
         }
 
-        return $exam;
     }
 
     private static function storeImage($question, QuestionsPrivate $questionPriv = null): string

@@ -38,9 +38,8 @@ class ExamController extends Controller
         return view('exams.index', compact('exams'));
     }
 
-    public function create()
+    public function create():View
     {
-        //View
         $categories = Category::all();
         $levels = Level::all();
         $tags = Tag::all();
@@ -91,7 +90,9 @@ class ExamController extends Controller
     public function show($id)
     {
         $exam = Exam::find($id);
-        return view('exams.show', compact('exam'));
+        $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
+        ->where('private','=','1')->with('QuestionsPrivate')->get();
+        return view('exams.show', compact('exam','questions_private'));
     }
 
 
@@ -113,9 +114,12 @@ class ExamController extends Controller
     }
 
 
-    public function update(ExamRequest $request, $id): RedirectResponse
+    public function update(ExamRequest $request, $id)
     {
+        //RedirectResponse
         try{
+
+            // return $request->validated();
             DB::beginTransaction();
 
             $exam = Exam::findOrFail($id);
@@ -123,6 +127,7 @@ class ExamController extends Controller
                 $request->validated(),
                 $exam
             );
+            return false;
 
             DB::commit();
             return redirect()->route('exams.index')->with('success', "Prova atualizada com sucesso" );
@@ -160,7 +165,6 @@ class ExamController extends Controller
                 'exam'      => $exam,
                 'category'  => $exam->Category,
                 'exam_date' => $exam->exam_date,
-                'levels'    => $exam->levels,
                 'tags_list' => $exam->tags_list
             ], 200);
         }catch (\Exception $ex) {

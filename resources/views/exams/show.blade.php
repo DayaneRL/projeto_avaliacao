@@ -21,6 +21,9 @@
                             </span>
                             <span class="text">Voltar</span>
                         </a>
+                        <a href="/exams/{{$exam->id}}/edit" class="btn btn-info btn-icon-split">
+                            <span class="text">Editar</span>
+                        </a>
                     </div>
                 </div>
 
@@ -31,12 +34,15 @@
                     <p><b>Total de questões:</b> {{$exam->number_of_questions}} </p>
                     <p><b>Categoria:</b> {{$exam->Category->name}} </p>
                     <p><b>Data da prova:</b> {{$exam->exam_date}} </p>
-
                     <hr/>
-                    @foreach ($exam->Attributes as $attribute)
-                        <p><b>Qtd. de questões:</b> {{$attribute->number_of_questions}},
-                           <b>Nível:</b> {{$attribute->Level->name}} </p>
-                    @endforeach
+                        @foreach ($exam->Attributes as $attribute)
+                            <p><b> - Questões Aleatórias - </b></p>
+                            <p><b>Qtd. de questões:</b> {{$attribute->number_of_questions}},
+                            <b>Nível:</b> {{$attribute->Level->name}} </p>
+                        @endforeach
+                        <p><b> - Questões Privadas - </b></p>
+                        <p><b>Qtd. de questões:</b> {{$questions_private->count()}}</p>
+
                     <hr/>
 
                     <div class="mt-2">
