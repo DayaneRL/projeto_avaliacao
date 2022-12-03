@@ -61,6 +61,7 @@
         let btnAnswers = document.getElementById('btnAnswers');
         let btnSave = document.getElementById('btnSave');
         let visualizingTest = true;
+        let testId = -1;
         let testSaved = false;
 
         let alternatives = ['a','b','c','d'];
@@ -74,9 +75,6 @@
         for (i = 0; i < qtdQuestions; i++) {
             alternativeText[i] = new Array(4);
         }
-
-
-        let testId = -1;
 
         btnTest.addEventListener("click", btnTestClick);
         btnAnswers.addEventListener("click", btnAnswersClick);
@@ -128,14 +126,25 @@
             // showing the edited questions
             console.log('mostrando as questoes editadas, se tiver');
             console.log(editedQuestions);
+            let privateQuestionsObject = {
+                "private_questions": []
+            }
             editedQuestions.forEach(editedQuestion => {
-                console.log('questao'+ editedQuestion);
-                console.log(questionText[editedQuestion]);
-                console.log(alternativeText[editedQuestion-1]);
-
+                // console.log('questao'+ editedQuestion);
+                // console.log(questionText[editedQuestion]);
+                // console.log(alternativeText[editedQuestion-1]);
+                // console.log(getCorrectAlternative(editedQuestion));
+                let answer = getAlternativesAsObject(editedQuestion);
+                let private_question = {
+                    "description": questionText[editedQuestion],
+                    answer
+                };
+                privateQuestionsObject.private_questions.push(private_question);
             });
 
-            testSaved = true;
+            console.log(privateQuestionsObject);
+
+            testSaved = true;1
             btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvando...';
             btnSave.disabled = true;
             if (visualizingTest) {
@@ -146,7 +155,6 @@
                 btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
             }
 
-            //function to save the test
             $.ajax({
                 url: window.location.origin + '/exams',
                 type: 'POST',
@@ -159,7 +167,9 @@
                         tags: JSON.parse(document.getElementById('tags').value),
                         exam_attributes: JSON.parse(document.getElementById('exam_attributes').value),
                         date: "{{ $exam['date'] }}",
-                        questions: JSON.parse(document.getElementById('questions_ids').value)
+                        questions: JSON.parse(document.getElementById('questions_ids').value),
+                        editedQuestions,
+                        privateQuestionsObject
                     }
                 },
                 success: function(response) {
@@ -274,18 +284,12 @@
         function editQuestion(question) {
             questionText[question] = $('#question' + question + 'Text').text().trim();
             saveAlternatives(question);
-            //salva o texto das alternativas, remove os elementos li e cria elementos input.
 
             // erro por aqui? vê o tamanho de alternativeText. No momento tô trazendo todas questões
             // do banco ignorando a variavel de quantidade de questões. vai dar erro ao mudar a questão 5
             //se você só criou duas questões na view anterior
 
-            // verifica se a questão foi editada.
-
-
             let correctAlternative = getCorrectAlternative(question);
-
-            // console.log(correctAlternative);
 
             $('#alternativesOfQuestion' + question).empty();
 
@@ -305,26 +309,19 @@
         function getCorrectAlternative(question) {
             let varToReturn = false;
             $('#alternativesOfQuestion' + question).children('li').each(function() {
-                // console.log(this);
                 if (this.value === 1) {
-                    // retornando só o "2b"
-                    // magia, o console log vai e o return não
                     varToReturn =  this.id.slice(-2);
-                    // console.log(varToReturn);
                 }
             });
             return varToReturn;
         }
 
         function markCorrectAlternative(correctAlternative) {
-            // tem o alternativeS e o alternative. programador burro. "depois eu mudo isso"
-            console.log(correctAlternative);
             $('#alternativeOfQuestion'+correctAlternative).addClass('bg-success');
+            $('#alternativeOfQuestion'+correctAlternative).css('color','#fff');
         }
 
         function cancelEdit(question) {
-            // console.log('chamou o cancelEdit pra questao' + question);
-
             $('#button' + question).prop("disabled", false);
             $('#question' + question + 'Text').trumbowyg('destroy');
             $('#button' + question + 'Save').removeClass("d-inline").addClass("d-none");
@@ -437,8 +434,9 @@
 
             questionText[question] = thisQuestionText;
 
+            let correctAlternative = getCorrectAlternativeFromInput(question);
             $('#alternativesOfQuestion' + question).empty();
-            appendList(question);
+            appendList(question,correctAlternative);
 
             // console.log(questionText);
             // console.log(alternativeText);
@@ -461,6 +459,26 @@
                 alternativeText[question - 1][i] = $('#inputOfQuestion' + question + alternatives[i]).val()
             }
             return wasEdited;
+        }
+
+        function getAlternativesAsObject(question){
+            let objectToReturn = [];
+
+            $('#alternativesOfQuestion' + question).children('li').each( function(counter) {
+                let valid = 0;
+                if (this.value === 1) {
+                    valid =  1;
+                }
+                let answer = {
+                    "alternative": alternatives[counter],
+                    "description": $('#'+ this.id + "Text").text(),
+                    "valid": valid
+                }
+                objectToReturn.push(answer);
+            });
+            return(objectToReturn);
+
+
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.2/trumbowyg.min.js"

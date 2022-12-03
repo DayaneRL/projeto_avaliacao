@@ -40,7 +40,11 @@ class ExamController extends Controller
     public function store(ExamRequest $request)
     {
         try{
-            // return $request['exam']['questions'];
+            //  já chega o edited_questions e o private_questions aqui.
+            // como tô passando todas as questões puxadas, tem que tirar as que estão no edited_questions pra salvar
+            // return $request;
+
+
 
             DB::beginTransaction();
 
