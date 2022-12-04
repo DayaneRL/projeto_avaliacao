@@ -61,8 +61,23 @@
         let btnAnswers = document.getElementById('btnAnswers');
         let btnSave = document.getElementById('btnSave');
         let visualizingTest = true;
-        let testId = -1;
         let testSaved = false;
+        let testId = -1;
+
+
+        @if(session()->has('testSaved'))
+           testSaved = true;
+           testId = {{session('testSaved')}}
+        @endif
+
+        if (testSaved) {
+            btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
+            btnAnswers.innerHTML = '<i class="fas  fa-eye mr-2 pt-1"></i> Visualizar gabarito';
+            btnSave.disabled = true;
+            btnTest.disabled = false;
+        }
+
+
 
         let alternatives = ['a','b','c','d'];
 
@@ -108,7 +123,7 @@
                 loadAnswers();
 
                 if (testSaved) {
-                    btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
+                    btnAnswers.innerHTML = '<i class="fas fa-save-download mr-2 pt-1"></i> Baixar gabarito';
                     btnTest.innerHTML = '<i class="fas fa-eye mr-2 pt-1"></i> Visualizar prova';
                     btnAnswers.disabled = false;
                 }
@@ -124,8 +139,6 @@
 
         function saveTest() {
             // showing the edited questions
-            console.log('mostrando as questoes editadas, se tiver');
-            console.log(editedQuestions);
             let privateQuestionsObject = {
                 "private_questions": []
             }
@@ -138,7 +151,7 @@
                 privateQuestionsObject.private_questions.push(private_question);
             });
 
-            console.log(privateQuestionsObject);
+            // console.log(privateQuestionsObject);
 
             testSaved = true;1
             btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvando...';
@@ -172,7 +185,6 @@
                     if (response) {
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Prova salva';
                         btnSave.disabled = true;
-                        console.log('response: ')
                         testId=  response;
                     } else {
                         // avisar o usuario que houve um erro

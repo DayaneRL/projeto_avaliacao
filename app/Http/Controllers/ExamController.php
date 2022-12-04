@@ -29,6 +29,7 @@ class ExamController extends Controller
         $categories = Category::all();
         $levels = Level::all();
         $tags = Tag::all();
+        session()->forget('testSaved');
         return view('exams.create', compact('categories', 'levels','tags'));
     }
 
@@ -73,6 +74,7 @@ class ExamController extends Controller
 
 
             DB::commit();
+            session(['testSaved' => $id]);
             return $id;
             // return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 
@@ -86,6 +88,7 @@ class ExamController extends Controller
     public function preview(ExamRequest $request)
     {
         // return $request;
+
         $request->validated();
         $request->all();
         // return $request->name;
