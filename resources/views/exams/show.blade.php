@@ -25,7 +25,8 @@
                 </div>
 
                 <div class="col-12 text-center">
-                    <h3>{{$exam->title}}</h3>
+                    <div class="d-none" id="exam_id">{{$exam->id}}</div>
+                    <h3 id="exam_title">{{$exam->title}}</h3>
 
                     <p><b>Tags:</b> {{$exam->tags}} </p>
                     <p><b>Total de questões:</b> {{$exam->number_of_questions}} </p>
@@ -40,10 +41,10 @@
                     <hr/>
 
                     <div class="mt-2">
-                        <button type="button" class="btn btn-info btn-icon-split p-2">
+                        <button type="button" class="btn btn-info btn-icon-split p-2" onclick="downloadTest()">
                             Baixar prova
                         </button>
-                        <button type="button" class="btn btn-warning btn-icon-split p-2">
+                        <button type="button" class="btn btn-warning btn-icon-split p-2" onclick="downloadAnswers()">
                             Baixar gabarito
                         </button>
                     </div>
@@ -54,5 +55,57 @@
 @endsection
 
 @section('js')
+<script type="text/javascript">
+
+function downloadTest() {
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
+        url: "/exams/download_exam",
+        type: 'POST',
+        data: {
+            title: $('#exam_title').text(),
+            id: $('#exam_id').text()
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(response) {
+            var blob = new Blob([response]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = $('#exam_title').text()+'.pdf';
+            link.click();
+        },
+        error: function(blob) {
+            console.log(blob);
+        }
+    });
+}
+
+function downloadAnswers() {
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
+        url: "exams/download_answers",
+        type: 'POST',
+        data: {
+            title: $('#exam_title').text(),
+            id: $('#exam_id').text()
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(response) {
+            var blob = new Blob([response]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'Gabarito da '+$('#exam_title').text()+'.pdf';
+            link.click();
+        },
+        error: function(blob) {
+        }
+    });
+}
+
+</script>
 
 @endsection

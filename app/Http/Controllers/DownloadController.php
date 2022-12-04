@@ -3,20 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Question,Answer,Exam};
+use App\Models\{Question,Answer,Exam, ExamQuestion};
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DownloadController extends Controller
 {
     public function downloadExam(){
         $exam= request()->all();
+        // $questions = Question::all(); ->codigo antigo
+        $id = $exam['id'];
+        $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
 
-        $questions = Question::all();
         $questions_ids= [];
 
         foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
+            $questions_ids[]+=$question->id;
         }
 
         $replys = Answer::whereIn('question_id', $questions_ids)->get();
@@ -28,11 +31,12 @@ class DownloadController extends Controller
     public function downloadAnswers(){
         $exam= request()->all();
 
-        $questions = Question::all();
-        $questions_ids= [];
+        $id = $exam['id'];
+        $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
 
+        $questions_ids= [];
         foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
+            $questions_ids[]+=$question->id;
         }
 
         $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
@@ -42,8 +46,6 @@ class DownloadController extends Controller
         return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
     public function saveExam(){
-        // a dayane já fez essa parte no ExamController store, vou tentar chamar o dela
-        // mas esse estava funcionando também
         $examInfo= request()->all();
         if(isset($examInfo['testId'])){
             $exam = Exam::find($request->testId);

@@ -66,13 +66,14 @@ class ExamController extends Controller
                 $exam_question->created_at = now();
                 $exam_question->updated_at = now();
                 $exam_question->save();
+                $id = $exam_question->exam_id;
                 $i++;
             }
 
 
 
             DB::commit();
-            return true;
+            return $id;
             // return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 
         }catch (\Throwable $e) {

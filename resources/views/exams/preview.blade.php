@@ -130,10 +130,6 @@
                 "private_questions": []
             }
             editedQuestions.forEach(editedQuestion => {
-                // console.log('questao'+ editedQuestion);
-                // console.log(questionText[editedQuestion]);
-                // console.log(alternativeText[editedQuestion-1]);
-                // console.log(getCorrectAlternative(editedQuestion));
                 let answer = getAlternativesAsObject(editedQuestion);
                 let private_question = {
                     "description": questionText[editedQuestion],
@@ -169,13 +165,15 @@
                         date: "{{ $exam['date'] }}",
                         questions: JSON.parse(document.getElementById('questions_ids').value),
                         editedQuestions,
-                        privateQuestionsObject
+                        privateQuestionsObject,
                     }
                 },
                 success: function(response) {
                     if (response) {
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Prova salva';
                         btnSave.disabled = true;
+                        console.log('response: ')
+                        testId=  response;
                     } else {
                         // avisar o usuario que houve um erro
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvar prova';
@@ -197,6 +195,7 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     title: "{{ $exam['title'] }}",
+                    id: testId
                 },
                 xhrFields: {
                     responseType: 'blob'
@@ -221,6 +220,7 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     title: "{{ $exam['title'] }}",
+                    id: testId
                 },
                 xhrFields: {
                     responseType: 'blob'
