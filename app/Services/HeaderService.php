@@ -70,6 +70,11 @@ class HeaderService
             $image_array_2 = explode(",", $image_array_1[1]);
             $data = base64_decode($image_array_2[1]);
             $fileName = uniqid(date('HisYmd')) . ".png";
+
+            if(!Storage::disk('public')->exists('headers/')){
+                Storage::disk('public')->makeDirectory('headers/');
+            }
+
             file_put_contents( 'storage/headers/'.$fileName, $data);
             return 'headers/' . $fileName;
         }
