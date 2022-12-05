@@ -35,8 +35,8 @@
         @endif
 
         <div class="row mb-3">
-            <form action="{{isset($exam)?route('exams.update',$exam->id):route('exams.store')}}" method="POST" class="col-12">
-                {{-- <form action="{{route('exams.preview')}}" method="POST" class="col-12"> --}}
+            {{-- <form action="{{isset($exam)?route('exams.update',$exam->id):route('exams.store')}}" method="POST" class="col-12"> --}}
+                <form action="{{route('exams.preview')}}" method="POST" class="col-12">
                 @csrf
                 @if(isset($exam))
                     @method('PUT')

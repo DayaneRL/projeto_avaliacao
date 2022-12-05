@@ -32,4 +32,13 @@ class Question extends Model
         );
     }
 
+    public function Category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function QuestionTag()
+    {
+        return $this->hasMany(QuestionTag::class);
+    }
 }

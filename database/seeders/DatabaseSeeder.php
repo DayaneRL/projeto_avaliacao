@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             CategoriesSeeder::class,
             TagsSeeder::class,
             AnswersSeeder::class,
-            QuestionsSeeder::class
+            QuestionsSeeder::class,
+            QuestionTagSeeder::class
         ]);
     }
 }

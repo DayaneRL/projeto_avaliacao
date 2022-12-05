@@ -40,7 +40,7 @@ class ExamController extends Controller
 
     public function create():View
     {
-        $categories = Category::all();
+        $categories = Category::whereHas('Question')->get();
         $levels = Level::all();
         $tags = Tag::all();
         return view('exams.create', compact('categories', 'levels','tags'));
@@ -70,19 +70,32 @@ class ExamController extends Controller
     {
         $request->validated();
         $request->all();
-        // return $request->name;
+
         $exam=$request['exam'];
-        $questions = Question::all();
-        $questions_ids= [];
 
-        // return var_dump($exam);
+        $questions = [];
+        if(isset($request['exam_attributes'])){
+            foreach($request['exam_attributes'] as $attribute){
+                if(isset($request['exam']['tags'])){
+                    $question = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->whereHas('QuestionTag', function($q) use ($request){
+                        $q->whereIn('tag_id', $request['exam']['tags']);
+                    })
+                    ->with('Answers')
+                    ->take($attribute["number_of_questions"])->get()->toArray();
+                }else{
+                    $question = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->with('Answers')
+                    ->take($attribute["number_of_questions"])->get()->toArray();
+                }
 
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
+                $questions = (count($questions)==0) ? $question : array_merge($questions, $question);
+            }
         }
-        $replys = Answer::whereIn('question_id', $questions_ids)->get();
-
-        return view('exams.store', compact('exam', 'questions','replys', 'questions_ids'));
+        $questions_ids = array_column($questions, 'id');
+        return view('exams.store', compact('exam', 'questions', 'questions_ids'));
 
     }
 

@@ -14,5 +14,9 @@ class Category extends Model
         'name',
     ];
 
+    public function Question()
+    {
+        return $this->hasOne(Question::class);
+    }
 
 }

@@ -84,7 +84,20 @@ class ExamService
                     )
                 );
 
-                $questions = Question::where('level_id','=',$attribute["level_id"])->take($attribute["number_of_questions"])->get();
+
+                if(isset($tags) && $tags !== ''){
+                    $questions = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->whereHas('QuestionTag', function($q) use ($request){
+                        $q->whereIn('tag_id', $request['exam']['tags']);
+                    })
+                    ->take($attribute["number_of_questions"])->get();
+                }else{
+                    $questions = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->take($attribute["number_of_questions"])->get();
+                }
+
                 foreach($questions as $question){
                     $number+=1;
                     $examQuestion = ExamQuestion::create([

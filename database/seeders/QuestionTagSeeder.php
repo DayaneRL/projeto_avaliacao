@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class TagsSeeder extends Seeder
+class QuestionTagSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,46 +15,59 @@ class TagsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('tags')->insert([
+        DB::table('question_tags')->insert([
             [
-                'description' => 'Primeira Guerra',
-                'category_id'=>'4',
+                'question_id' => '1',
+                'tag_id' => '7',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
             [
-                'description' => 'Guerra Fria',
-                'category_id'=>'4',
+                'question_id' => '2',
+                'tag_id' => '5',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
             [
-                'description' => 'Bhaskara',
-                'category_id'=>'2',
+                'question_id' => '3',
+                'tag_id' => '6',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
             [
-                'description' => 'Álgebra',
-                'category_id'=>'2',
+                'question_id' => '4',
+                'tag_id' => '4',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
             [
-                'description' => 'Estatística',
-                'category_id'=>'2',
+                'question_id' => '5',
+                'tag_id' => '7',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
             [
-                'description' => 'Pitagoras',
-                'category_id'=>'2',
+                'question_id' => '6',
+                'tag_id' => '2',
+                'created_at'=> now(),
+                'updated_at'=> now()
+            ],
+
+            [
+                'question_id' => '7',
+                'tag_id' => '3',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
             [
-                'description' => 'Porcentagem',
-                'category_id'=>'2',
+                'question_id' => '8',
+                'tag_id' => '3',
+                'created_at'=> now(),
+                'updated_at'=> now()
+            ],
+            [
+                'question_id' => '9',
+                'tag_id' => '3',
                 'created_at'=> now(),
                 'updated_at'=> now()
             ],
