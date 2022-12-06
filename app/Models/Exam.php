@@ -33,8 +33,14 @@ class Exam extends Model
     public function tagsList(): Attribute
     {
         $tags = explode(',', $this->tags);
+        $listTagNames = [];
+        foreach($tags as $tag){
+            if(Tag::find($tag)){
+                array_push($listTagNames, Tag::find($tag)->description);
+            }
+        }
         return Attribute::make(
-            get: fn ($value) => $tags
+            get: fn ($value) => count($listTagNames)>0 ? implode(",", $listTagNames) : $listTagNames
         );
     }
 
@@ -42,7 +48,7 @@ class Exam extends Model
     {
         $tags = explode(',', $this->tags);
         return Attribute::make(
-            get: fn ($value) => count($tags)>2 ? $tags[0].', '.$tags[1].', ...' : $tags[0]
+            get: fn ($value) => count($tags)>2 ? Tag::find($tags[0])->description.', '.Tag::find($tags[1])->description.', ...' : ($tags[0]?Tag::find($tags[0])->description:'-')
         );
     }
 

@@ -59,7 +59,7 @@ class HeaderController extends Controller
         }catch (\Throwable $e) {
             DB::rollBack();
             return response()->json([
-                'msg'  => 'Algo deu errado.'
+                'msg'  => $e->getMessage()
             ], 500);
             // return back()->withInput($request->input())->with('warning', "Algo deu errado" );;
         }

@@ -31,7 +31,6 @@ Route::group([ 'middleware'=>'guest'], function(){
 
 Route::group(['middleware'=>'auth'], function(){
 
-
     Route::post('/exams/save_exam', [DownloadController::class , 'saveExam'])->name('save.exam');
     Route::post('/exams/download_exam', [DownloadController::class , 'downloadExam'])->name('download.exam');
     Route::post('/exams/download_answers', [DownloadController::class , 'downloadAnswers'])->name('download.answers');
@@ -47,10 +46,11 @@ Route::group(['middleware'=>'auth'], function(){
 
     Route::group(['middleware' => 'admin:false'], function() {
         Route::post('/exams/view',[ExamController::class, 'preview'])->name('exams.preview');
-        // nao ta chamando
-        Route::post('/exams/create_question',[ExamController::class, 'createQuestion'])->name('exams.createQuestion');
-        Route::resource('/exams', ExamController::class);
+        Route::resource('/exams', ExamController::class,['except' => ['index']]);
+        Route::get('/exams', [ExamController::class,'index'])->name('exams.index');
+        Route::post('/exams/filters', [ExamController::class,'indexFilter'])->name('exams.filter');
         Route::get('/findExam/{id}', [ExamController::class,'find']);
+
         Route::resource('/headers', HeaderController::class);
         Route::get('/findHeader/{id}', [HeaderController::class,'find']);
         Route::post('/updateLogo', [HeaderController::class,'updateLogo']);

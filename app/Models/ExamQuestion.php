@@ -12,8 +12,7 @@ class ExamQuestion extends Model
         'exam_id',
         'number',
         'question_id',
-        'private',
-        'user_id'
+        'private'
     ];
 
     public function Exam()
@@ -24,6 +23,16 @@ class ExamQuestion extends Model
     public function Question()
     {
         return $this->belongsTo(Question::class);
+    }
+
+    public function QuestionsPrivate()
+    {
+        return $this->hasOne(QuestionsPrivate::class);
+    }
+
+    public function AnswersPrivate()
+    {
+        return $this->hasMany(AnswersPrivate::class);
     }
 
     public function User()

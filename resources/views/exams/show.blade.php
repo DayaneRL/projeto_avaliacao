@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Visualizar Prova
+    Visualizar Avaliação
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
                 <div class="row no-gutters align-items-center mb-3">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            PROVA - {{$exam->title}}
+                            Avaliação - {{$exam->title}}
                         </div>
                     </div>
                     <div class="col-auto">
@@ -21,6 +21,9 @@
                             </span>
                             <span class="text">Voltar</span>
                         </a>
+                        <a href="/exams/{{$exam->id}}/edit" class="btn btn-info btn-icon-split">
+                            <span class="text">Editar</span>
+                        </a>
                     </div>
                 </div>
 
@@ -28,16 +31,19 @@
                     <div class="d-none" id="exam_id">{{$exam->id}}</div>
                     <h3 id="exam_title">{{$exam->title}}</h3>
 
-                    <p><b>Tags:</b> {{$exam->tags}} </p>
+                    <p><b>Tags:</b> {{$exam->tags_list}} </p>
                     <p><b>Total de questões:</b> {{$exam->number_of_questions}} </p>
                     <p><b>Categoria:</b> {{$exam->Category->name}} </p>
                     <p><b>Data da prova:</b> {{$exam->exam_date}} </p>
-
                     <hr/>
-                    @foreach ($exam->Attributes as $attribute)
-                        <p><b>Qtd. de questões:</b> {{$attribute->number_of_questions}},
-                           <b>Nível:</b> {{$attribute->level_name}} </p>
-                    @endforeach
+                        @foreach ($exam->Attributes as $attribute)
+                            <p><b> - Questões Aleatórias - </b></p>
+                            <p><b>Qtd. de questões:</b> {{$attribute->number_of_questions}},
+                            <b>Nível:</b> {{$attribute->Level->name}} </p>
+                        @endforeach
+                        <p><b> - Questões Privadas - </b></p>
+                        <p><b>Qtd. de questões:</b> {{$questions_private->count()}}</p>
+
                     <hr/>
 
                     <div class="mt-2">

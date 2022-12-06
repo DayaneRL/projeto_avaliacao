@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('alternative', 2); // a, b, c or d
             $table->tinyInteger('valid')->nullable(); //0 or 1
-            $table->foreignIdFor(Answer::class);
+            $table->foreignIdFor(Answer::class)->nullable();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(ExamQuestion::class);
 

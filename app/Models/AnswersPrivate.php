@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class AnswerPrivate extends Model
+class AnswersPrivate extends Model
 {
     protected $table = 'answers_private';
     protected $fillable = [

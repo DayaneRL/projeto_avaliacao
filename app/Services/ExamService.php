@@ -4,21 +4,28 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\{Auth, DB};
-use App\Models\{Exam, Question, ExamAttribute, Reply, User};
+use Illuminate\Support\Facades\{Auth, DB, Storage};
+use App\Models\{
+    Exam,
+    Question,
+    ExamAttribute,
+    Answer,
+    User,
+    ExamQuestion,
+    QuestionsPrivate,
+    AnswersPrivate
+};
+use App\Http\Requests\ExamRequest;
 
 class ExamService
 {
 
-    public static function storeExam(array $request)
+    public static function storeExam(ExamRequest $request): Exam
     {
-        // var_dump($request);
-        // está faltando o exam_attributes aqui por algum motivo, mas ele tá sendo recebido no store() do
-        // ExamController
-        // return null;
-        $tags = count($request['exam']['tags']) > 1 ?
-                implode(', ', $request['exam']['tags']) :
-                $request['exam']['tags'][0];
+        $tags = isset($request['exam']['tags']) ?
+                (count($request['exam']['tags']) > 1 ?
+                implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0])
+            : '';
         $dt_exam = explode('/', $request['exam']['date']);
 
         $exam = Exam::create(
@@ -32,55 +39,166 @@ class ExamService
             )
         );
 
-        // foreach($request['exam_attributes'] as $attribute){
-        //     ExamAttribute::create(
-        //         array_merge(
-        //             $attribute,
-        //             ['exam_id' => $exam->id]
-        //         )
-        //     );
-        // }
+        $number = 0;
 
-        // for($i=0; $i<$request['exam']['number_of_questions']; $i++){
-        //     $question = new Question();
-        //     $question->number = ($i+1);
-        //     $question->text = 'Descrição da pergunta '.($i+1);
-        //     $question->exam_id = $exam->id;
-        //     $question->save();
+        if(isset($request['private_questions'])){
+            foreach($request['private_questions'] as $key => $question){
 
-        //     $reply = new Reply();
-        //     $reply->question_id = $question->id;
-        //     $question->text = 'Resposta da questão ';
-        //     $reply->alternative = 'a';
-        //     $reply->valid = 'a';
-        //     $reply->exam_id = $exam->id;
-        //     $reply->save();
-        // }
+                $number+=1;
+                $examQuestion = ExamQuestion::create([
+                    'exam_id'=>$exam->id,
+                    'number'=>$number,
+                    'private'=>true
+                ]);
 
-        return $exam->id;
-    }
+                $questPrivate = QuestionsPrivate::create([
+                    'description'=>$question["description"],
+                    // 'image'=>$question['image'],
+                    'user_id'=>Auth::user()->id,
+                    'exam_question_id'=>$examQuestion->id
+                ]);
 
-    public static function updateExam(array $request, Exam $exam): Exam
-    {
-        $tags = count($request['exam']['tags']) > 1 ? implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0];
-        $dt_exam = explode('/', $request['exam']['date']);
-        $exam->update(
-            array_merge(
-                $request['exam'],
-                ['tags'=>$tags,
-                 'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
-                ]
-            )
-        );
 
-        foreach($request['exam_attributes'] as $attribute){
-            $examAttribute = ExamAttribute::find($attribute['id']);
-            $examAttribute->update(
-                $attribute
-            );
+                if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
+                    foreach($question["answer"] as $answer){
+                        $ansPrivate = AnswersPrivate::create(
+                            array_merge(
+                                $answer,
+                                [
+                                    'exam_question_id'=>$examQuestion->id,
+                                    'user_id'=>Auth::user()->id,
+                                ]
+                            )
+                        );
+                    }
+                }
+            }
+        }
+
+        if(isset($request['exam_attributes'])){
+            foreach($request['exam_attributes'] as $attribute){
+                ExamAttribute::create(
+                    array_merge(
+                        $attribute,
+                        ['exam_id' => $exam->id]
+                    )
+                );
+
+
+                if(isset($tags) && $tags !== ''){
+                    $questions = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->whereHas('QuestionTag', function($q) use ($request){
+                        $q->whereIn('tag_id', $request['exam']['tags']);
+                    })
+                    ->take($attribute["number_of_questions"])->get();
+                }else{
+                    $questions = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->take($attribute["number_of_questions"])->get();
+                }
+
+                foreach($questions as $question){
+                    $number+=1;
+                    $examQuestion = ExamQuestion::create([
+                        'exam_id'=>$exam->id,
+                        'number'=>$number,
+                        'question_id'=>$question->id,
+                        'private'=>false
+                    ]);
+                }
+            }
         }
 
         return $exam;
+    }
+
+    public static function updateExam(array $request, Exam $exam)
+    {
+        //:Exam
+        $tags = isset($request['exam']['tags']) ?
+                (count($request['exam']['tags']) > 1 ?
+                    implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0])
+            : '';
+        $dt_exam = explode('/', $request['exam']['date']);
+        // $exam->update(
+        //     array_merge(
+        //         $request['exam'],
+        //         ['tags'=>$tags,
+        //          'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
+        //         ]
+        //     )
+        // );
+
+        // foreach($request['exam_attributes'] as $attribute){
+        //     $examAttribute = ExamAttribute::find($attribute['id']);
+        //     $examAttribute->update(
+        //         $attribute
+        //     );
+        // }
+
+        if(isset($request['private_questions'])){
+            foreach($request['private_questions'] as $key => $question){
+                if(isset($question['id'])){
+                    $examQuestion = ExamQuestion::find($question['id']);
+                    if($examQuestion->private==1){
+                        echo "<br/>";
+                        echo $question['id']." - editar pergunta privada";
+
+                        echo $question['question_private_id']." - question_private_id";
+                        $QuestionsPrivate = QuestionsPrivate::find($question['question_private_id']);
+                        $QuestionsPrivate->update([
+                            'description'=>$question["description"]
+                        ]);
+                        echo "<br/>";
+                        print_r($QuestionsPrivate);
+                        echo "<br/>";
+
+                        if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
+                            foreach($question["answer"] as $answer){
+                                echo $answer['answer_private_id']." - answer_private_id";
+                        //         $ansPrivate = AnswersPrivate::create(
+                        //             array_merge(
+                        //                 $answer,
+                        //                 [
+                        //                     'exam_question_id'=>$examQuestion->id,
+                        //                     'user_id'=>Auth::user()->id,
+                        //                 ]
+                        //             )
+                        //         );
+                            }
+                        }
+                    }else{
+                        echo $question['id']." - trocar pergunta aleatoria para privada";
+                    }
+                }else{
+                    echo "!!!Adicionado mais uma pergunta privada!!!";
+                }
+            }
+        }
+
+    }
+
+    private static function storeImage($question, QuestionsPrivate $questionPriv = null): string
+    {
+        if(!is_null($questionPriv) && $questionPriv->image) {
+            $filePath = $questionPriv->getRawOriginal('logo');
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+        }
+
+        // if ( $question->hasFile('image') && $question->file('image') ) {
+        if(isset($question["image"])){
+            $info =new \SplFileInfo($question["image"]);
+            $fileName = uniqid(date('HisYmd')) . ".{$info->getExtension()}";
+            Storage::putFileAs(
+                'storage/exams', $question["image"], $fileName
+            );
+            return 'exams/' . $fileName;
+        }else{
+            return null;
+        }
     }
 
     public static function deadlines(User $user): array

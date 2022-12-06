@@ -92,6 +92,7 @@ $(document).on('click', '#send_header', function(){
             },
             error: function (error) {
                 console.log(error);
+                $('.card-body').find('.alert-warning').remove();
                 $('.card-body').prepend(`
                     <div class="alert alert-warning">
                         ${error.msg}

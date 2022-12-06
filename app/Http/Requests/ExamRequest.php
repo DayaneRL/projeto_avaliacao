@@ -26,7 +26,7 @@ class ExamRequest extends FormRequest
         $rules = [
             'exam.title'=>'required|max:255',
             'exam.number_of_questions'=>'required',
-            'exam.tags'=>'required',
+            'exam.tags'=>'nullable',
             'exam.category_id'=>'required',
             'exam.date'=>'required',
         ];
@@ -44,6 +44,26 @@ class ExamRequest extends FormRequest
         //         }
         //     }
         // }
+
+        if ($this->filled('private_questions'))
+        {
+            foreach($this->input('private_questions') as $key => $val){
+
+                $rules["private_questions.{$key}.id"] = ['nullable','sometimes'];
+                $rules["private_questions.{$key}.question_private_id"] = ['nullable','sometimes'];
+                $rules["private_questions.{$key}.description"] = ['required'];
+                // $rules["private_questions.{$key}.image"] = ['nullable','sometimes'];
+                if(isset($val["answer"]) && !isset($val["answer"]['rows'])){
+                    foreach($val["answer"] as $key2 => $answer){
+                        $rules["private_questions.{$key}.answer.{$key2}.answer_private_id"] = ['nullable','sometimes'];
+                        $rules["private_questions.{$key}.answer.{$key2}.alternative"] = ['required'];
+                        $rules["private_questions.{$key}.answer.{$key2}.description"] = ['required'];
+                        $rules["private_questions.{$key}.answer.{$key2}.valid"] = ['required'];
+                    }
+                }
+
+            }
+        }
 
         return $rules;
     }
@@ -64,6 +84,19 @@ class ExamRequest extends FormRequest
             {
                 $messages["exam_attributes.{$key}.number_of_questions.required"] = 'O campo Qtd. de questões é obrigatório.';
                 $messages["exam_attributes.{$key}.level_id.required"] = 'O campo Nível é obrigatório.';
+            }
+        }
+        if ($this->filled('private_questions'))
+        {
+            foreach($this->input('private_questions') as $key => $val){
+                $messages["private_questions.{$key}.description.required"] = 'O campo Descrição '.$key.' é obrigatório.';
+                if(isset($val["answer"]) &&  !isset($val["answer"]['rows'])){
+                    foreach($val["answer"] as $key2 => $answer){
+                        $messages["private_questions.{$key}.answer.{$key2}.alternative.required"] = 'O campo Alternativa '.$key.' é obrigatório.';
+                        $messages["private_questions.{$key}.answer.{$key2}.description.required"] = 'O campo Descrição da resposta da questão '.$key.' é obrigatório.';
+                        $messages["private_questions.{$key}.answer.{$key2}.valid.required"] = 'Selecionar a alternativa correta é obrigatório.';
+                    }
+                }
             }
         }
         return $messages;

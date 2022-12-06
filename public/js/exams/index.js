@@ -22,20 +22,18 @@ $(document).on('click','.show_exam', function(){
         url: `/findExam/${id}`,
         type: 'GET',
         success: function (response) {
-
+            console.log(response);
             let exam = response.exam;
-            let category = response.category;
             $('#utilsModal').find('.modal-body').find('.content').remove();
 
             $('#utilsModal').find('.modal-body').append(`
                 <div class="content text-center">
                     <div class="d-none" id="id_exam">${id}</div>
                     <h3 id="exam_title">${exam.title}</h3>
-                    <p id="exam_tags"><b>Tags:</b> ${exam.tags} </p>
+                    <p id="exam_tags"><b>Tags:</b> ${response.tags_list} </p>
                     <p id="exam_total"><b>Total de questões:</b> ${exam.number_of_questions} </p>
-                    <p id="exam_categoria"><b>Categoria:</b> ${category.name} </p>
+                    <p id="exam_categoria"><b>Categoria:</b> ${exam.category.name} </p>
                     <p id="exam_data"><b>Data da prova:</b> ${response.exam_date} </p>
-                    <p><b>Níveis:</b> ${response.levels} </p>
                     <hr/>
                     <div class="mt-2">
                         <button type="button" class="btn btn-info p-2" onclick="downloadTest()">
@@ -50,7 +48,7 @@ $(document).on('click','.show_exam', function(){
 
         },
         error: function (error) {
-            console.log(error);
+            console.log(error.responseJSON);
         }
     });
 

@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam,ExamQuestion, Question, Category, Level, Tag, Answer};
+use App\Models\{Exam, Question, Category, Level, Tag, Answer, ExamQuestion, QuestionsPrivate};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Hamcrest\Arrays\IsArray;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,10 +24,23 @@ class ExamController extends Controller
         return view('exams.index', compact('exams'));
     }
 
-    public function create()
+    public function indexFilter(Request $request):View
     {
-        //View
-        $categories = Category::all();
+        $lastSundary = date('Y-m-d', strtotime("sunday -1 week"));
+        $nexSunday   = date('Y-m-d', strtotime("sunday 0 week"));
+        if($request["filters"] == 'passed'){
+            $exams = Exam::where('date','<', date('Y-m-d'))->where('user_id','=',Auth::user()->id)->get();
+        }else if($request["filters"] == 'this_week'){
+            $exams = Exam::where('date','>', $lastSundary)->where('date','<',$nexSunday)->where('user_id','=',Auth::user()->id)->get();
+        }else if($request["filters"] == 'yet_to_come'){
+            $exams = Exam::where('date','>', $nexSunday)->where('user_id','=',Auth::user()->id)->get();
+        }
+        return view('exams.index', compact('exams'));
+    }
+
+    public function create():View
+    {
+        $categories = Category::whereHas('Question')->get();
         $levels = Level::all();
         $tags = Tag::all();
         session()->forget('testSaved');
@@ -41,16 +55,11 @@ class ExamController extends Controller
     public function store(ExamRequest $request)
     {
         try{
-            //  já chega o edited_questions e o private_questions aqui.
-            // como tô passando todas as questões puxadas, tem que tirar as que estão no edited_questions pra salvar
-            // return $request;
-
-
+            $request->validated();
 
             DB::beginTransaction();
-
             $exam = ExamService::storeExam(
-                $request->validated()
+                $request
             );
 
             // that's me trying to save the exam questions
@@ -91,22 +100,32 @@ class ExamController extends Controller
 
         $request->validated();
         $request->all();
-        // return $request->name;
+
         $exam=$request['exam'];
-        $exam_attributes = $request['exam_attributes'];
-        $questions = Question::all();
-        $questions_ids= [];
 
-        // return var_dump($exam);
+        $questions = [];
+        if(isset($request['exam_attributes'])){
+            foreach($request['exam_attributes'] as $attribute){
+                if(isset($request['exam']['tags'])){
+                    $question = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->whereHas('QuestionTag', function($q) use ($request){
+                        $q->whereIn('tag_id', $request['exam']['tags']);
+                    })
+                    ->with('Answers')
+                    ->take($attribute["number_of_questions"])->get()->toArray();
+                }else{
+                    $question = Question::where('level_id','=',$attribute["level_id"])
+                    ->where('category_id','=',$request['exam']['category_id'])
+                    ->with('Answers')
+                    ->take($attribute["number_of_questions"])->get()->toArray();
+                }
 
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
+                $questions = (count($questions)==0) ? $question : array_merge($questions, $question);
+            }
         }
-        $replys = Answer::whereIn('question_id', $questions_ids)->get();
-
-        // return $replys;
-
-        return view('exams.preview', compact('exam','exam_attributes', 'questions','replys', 'questions_ids'));
+        $questions_ids = array_column($questions, 'id');
+        return view('exams.store', compact('exam', 'questions', 'questions_ids'));
 
     }
 
@@ -114,7 +133,9 @@ class ExamController extends Controller
     public function show($id)
     {
         $exam = Exam::find($id);
-        return view('exams.show', compact('exam'));
+        $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
+        ->where('private','=','1')->with('QuestionsPrivate')->get();
+        return view('exams.show', compact('exam','questions_private'));
     }
 
 
@@ -123,14 +144,25 @@ class ExamController extends Controller
         $exam = Exam::find($id);
         $categories = Category::all();
         $levels = Level::all();
-        $tagsExemple = ['primeira_guerra'=>'Primeira Guerra', 'guerra_fria'=>'Guerra Fria','baskara'=>'Baskara'];
-        return view('exams.create', compact('categories', 'levels', 'exam', 'tagsExemple'));
+        $tags = Tag::all();
+        $exam_questions = ExamQuestion::where('exam_id','=',$exam->id)
+            ->where('private','=','0')
+                ->with('Question','Question.Answers')->get();
+
+        $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
+            ->where('private','=','1')
+            ->with('QuestionsPrivate','AnswersPrivate')->get();
+
+        return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
     }
 
 
-    public function update(ExamRequest $request, $id): RedirectResponse
+    public function update(ExamRequest $request, $id)
     {
+        //RedirectResponse
         try{
+
+            // return $request->validated();
             DB::beginTransaction();
 
             $exam = Exam::findOrFail($id);
@@ -138,6 +170,7 @@ class ExamController extends Controller
                 $request->validated(),
                 $exam
             );
+            return false;
 
             DB::commit();
             return back()->with('success', "Prova atualizada com sucesso" );
@@ -176,11 +209,11 @@ class ExamController extends Controller
                 'exam'      => $exam,
                 'category'  => $exam->Category,
                 'exam_date' => $exam->exam_date,
-                'levels'    => $exam->levels
+                'tags_list' => $exam->tags_list
             ], 200);
         }catch (\Exception $ex) {
             return response()->json([
-                'data'  => 'Algo deu errado.'
+                $ex->getMessage()
             ], 500);
         }
     }
