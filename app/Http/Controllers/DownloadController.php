@@ -18,6 +18,18 @@ class DownloadController extends Controller
 
         $questions_ids= [];
 
+        $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
+        $imageId =  $imageId[0]->user_header_id;
+
+        if($imageId == 0){
+            $image = 'headers/logocaraguasecretaria.PNG';
+        }else{
+            $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
+            $image =  $image[0]->logo;
+        }
+
+
+
         foreach($questions as $question){
             $questions_ids[]+=$question->id;
         }
@@ -26,7 +38,7 @@ class DownloadController extends Controller
 
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','replys'));
+        $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','replys','image'));
         return $pdf->download($exam['title'].'.pdf');
     }
     public function downloadAnswers(){
@@ -42,6 +54,15 @@ class DownloadController extends Controller
 
         $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
+        $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
+        $imageId =  $imageId[0]->user_header_id;
+
+        if($imageId == 0){
+            $image = 'headers/logocaraguasecretaria.PNG';
+        }else{
+            $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
+            $image =  $image[0]->logo;
+        }
 
         Pdf::setOption('isRemoteEnabled',true);
         $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids'));

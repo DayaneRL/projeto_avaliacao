@@ -67,7 +67,8 @@
 </head>
 <body>
     <div class="header">
-        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
+        <img src="{{url('/').$image }}" class="headerImg">
+        {{-- <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg"> --}}
         {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses

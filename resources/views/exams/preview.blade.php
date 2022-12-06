@@ -67,14 +67,14 @@
         let btnSave = document.getElementById('btnSave');
         let visualizingTest = true;
         let testSaved = false;
-        let testId = -1;
+        let testId = 0;
         const MAIN_URL = window.location.origin;
 
         const idHeaderImage = {{$exam['header_id']}};
 
         updateImage();
         function updateImage(){
-            if(idHeaderImage==-1){
+            if(idHeaderImage==0){
                 $('#headerImage').attr("src",MAIN_URL+ '/storage/headers/logocaraguasecretaria.PNG');
             }else{
                 $.ajax({
