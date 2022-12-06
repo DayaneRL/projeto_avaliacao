@@ -92,22 +92,19 @@
         @foreach ($questions as $question)
 
             <p class="questionNumber mt-3">Questão {{$questionNumber++}}</p>
-            @if ($question['image'])
-                <img src="{{ $question['image']}} " class="questionImg">
+            @if ($question->image)
+                <img src="{{ $question->image}} " class="questionImg">
             @endif
-            <p class="questionText">{{$question['description']}}</p>
-            @foreach ($question['answers'] as $reply)
-                @if($reply['question_id'] == $question['id'])
+            <p class="questionText">{{$question->description}}</p>
+            @foreach ($replys as $reply)
+                @if($reply->question_id == $question->id)
                     <li class="answers">
-                        <span class="alternative">{{$reply['alternative']}})</span>
-                        {{$reply['description']}}
+                        <span class="alternative">{{$reply->alternative}})</span>
+                        {{$reply->description}}
                     </li>
                 @endif
 
             @endforeach
-            {{-- <li class="answers">
-                <p>E) <strong>Resposta certa</strong></p>
-            </li> --}}
         @endforeach
 
 </body>

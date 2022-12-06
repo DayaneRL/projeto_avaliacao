@@ -46,9 +46,14 @@
                     </div>
                 </div>
             </div>
+            @if (isset($exam['tags']))
+                <input type="hidden" value="{{ json_encode($exam['tags']) }}" id="tags">
+            @else
+                <input type="hidden" value="[]" id="tags">
+            @endif
 
-            <input type="hidden" value="{{ json_encode($exam['tags']) }}" id="tags">
             <input type="hidden" value="{{ json_encode($exam_attributes) }}" id="exam_attributes">
+            <input type="hidden" value="{{ json_encode($questions) }}" id="questions">
             <input type="hidden" value="{{ json_encode($questions_ids) }}" id="questions_ids">
 
         </div>
@@ -63,6 +68,29 @@
         let visualizingTest = true;
         let testSaved = false;
         let testId = -1;
+        const MAIN_URL = window.location.origin;
+
+        const idHeaderImage = {{$exam['header_id']}};
+
+        updateImage();
+        function updateImage(){
+            if(idHeaderImage==-1){
+                $('#headerImage').attr("src",MAIN_URL+ '/storage/headers/logocaraguasecretaria.PNG');
+            }else{
+                $.ajax({
+                    url: `/findHeader/${idHeaderImage}`,
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response);
+                        $('#headerImage').attr("src",MAIN_URL+ '/storage/'+response.header.logo);
+                    },
+                    error: function (error) {
+                        console.log('error');
+                        console.log(error);
+                    }
+                });
+            }
+        }
 
 
         @if(session()->has('testSaved'))
@@ -153,7 +181,7 @@
 
             // console.log(privateQuestionsObject);
 
-            testSaved = true;1
+            testSaved = true;
             btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvando...';
             btnSave.disabled = true;
             if (visualizingTest) {
@@ -179,6 +207,7 @@
                         questions: JSON.parse(document.getElementById('questions_ids').value),
                         editedQuestions,
                         privateQuestionsObject,
+                        idHeaderImage
                     }
                 },
                 success: function(response) {
@@ -258,16 +287,19 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     title: "{{ $exam['title'] }}",
+                    questions: JSON.parse(document.getElementById('questions').value)
                 },
                 success: function(response) {
                     if (response['success']) {
                         document.getElementById('pdfViewer').innerHTML = response['html'];
                         btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
+                        updateImage();
                     }
                 },
                 error: function(response) {
                 }
             });
+
 
         }
 
@@ -279,11 +311,13 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     title: "{{ $exam['title'] }}",
+                    questions: JSON.parse(document.getElementById('questions').value)
                 },
                 success: function(response) {
                     if (response['success']) {
                         document.getElementById('pdfViewer').innerHTML = response['html'];
                         btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
+                        updateImage();
                     }
                 },
                 error: function(blob) {
@@ -296,10 +330,6 @@
         function editQuestion(question) {
             questionText[question] = $('#question' + question + 'Text').text().trim();
             saveAlternatives(question);
-
-            // erro por aqui? vê o tamanho de alternativeText. No momento tô trazendo todas questões
-            // do banco ignorando a variavel de quantidade de questões. vai dar erro ao mudar a questão 5
-            //se você só criou duas questões na view anterior
 
             let correctAlternative = getCorrectAlternative(question);
 

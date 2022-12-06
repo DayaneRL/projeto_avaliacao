@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level, Tag, Answer, ExamQuestion, QuestionsPrivate};
+use App\Models\{Exam, Question, Category, Level, Tag, Answer, ExamQuestion, QuestionsPrivate, UserHeader};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,8 +43,9 @@ class ExamController extends Controller
         $categories = Category::whereHas('Question')->get();
         $levels = Level::all();
         $tags = Tag::all();
+        $headers = UserHeader::all();
         session()->forget('testSaved');
-        return view('exams.create', compact('categories', 'levels','tags'));
+        return view('exams.create', compact('categories', 'levels','tags', 'headers'));
     }
 
     public function createQuestion(){
@@ -62,7 +63,7 @@ class ExamController extends Controller
                 $request
             );
 
-            // that's me trying to save the exam questions
+            // return $exam;
 
             $question_ids =  $request['exam']['questions'];
 
@@ -71,20 +72,20 @@ class ExamController extends Controller
                 $exam_question = new ExamQuestion;
                 $exam_question->number=$i;
                 $exam_question->private = 0;
-                $exam_question->exam_id = $exam;
+                $exam_question->exam_id = $exam->id;
                 $exam_question->question_id = $question_id;
                 $exam_question->created_at = now();
                 $exam_question->updated_at = now();
                 $exam_question->save();
-                $id = $exam_question->exam_id;
+                // $id = $exam_question->exam_id;
                 $i++;
             }
 
 
 
             DB::commit();
-            session(['testSaved' => $id]);
-            return $id;
+            session(['testSaved' => $exam->id]);
+            return $exam->id;
             // return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 
         }catch (\Throwable $e) {
@@ -102,6 +103,8 @@ class ExamController extends Controller
         $request->all();
 
         $exam=$request['exam'];
+
+        $exam_attributes = $request['exam_attributes'];
 
         $questions = [];
         if(isset($request['exam_attributes'])){
@@ -125,7 +128,7 @@ class ExamController extends Controller
             }
         }
         $questions_ids = array_column($questions, 'id');
-        return view('exams.store', compact('exam', 'questions', 'questions_ids'));
+        return view('exams.preview', compact('exam', 'questions', 'questions_ids', 'exam_attributes'));
 
     }
 
@@ -145,6 +148,7 @@ class ExamController extends Controller
         $categories = Category::all();
         $levels = Level::all();
         $tags = Tag::all();
+        $headers = UserHeader::all();
         $exam_questions = ExamQuestion::where('exam_id','=',$exam->id)
             ->where('private','=','0')
                 ->with('Question','Question.Answers')->get();
@@ -153,7 +157,7 @@ class ExamController extends Controller
             ->where('private','=','1')
             ->with('QuestionsPrivate','AnswersPrivate')->get();
 
-        return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
+        return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private','headers'));
     }
 
 

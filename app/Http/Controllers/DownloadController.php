@@ -24,6 +24,7 @@ class DownloadController extends Controller
 
         $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
+
         Pdf::setOption('isRemoteEnabled',true);
         $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','replys'));
         return $pdf->download($exam['title'].'.pdf');
@@ -40,6 +41,7 @@ class DownloadController extends Controller
         }
 
         $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
+
 
         Pdf::setOption('isRemoteEnabled',true);
         $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids'));
@@ -73,33 +75,23 @@ class DownloadController extends Controller
     public function loadTest(){
         $exam= request()->all();
 
-        $questions = Question::all();
-        $questions_ids= [];
-
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
-        }
-
-        $replys = Answer::whereIn('question_id', $questions_ids)->get();
+        $questions = $exam['questions'];
+        $replys = array_column($questions, 'answers');
 
         $returnHTML = view('exams/pdf/preview/exam', compact('exam','questions','replys'))->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
     public function loadAnswers(){
-        //i am not saving the exam questions rn, the answers are kinda broken
         $exam= request()->all();
 
-        $questions = Question::all();
-        $questions_ids= [];
+        $questions = $exam['questions'];
+        $replys = array_column($questions, 'answers');
 
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
-        }
+        $questions_ids = array_column($questions, 'id');
 
-        $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
-        $returnHTML = view('exams/pdf/preview/answers',compact('exam','questions','replys','questions_ids'))->render();
+        $returnHTML = view('exams/pdf/preview/answers',compact('exam','questions'))->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 }

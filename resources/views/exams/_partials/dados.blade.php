@@ -51,6 +51,26 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div class="form-group col-md-7">
+                    <label for="inputName">Categorias</label>
+                    <select class="form-control js-select2" id="inputHeaders" name="exam[header_id]" onchange="updateImage(this.value)" >
+                        <option value="-1">Cabeçalho padrão</option>
+                        @foreach ($headers as $header)
+                            <option value="{{$header->id}}"
+                                @if(old('exam.header_id')==$header->id||
+                                        (isset($exam)&&$exam->header_id==$header->id) )
+                                        selected
+                                @endif
+                                >{{$header->description}}</option>
+
+
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-5 d-flex">
+                    <img src="" id="previewImage" style="max-width:100%;" class="m-auto">
+                </div>
             </div>
 
         </div>

@@ -107,8 +107,11 @@
 
 <body>
     <div class="header">
-        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
-        {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
+        <img src="" id="headerImage" class="headerImg">
+
+        {{-- var MAIN_URL = window.location.origin; --}}
+        {{-- /storage/${response.header.logo} --}}
+
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
@@ -127,32 +130,30 @@
 
     @foreach ($questions as $question)
         <div class="card shadow h-100 my-3 px-2">
-            <div class="card-body" id="question{{$question->id}}">
-                <button class="btn btn-warning btnEdit" id="button{{$question->id}}" onclick="editQuestion({{$question->id}})">
+            <div class="card-body" id="question{{$question['id']}}">
+                <button class="btn btn-warning btnEdit" id="button{{$question['id']}}" onclick="editQuestion({{$question['id']}})">
                     <i class="fas fa-pen mr-2 pt-1"></i>Editar questão
                 </button>
                 <p class="questionNumber">Questão {{ $questionNumber++ }}</p>
 
-                @if ($question->image)
-                    <img src="{{ $question->image }} " class="questionImg">
+                @if ($question['image'])
+                    <img src="{{ $question['image'] }} " class="questionImg">
                 @endif
 
-                <p class="questionText" id="question{{$question->id}}Text">{{ $question->description }}</p>
-                <ul id="alternativesOfQuestion{{$question->id}}" class="ulAlternatives">
-                @foreach ($replys as $reply)
-                    @if ($reply->question_id == $question->id)
-                        <li class="answers" id="alternative{{$question->id.$reply->alternative}}" value="{{ $reply->valid }}">
-                            <span class="alternative" >{{ $reply->alternative }})</span>
-                            <span id="alternative{{$question->id.$reply->alternative}}Text">{{ $reply->description }}</span>
-                        </li>
-                    @endif
-                    @endforeach
+                <p class="questionText" id="question{{$question['id']}}Text">{{ $question['description'] }}</p>
+                <ul id="alternativesOfQuestion{{$question['id']}}" class="ulAlternatives">
+                @foreach ($question['answers'] as $reply)
+                    <li class="answers" id="alternative{{$question['id'].$reply['alternative']}}" value="{{ $reply['valid'] }}">
+                        <span class="alternative" >{{ $reply['alternative'] }})</span>
+                        <span id="alternative{{$question['id'].$reply['alternative']}}Text">{{ $reply['description'] }}</span>
+                    </li>
+                @endforeach
                 </ul>
 
-                <button class="btn btn-success d-none actionBtn" id="button{{$question->id}}Save" onclick="saveQuestion({{$question->id}})">
+                <button class="btn btn-success d-none actionBtn" id="button{{$question['id']}}Save" onclick="saveQuestion({{$question['id']}})">
                     <i class="fas fa-save mr-2 pt-1"></i>Salvar questão
                 </button>
-                <button class="btn btn-danger d-none actionBtn" id="button{{$question->id}}Cancel" onclick="cancelEdit({{$question->id}})">
+                <button class="btn btn-danger d-none actionBtn" id="button{{$question['id']}}Cancel" onclick="cancelEdit({{$question['id']}})">
                     <i class="fas fa-trash mr-2 pt-1"></i>Cancelar
                 </button>
             </div>

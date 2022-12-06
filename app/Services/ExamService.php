@@ -39,6 +39,7 @@ class ExamService
             )
         );
 
+        $id = $exam->id;
         $number = 0;
 
         if(isset($request['private_questions'])){
@@ -46,7 +47,7 @@ class ExamService
 
                 $number+=1;
                 $examQuestion = ExamQuestion::create([
-                    'exam_id'=>$exam->id,
+                    'exam_id'=> $id,
                     'number'=>$number,
                     'private'=>true
                 ]);

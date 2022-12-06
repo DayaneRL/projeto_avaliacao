@@ -77,3 +77,6 @@ $(document).on('click','.btn-confirm', function(){
 
     $('#utilsModal').modal('hide');
 })
+
+
+

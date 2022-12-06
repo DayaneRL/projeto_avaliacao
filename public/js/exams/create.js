@@ -1,4 +1,7 @@
+const MAIN_URL = window.location.origin;
 $(document).ready(function() {
+    $('#previewImage').attr("src",MAIN_URL+ '/storage/headers/logocaraguasecretaria.PNG');
+
     $('.js-select2').select2({
         "language": {
             "noResults": function(){
@@ -423,3 +426,23 @@ $(document).on('click', '.edit-exam_question', function(){
         removeformatPasted: true,
     });
 })
+
+
+function updateImage(id){
+    if(id==-1){
+        $('#previewImage').attr("src",MAIN_URL+ '/storage/headers/logocaraguasecretaria.PNG');
+    }else{
+        $.ajax({
+            url: `/findHeader/${id}`,
+            type: 'GET',
+            success: function (response) {
+                console.log(response);
+                $('#previewImage').attr("src",MAIN_URL+ '/storage/'+response.header.logo);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+}

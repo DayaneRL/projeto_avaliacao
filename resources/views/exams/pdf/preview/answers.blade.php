@@ -67,7 +67,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
+        <img src="" id="headerImage" class="headerImg">
         {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
@@ -83,10 +83,7 @@
         @php
             $questionNumber = 1;
         @endphp
-
-
     <div class="answers">
-
             <table>
                 <thead>
                     <tr>
@@ -99,9 +96,9 @@
                     <tr>
                         <td>{{ $questionNumber++ }}</td>
                         <td>
-                            @foreach ($replys as $reply)
-                                @if ($reply->question_id == $question->id)
-                                    {{$reply->alternative}}
+                            @foreach ($question['answers'] as $answer)
+                                @if ($answer['valid'])
+                                    {{$answer['alternative']}}
                                 @endif
                             @endforeach
                         </td>
@@ -111,12 +108,5 @@
             </table>
 
     </div>
-        {{-- @foreach ($questions as $question)
-
-
-
-        @endforeach --}}
-
-
 </body>
 </html>
