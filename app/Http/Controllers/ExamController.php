@@ -63,8 +63,6 @@ class ExamController extends Controller
                 $request
             );
 
-            // return $exam;
-
             $question_ids =  $request['exam']['questions'];
 
             $i=1;
@@ -77,7 +75,6 @@ class ExamController extends Controller
                 $exam_question->created_at = now();
                 $exam_question->updated_at = now();
                 $exam_question->save();
-                // $id = $exam_question->exam_id;
                 $i++;
             }
 

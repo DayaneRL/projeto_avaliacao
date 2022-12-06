@@ -134,7 +134,7 @@
                 <button class="btn btn-warning btnEdit" id="button{{$question['id']}}" onclick="editQuestion({{$question['id']}})">
                     <i class="fas fa-pen mr-2 pt-1"></i>Editar questão
                 </button>
-                <p class="questionNumber">Questão {{ $questionNumber++ }}</p>
+                <p class="questionNumber">Questão <span id="questionNumberOfQuestion{{$question['id']}}">{{ $questionNumber++ }} </span></p>
 
                 @if ($question['image'])
                     <img src="{{ $question['image'] }} " class="questionImg">

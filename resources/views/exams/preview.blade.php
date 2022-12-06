@@ -81,7 +81,6 @@
                     url: `/findHeader/${idHeaderImage}`,
                     type: 'GET',
                     success: function (response) {
-                        console.log(response);
                         $('#headerImage').attr("src",MAIN_URL+ '/storage/'+response.header.logo);
                     },
                     error: function (error) {
@@ -114,10 +113,12 @@
 
         let qtdQuestions = {{ $exam['number_of_questions'] }};
 
-        let alternativeText = new Array(qtdQuestions);
+        // isso aqui tá dando erro, mas tá bem podre o código mesmo.
+        let alternativeText = new Array();
         for (i = 0; i < qtdQuestions; i++) {
             alternativeText[i] = new Array(4);
         }
+        // let alternativeText = [];
 
         btnTest.addEventListener("click", btnTestClick);
         btnAnswers.addEventListener("click", btnAnswersClick);
@@ -396,37 +397,39 @@
         }
 
         function appendList(question, correctAlternative) {
+            let questionNumber = $('#questionNumberOfQuestion'+ question).text()-1;
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "a'> <span class='alternative' >A)</span><span id='alternative" + question + "aText'>" +
-                alternativeText[question - 1][0] + "</span> </li> ");
+                alternativeText[questionNumber][0] + "</span> </li> ");
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "b'> <span class='alternative' >B)</span><span id='alternative" + question + "bText'>" +
-                alternativeText[question - 1][1] + "</span> </li> ");
+                alternativeText[questionNumber][1] + "</span> </li> ");
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "c'> <span class='alternative' >C)</span><span id='alternative" + question + "cText'>" +
-                alternativeText[question - 1][2] + "</span> </li> ");
+                alternativeText[questionNumber][2] + "</span> </li> ");
             $('#alternativesOfQuestion' + question).append("<li class='answers' id='alternative" + question +
                 "d'> <span class='alternative' >D)</span><span id='alternative" + question + "dText'>" +
-                alternativeText[question - 1][3] + "</span> </li> ");
+                alternativeText[questionNumber][3] + "</span> </li> ");
             $('#alternative'+ correctAlternative).attr("value",1);
         }
 
         function appendInput(question) {
+            let questionNumber = $('#questionNumberOfQuestion'+ question).text()-1;
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text" id="alternativeOfQuestion' +question + 'a' + '">A</span></div><input type="text" id="inputOfQuestion' +
-                question + 'a' + '" value="' + alternativeText[question - 1][0] + '" class="form-control"></div>'
+                question + 'a' + '" value="' + alternativeText[questionNumber][0] + '" class="form-control"></div>'
             );
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text"  id="alternativeOfQuestion' +question + 'b' + '">B</span></div><input type="text" id="inputOfQuestion' +
-                question + 'b' + '" value="' + alternativeText[question - 1][1] + '" class="form-control"></div>'
+                question + 'b' + '" value="' + alternativeText[questionNumber][1] + '" class="form-control"></div>'
             );
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text"  id="alternativeOfQuestion' +question + 'c' + '">C</span></div><input type="text" id="inputOfQuestion' +
-                question + 'c' + '" value="' + alternativeText[question - 1][2] + '" class="form-control"></div>'
+                question + 'c' + '" value="' + alternativeText[questionNumber][2] + '" class="form-control"></div>'
             );
             $('#alternativesOfQuestion' + question).append(
                 '<div class="input-group my-1"><div class="input-group-prepend"><span class="input-group-text"  id="alternativeOfQuestion' +question + 'd' + '">D</span></div><input type="text" id="inputOfQuestion' +
-                question + 'd' + '" value="' + alternativeText[question - 1][3] + '" class="form-control"></div>'
+                question + 'd' + '" value="' + alternativeText[questionNumber][3] + '" class="form-control"></div>'
             );
         }
 
@@ -486,19 +489,21 @@
         }
 
         function saveAlternatives(question) {
-            alternativeText[question - 1][0] = $('#alternative' + question + 'aText').text();
-            alternativeText[question - 1][1] = $('#alternative' + question + 'bText').text();
-            alternativeText[question - 1][2] = $('#alternative' + question + 'cText').text();
-            alternativeText[question - 1][3] = $('#alternative' + question + 'dText').text();
+            let questionNumber = $('#questionNumberOfQuestion'+ question).text()-1;
+            alternativeText[questionNumber][0] = $('#alternative' + question + 'aText').text();
+            alternativeText[questionNumber][1] = $('#alternative' + question + 'bText').text();
+            alternativeText[questionNumber][2] = $('#alternative' + question + 'cText').text();
+            alternativeText[questionNumber][3] = $('#alternative' + question + 'dText').text();
         }
 
         function saveEditedAlternatives(question) {
+            let questionNumber = $('#questionNumberOfQuestion'+ question).text()-1;
             let wasEdited = false;
             for(let i=0; i<4; i++){
-                if(alternativeText[question - 1][i] != $('#inputOfQuestion' + question + alternatives[i]).val()){
+                if(alternativeText[questionNumber][i] != $('#inputOfQuestion' + question + alternatives[i]).val()){
                     wasEdited=true;
                 }
-                alternativeText[question - 1][i] = $('#inputOfQuestion' + question + alternatives[i]).val()
+                alternativeText[questionNumber][i] = $('#inputOfQuestion' + question + alternatives[i]).val()
             }
             return wasEdited;
         }
