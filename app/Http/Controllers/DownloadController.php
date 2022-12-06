@@ -57,6 +57,7 @@ class DownloadController extends Controller
         $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
         $imageId =  $imageId[0]->user_header_id;
 
+
         if($imageId == 0){
             $image = 'headers/logocaraguasecretaria.PNG';
         }else{
@@ -65,7 +66,7 @@ class DownloadController extends Controller
         }
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids'));
+        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids','image'));
         return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
     public function saveExam(){

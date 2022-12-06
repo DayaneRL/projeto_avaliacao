@@ -65,8 +65,9 @@
     <div class="header">
         {{-- na teoria funciona, mas não com o artisan. "use o xampp ou outro web server" --}}
         {{-- https://stackoverflow.com/questions/49421226/laravel-dompdf-maximum-execution-time-of-60-seconds-exceeded --}}
-
-        <img src="{{ url('/').'/storage/'.$image  }}" class="headerImg">
+        {{-- {{'/var/www/myapp/storage/'.$image }} --}}
+        {{base_path().'/public/storage/'.$image }}
+        <img src="{{base_path().'/public/storage/'.$image }}" class="headerImg">
 
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
