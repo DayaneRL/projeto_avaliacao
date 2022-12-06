@@ -83,6 +83,7 @@
                             <div class="row mt-3">
                                 @foreach ($exam_question->question->answers as $answer)
                                     <div class="form-group col-md-6 anwers">
+                                        <input type="hidden" class="answer_id" value="{{$answer->id}}"/>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text answer_alternative">{{$answer->alternative}}</span>
@@ -153,8 +154,8 @@
                             </div>
                             @if (count($question_private->AnswersPrivate))
                                 @foreach ($question_private->AnswersPrivate as $key_ans => $answer)
-                                <input type="hidden" name="private_questions[{{$key}}][answer][{{$key_ans}}][answer_private_id]" value="{{$answer->id}}"/>
                                 <div class="form-group col-md-12 row q_answer">
+                                    <input type="hidden" name="private_questions[{{$key}}][answer][{{$key_ans}}][answer_private_id]" value="{{$answer->id}}"/>
                                     <div class="form-group col-md-10">
                                         <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                                         <div class="input-group">

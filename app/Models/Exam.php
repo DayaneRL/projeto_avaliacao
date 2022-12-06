@@ -52,6 +52,20 @@ class Exam extends Model
         );
     }
 
+    public function tagsAsArray(): Attribute
+    {
+        $tags = explode(',', $this->tags);
+        $list = [];
+        foreach($tags as $tag){
+            if(Tag::find($tag)){
+                array_push($list, str_replace(" ","", $tag));
+            }
+        }
+        return Attribute::make(
+            get: fn ($value) => count($list)>0 ? $list : $list
+        );
+    }
+
     public function examDate(): Attribute
     {
         $date = new \DateTime($this->date);

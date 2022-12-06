@@ -58,7 +58,6 @@ class ExamService
                     'exam_question_id'=>$examQuestion->id
                 ]);
 
-
                 if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
                     foreach($question["answer"] as $answer){
                         $ansPrivate = AnswersPrivate::create(
@@ -84,8 +83,7 @@ class ExamService
                     )
                 );
 
-
-                if(isset($tags) && $tags !== ''){
+                if(isset($request['exam']['tags'])){
                     $questions = Question::where('level_id','=',$attribute["level_id"])
                     ->where('category_id','=',$request['exam']['category_id'])
                     ->whereHas('QuestionTag', function($q) use ($request){
@@ -115,68 +113,115 @@ class ExamService
 
     public static function updateExam(array $request, Exam $exam)
     {
-        //:Exam
         $tags = isset($request['exam']['tags']) ?
                 (count($request['exam']['tags']) > 1 ?
                     implode(', ', $request['exam']['tags']) : $request['exam']['tags'][0])
             : '';
         $dt_exam = explode('/', $request['exam']['date']);
-        // $exam->update(
-        //     array_merge(
-        //         $request['exam'],
-        //         ['tags'=>$tags,
-        //          'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
-        //         ]
-        //     )
-        // );
+        $exam->update(
+            array_merge(
+                $request['exam'],
+                ['tags'=>$tags,
+                 'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
+                ]
+            )
+        );
 
-        // foreach($request['exam_attributes'] as $attribute){
-        //     $examAttribute = ExamAttribute::find($attribute['id']);
-        //     $examAttribute->update(
-        //         $attribute
-        //     );
-        // }
+        $number = ExamQuestion::where('exam_id','=', $exam->id)->count();
 
         if(isset($request['private_questions'])){
             foreach($request['private_questions'] as $key => $question){
+
                 if(isset($question['id'])){
                     $examQuestion = ExamQuestion::find($question['id']);
                     if($examQuestion->private==1){
-                        echo "<br/>";
-                        echo $question['id']." - editar pergunta privada";
-
-                        echo $question['question_private_id']." - question_private_id";
                         $QuestionsPrivate = QuestionsPrivate::find($question['question_private_id']);
                         $QuestionsPrivate->update([
                             'description'=>$question["description"]
                         ]);
-                        echo "<br/>";
-                        print_r($QuestionsPrivate);
-                        echo "<br/>";
 
                         if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
                             foreach($question["answer"] as $answer){
-                                echo $answer['answer_private_id']." - answer_private_id";
-                        //         $ansPrivate = AnswersPrivate::create(
-                        //             array_merge(
-                        //                 $answer,
-                        //                 [
-                        //                     'exam_question_id'=>$examQuestion->id,
-                        //                     'user_id'=>Auth::user()->id,
-                        //                 ]
-                        //             )
-                        //         );
+                                if(isset($answer['answer_private_id'])){ //atualiza respostas
+                                    $ansPrivate = AnswersPrivate::find($answer['answer_private_id']);
+                                    $ansPrivate->update([
+                                        'description'=>$answer["description"],
+                                        'valid' => $answer["valid"]
+                                    ]);
+                                }else{ //adiciona nova resposta
+                                    $ansPrivate = AnswersPrivate::create(
+                                        array_merge( $answer, [
+                                            'exam_question_id'  => $examQuestion->id,
+                                            'user_id'           => Auth::user()->id,
+                                        ])
+                                    );
+                                }
+                            }
+
+                            //verifica se alguma resposta foi removido
+                            $answer_private_ids = $examQuestion->AnswersPrivate->pluck('id')->toArray();
+                            $answer_private_ids_form = array_column($question["answer"], 'answer_private_id');
+                            $answers_deleted = array_diff( $answer_private_ids,$answer_private_ids_form);
+                            if(!empty($answers_deleted)){
+                                foreach($answers_deleted as $answer_id){
+                                    $ansPrivate = AnswersPrivate::find($answer_id);
+                                    $ansPrivate->delete();
+                                }
                             }
                         }
                     }else{
-                        echo $question['id']." - trocar pergunta aleatoria para privada";
+                        $examQuestion->update([
+                            'private'=>true
+                        ]);
+                        $questPrivate = Self::addPrivate( $question, $examQuestion);
                     }
+
                 }else{
-                    echo "!!!Adicionado mais uma pergunta privada!!!";
+                    $number+=1;
+                    $examQuestion = ExamQuestion::create([
+                        'exam_id'=>$exam->id,
+                        'number' =>$number,
+                        'private'=>true
+                    ]);
+                    $questPrivate = Self::addPrivate( $question, $examQuestion);
+                }
+            }
+
+            $question_private_ids = ExamQuestion::where('exam_id','=', $exam->id)->where('private', true)->pluck('id')->toArray();
+            $question_private_ids_form = array_column($request['private_questions'], 'id');
+            $questions_deleted = array_diff( $question_private_ids, $question_private_ids_form);
+            if(!empty($questions_deleted)){
+                foreach($questions_deleted as $question_id){
+                    $examQuestion = ExamQuestion::find($question_id);
+                    $examQuestion->delete();
                 }
             }
         }
+    }
 
+    public static function addPrivate(array $question, ExamQuestion $examQuestion):QuestionsPrivate
+    {
+        $questPrivate = QuestionsPrivate::create([
+            'description'=> $question["description"],
+            'user_id'    => Auth::user()->id,
+            'exam_question_id'=>$examQuestion->id,
+            'question_id'=> $examQuestion->question_id??null
+        ]);
+
+        if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
+            foreach($question["answer"] as $answer){
+                $ansPrivate = AnswersPrivate::create(
+                    array_merge(
+                        $answer,
+                        [
+                            'exam_question_id'=>$examQuestion->id,
+                            'user_id'=>Auth::user()->id,
+                        ]
+                    )
+                );
+            }
+        }
+        return $questPrivate;
     }
 
     private static function storeImage($question, QuestionsPrivate $questionPriv = null): string

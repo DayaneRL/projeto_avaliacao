@@ -13,6 +13,7 @@ class QuestionsPrivate extends Model
         'image',
         'user_id',
         'exam_question_id',
+        'question_id'
     ];
 
     public function User()

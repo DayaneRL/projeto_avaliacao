@@ -159,7 +159,7 @@ $(document).on('change','#inputCategory', function(){
     $(tagOptions).each( function(i,e) {
         if($(e).val().split('-')[1] == $('#inputCategory').val()){
             filtered.push({
-               value: $(e).val().split('-')[1],
+               value: $(e).val().split('-')[0],
                label: $(e).text()
             });
         }
@@ -392,7 +392,9 @@ $(document).on('click', '.edit-exam_question', function(){
                 let answer_alternative = $(this).find(".answer_alternative").text();
                 let answer_description = $(this).find(".answer_description").val();
                 let answer_valid = $(this).find(".answer_valid").val();
+                let answer_id = $(this).find(".answer_id").val();
                 div += `<div class="form-group col-md-12 row q_answer">
+                    <input type="hidden" name="private_questions[${sum_priv_questions}][answer][${index}][answer_id]" value="${answer_id}"/>
                     <div class="form-group col-md-10">
                         <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
                         <div class="input-group">

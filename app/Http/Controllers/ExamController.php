@@ -50,7 +50,6 @@ class ExamController extends Controller
     {
         try{
             $request->validated();
-
             DB::beginTransaction();
             $exam = ExamService::storeExam(
                 $request
@@ -129,10 +128,9 @@ class ExamController extends Controller
 
     public function update(ExamRequest $request, $id)
     {
-        //RedirectResponse
+
         try{
 
-            // return $request->validated();
             DB::beginTransaction();
 
             $exam = Exam::findOrFail($id);
@@ -140,7 +138,6 @@ class ExamController extends Controller
                 $request->validated(),
                 $exam
             );
-            return false;
 
             DB::commit();
             return redirect()->route('exams.index')->with('success', "Prova atualizada com sucesso" );
