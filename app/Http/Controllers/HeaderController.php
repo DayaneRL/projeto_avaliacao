@@ -18,7 +18,7 @@ class HeaderController extends Controller
      */
     public function index()
     {
-        $headers = UserHeader::all();
+        $headers = UserHeader::where('user_id','=',Auth::user()->id)->get();
         return view('headers.index', compact('headers'));
     }
 
@@ -85,7 +85,11 @@ class HeaderController extends Controller
     public function edit($id)
     {
         $header = UserHeader::findOrFail($id);
-        return view('headers.create', compact('header'));
+        if($header->user_id==Auth::user()->id){
+            return view('headers.create', compact('header'));
+        }else{
+            return redirect()->route('headers.index')->with('warning', "Você não tem permissão para acessar essa tela." );
+        }
     }
 
     /**

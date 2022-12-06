@@ -1,5 +1,8 @@
 $(document).ready(function() {
-    $('.alert').fadeTo(2000, 500).slideUp(500);
+    let div = $('.alert');
+    div.slideUp( "slow", function() {
+        div.remove();
+    });
 });
 
 $(document).on('click', '#logout_system_confirm', async function(){

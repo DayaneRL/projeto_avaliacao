@@ -102,27 +102,35 @@ class ExamController extends Controller
     public function show($id)
     {
         $exam = Exam::find($id);
-        $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
-        ->where('private','=','1')->with('QuestionsPrivate')->get();
-        return view('exams.show', compact('exam','questions_private'));
+        if($exam->user_id==Auth::user()->id){
+            $questions_private = ExamQuestion::where('exam_id','=',$exam->id)->where('private','=','1')->with('QuestionsPrivate')->get();
+            return view('exams.show', compact('exam','questions_private'));
+        }else{
+            return redirect()->route('exams.index')->with('warning', "Você não tem permissão para acessar essa tela." );
+        }
     }
 
 
     public function edit($id)
     {
         $exam = Exam::find($id);
-        $categories = Category::all();
-        $levels = Level::all();
-        $tags = Tag::all();
-        $exam_questions = ExamQuestion::where('exam_id','=',$exam->id)
-            ->where('private','=','0')
-                ->with('Question','Question.Answers')->get();
+        if($exam->user_id==Auth::user()->id){
+            $categories = Category::all();
+            $levels = Level::all();
+            $tags = Tag::all();
+            $exam_questions = ExamQuestion::where('exam_id','=',$exam->id)
+                ->where('private','=','0')
+                    ->with('Question','Question.Answers')->get();
 
-        $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
-            ->where('private','=','1')
-            ->with('QuestionsPrivate','AnswersPrivate')->get();
+            $questions_private = ExamQuestion::where('exam_id','=',$exam->id)
+                ->where('private','=','1')
+                ->with('QuestionsPrivate','AnswersPrivate')->get();
 
-        return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
+            return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
+
+        }else{
+            return redirect()->route('exams.index')->with('warning', "Você não tem permissão para acessar essa tela." );
+        }
     }
 
 
