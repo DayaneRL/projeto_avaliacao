@@ -16,7 +16,7 @@ class CreateExamQuestionsTable extends Migration
     {
         Schema::create('exam_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('number');
+            $table->integer('number');
             $table->tinyInteger('private')->nullable(); //0 or 1
             $table->foreignIdFor(Exam::class);
             $table->foreignIdFor(Question::class)->nullable();

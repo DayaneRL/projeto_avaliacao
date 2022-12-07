@@ -28,6 +28,7 @@ $(document).on('click','.show_exam', function(){
 
             $('#utilsModal').find('.modal-body').append(`
                 <div class="content text-center">
+                    <div class="d-none" id="id_exam">${id}</div>
                     <h3 id="exam_title">${exam.title}</h3>
                     <p id="exam_tags"><b>Tags:</b> ${response.tags_list} </p>
                     <p id="exam_total"><b>Total de questões:</b> ${exam.number_of_questions} </p>
@@ -35,10 +36,10 @@ $(document).on('click','.show_exam', function(){
                     <p id="exam_data"><b>Data da prova:</b> ${response.exam_date} </p>
                     <hr/>
                     <div class="mt-2">
-                        <button type="button" class="btn btn-info p-2">
-                        <i class="fas fa-download mr-2 ml-1"></i> prova
+                        <button type="button" class="btn btn-info p-2" onclick="downloadTest()">
+                        <i class="fas fa-download mr-2 ml-1" ></i> prova
                         </button>
-                        <button type="button" class="btn btn-warning p-2">
+                        <button type="button" class="btn btn-warning p-2"  onclick="downloadAnswers()">
                         <i class="fas fa-download mr-2 ml-1"></i> gabarito
                         </button>
                     </div>
@@ -91,3 +92,54 @@ $(document).on('click','.btn-confirm', function(){
 
     $('#utilsModal').modal('hide');
 })
+
+
+function downloadTest() {
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
+        url: "/exams/download_exam",
+        type: 'POST',
+        data: {
+            title: $('#exam_title').text(),
+            id: $('#id_exam').text()
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(response) {
+            var blob = new Blob([response]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = $('#exam_title').text()+'.pdf';
+            link.click();
+        },
+        error: function(blob) {
+            console.log(blob);
+        }
+    });
+}
+
+function downloadAnswers() {
+    $.ajax({
+        headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
+        url: "exams/download_answers",
+        type: 'POST',
+        data: {
+            title: $('#exam_title').text(),
+            id: $('#id_exam').text()
+        },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(response) {
+            var blob = new Blob([response]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'Gabarito da '+$('#exam_title').text()+'.pdf';
+            link.click();
+        },
+        error: function(blob) {
+        }
+    });
+}
+

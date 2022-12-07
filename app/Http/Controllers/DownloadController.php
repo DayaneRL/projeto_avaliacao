@@ -3,47 +3,73 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Question,Answer,Exam};
+use App\Models\{Question,Answer,Exam, ExamQuestion};
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DownloadController extends Controller
 {
     public function downloadExam(){
         $exam= request()->all();
+        // $questions = Question::all(); ->codigo antigo
+        $id = $exam['id'];
+        $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
 
-        $questions = Question::all();
         $questions_ids= [];
 
+        $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
+        $imageId =  $imageId[0]->user_header_id;
+
+        if($imageId == 0){
+            $image = 'headers/logocaraguasecretaria.PNG';
+        }else{
+            $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
+            $image =  $image[0]->logo;
+        }
+
+
+
         foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
+            $questions_ids[]+=$question->id;
         }
 
         $replys = Answer::whereIn('question_id', $questions_ids)->get();
 
+
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/test', compact('exam','questions','replys'));
+        $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','replys','image'));
         return $pdf->download($exam['title'].'.pdf');
     }
     public function downloadAnswers(){
         $exam= request()->all();
 
-        $questions = Question::all();
-        $questions_ids= [];
+        $id = $exam['id'];
+        $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
 
+        $questions_ids= [];
         foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
+            $questions_ids[]+=$question->id;
         }
 
         $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
+        $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
+        $imageId =  $imageId[0]->user_header_id;
+
+
+        if($imageId == 0){
+            $image = 'headers/logocaraguasecretaria.PNG';
+        }else{
+            $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
+            $image =  $image[0]->logo;
+        }
+
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/answers', compact('exam','questions','replys','questions_ids'));
+        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids','image'));
         return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
     public function saveExam(){
-        // a dayane já fez essa parte no ExamController store, vou tentar chamar o dela
-        // mas esse estava funcionando também
         $examInfo= request()->all();
         if(isset($examInfo['testId'])){
             $exam = Exam::find($request->testId);
@@ -71,33 +97,23 @@ class DownloadController extends Controller
     public function loadTest(){
         $exam= request()->all();
 
-        $questions = Question::all();
-        $questions_ids= [];
+        $questions = $exam['questions'];
+        $replys = array_column($questions, 'answers');
 
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
-        }
-
-        $replys = Answer::whereIn('question_id', $questions_ids)->get();
-
-        $returnHTML = view('exams/pdf/test', compact('exam','questions','replys'))->render();
+        $returnHTML = view('exams/pdf/preview/exam', compact('exam','questions','replys'))->render();
 
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
     public function loadAnswers(){
-        //i am not saving the exam questions rn, the answers are kinda broken
         $exam= request()->all();
 
-        $questions = Question::all();
-        $questions_ids= [];
+        $questions = $exam['questions'];
+        $replys = array_column($questions, 'answers');
 
-        foreach($questions as $question){
-            $questions_ids[]+=$question['id'];
-        }
+        $questions_ids = array_column($questions, 'id');
 
-        $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
-        $returnHTML = view('exams/pdf/answers',compact('exam','questions','replys','questions_ids'))->render();
+        $returnHTML = view('exams/pdf/preview/answers',compact('exam','questions'))->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 }

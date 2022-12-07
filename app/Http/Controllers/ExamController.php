@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use App\Models\{Exam, Question, Category, Level, Tag, Answer, ExamQuestion, QuestionsPrivate};
+use App\Models\{Exam, Question, Category, Level, Tag, Answer, ExamQuestion, QuestionsPrivate, UserHeader};
 use App\Http\Requests\ExamRequest;
 use App\Services\ExamService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -43,20 +43,45 @@ class ExamController extends Controller
         $categories = Category::whereHas('Question')->get();
         $levels = Level::all();
         $tags = Tag::all();
-        return view('exams.create', compact('categories', 'levels','tags'));
+        $headers = UserHeader::all();
+        session()->forget('testSaved');
+        return view('exams.create', compact('categories', 'levels','tags', 'headers'));
+    }
+
+    public function createQuestion(){
+        echo "Consigo pegar a id: ".Auth::user()->id;
+        return 'chamou a funcao';
     }
 
     public function store(ExamRequest $request)
     {
         try{
             $request->validated();
+
             DB::beginTransaction();
             $exam = ExamService::storeExam(
                 $request
             );
 
+            $question_ids =  $request['exam']['questions'];
+
+            $i=1;
+            foreach($question_ids as $question_id){;
+                $exam_question = new ExamQuestion;
+                $exam_question->number=$i;
+                $exam_question->private = 0;
+                $exam_question->exam_id = $exam->id;
+                $exam_question->question_id = $question_id;
+                $exam_question->created_at = now();
+                $exam_question->updated_at = now();
+                $exam_question->save();
+                $i++;
+            }
+
             DB::commit();
-            return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
+            session(['testSaved' => $exam->id]);
+            return $exam->id;
+            // return redirect()->route('exams.index')->with('success', "Prova cadastrado com sucesso" );
 
         }catch (\Throwable $e) {
             return $e->getMessage();
@@ -67,10 +92,14 @@ class ExamController extends Controller
 
     public function preview(ExamRequest $request)
     {
+        // return $request;
+
         $request->validated();
         $request->all();
 
         $exam=$request['exam'];
+
+        $exam_attributes = $request['exam_attributes'];
 
         $questions = [];
         if(isset($request['exam_attributes'])){
@@ -93,8 +122,14 @@ class ExamController extends Controller
                 $questions = (count($questions)==0) ? $question : array_merge($questions, $question);
             }
         }
+
+        //private_questions não tem id, ela tem que ser salva antes de chamar a preview
+        // juntando as questoes com as questoes privadas
+        // $questions = array_merge($questions,$request['private_questions'] );
+
         $questions_ids = array_column($questions, 'id');
-        return view('exams.store', compact('exam', 'questions', 'questions_ids'));
+        // não tá chegando as questões privadas na preview
+        return view('exams.preview', compact('exam', 'questions', 'questions_ids', 'exam_attributes'));
 
     }
 
@@ -146,8 +181,10 @@ class ExamController extends Controller
                 $request->validated(),
                 $exam
             );
+            return false;
 
             DB::commit();
+            return back()->with('success', "Prova atualizada com sucesso" );
             return redirect()->route('exams.index')->with('success', "Prova atualizada com sucesso" );
 
         }catch (\Throwable $e) {

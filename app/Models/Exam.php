@@ -11,7 +11,7 @@ class Exam extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'title','tags','number_of_questions','category_id','date','user_id'
+        'title','tags','number_of_questions','category_id','date','user_id', 'user_header_id'
     ];
 
     public function Category()

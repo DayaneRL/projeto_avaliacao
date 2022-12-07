@@ -37,6 +37,7 @@ Route::group(['middleware'=>'auth'], function(){
     Route::post('/exams/load_test', [DownloadController::class , 'loadTest'])->name('loadTest.exam');
     Route::post('/exams/load_answers', [DownloadController::class , 'loadAnswers'])->name('loadAnswers.exam');
 
+
     Route::post('/logout', [LoginController::class, 'destroy'])->name('auth.login.destroy');
 
     Route::get('/profile', [UserController::class,'show'])->name('profile');

@@ -7,6 +7,7 @@
     <title>Prova</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <style>
+
         @font-face {
             font-family: 'Open Sans', sans-serif;
             font-style: normal;
@@ -15,6 +16,10 @@
         }
         html{
             font-family: 'Open Sans', sans-serif;
+            width: 100%;
+        }
+        body{
+            width: 100%;
         }
         .header{
             text-align: center;
@@ -36,79 +41,72 @@
             display: block;
             margin: 0;
         }
-        .testInfo{
-            margin-bottom: 20px;
-        }
         .testInfo p{
             font-size: 12;
             line-height: 20px;
             display: block;
             margin: 0;
         }
-        .questionNumber{
-            font-weight: bold;
-        }
+
         .answers{
-            list-style: none;
-            padding-left: 0;
+            width: 100%;
+            margin-top: 20px;
         }
-        .questionText, .answers li{
-            text-align: justify;
-            text-justify: inter-word;
+        table{
+            margin: 0 auto;
+            border-collapse: collapse;
         }
-        .alternative{
-            text-transform: uppercase;
+        table, td, th{
+            border: 1px solid black;
+            text-align: center;
         }
-        /* .studentName{
-            display: block;
-            border-bottom: 1px solid #000;
-            line-height: 14px;
-            margin: 10px 0;
-        } */
+        td, th{
+            padding: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="https://www.caraguatatuba.sp.gov.br/assets/logos/brasao_hor.png" class="headerImg">
+        <img src="" id="headerImage" class="headerImg">
         {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
         <p class="titleTest">
-
-            {{$exam['title']}}
+            Gabarito da prova: {{$exam['title']}}
         </p>
     </div>
     <div class="testInfo">
         <p>Professor {{Auth::user()->name}}</p>
         <p>Caraguatatuba, 25 de maio de 2022</p>
-        <p class="studentName">Nome: _____________________________________________________________</p>
     </div>
         @php
             $questionNumber = 1;
-
         @endphp
+    <div class="answers">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Questão</th>
+                        <th>Gabarito</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($questions as $question)
+                    <tr>
+                        <td>{{ $questionNumber++ }}</td>
+                        <td>
+                            @foreach ($question['answers'] as $answer)
+                                @if ($answer['valid'])
+                                    {{$answer['alternative']}}
+                                @endif
+                            @endforeach
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
 
-        @foreach ($questions as $question)
-
-            <p class="questionNumber mt-3">Questão {{$questionNumber++}}</p>
-            @if ($question['image'])
-                <img src="{{ $question['image']}} " class="questionImg">
-            @endif
-            <p class="questionText">{{$question['description']}}</p>
-            @foreach ($question['answers'] as $reply)
-                @if($reply['question_id'] == $question['id'])
-                    <li class="answers">
-                        <span class="alternative">{{$reply['alternative']}})</span>
-                        {{$reply['description']}}
-                    </li>
-                @endif
-
-            @endforeach
-            {{-- <li class="answers">
-                <p>E) <strong>Resposta certa</strong></p>
-            </li> --}}
-        @endforeach
-
+    </div>
 </body>
 </html>
