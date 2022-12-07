@@ -483,9 +483,6 @@
             $('#alternativesOfQuestion' + question).empty();
             appendList(question,correctAlternative);
 
-            // console.log(questionText);
-            // console.log(alternativeText);
-
         }
 
         function saveAlternatives(question) {

@@ -78,8 +78,6 @@ class ExamController extends Controller
                 $i++;
             }
 
-
-
             DB::commit();
             session(['testSaved' => $exam->id]);
             return $exam->id;
@@ -124,7 +122,13 @@ class ExamController extends Controller
                 $questions = (count($questions)==0) ? $question : array_merge($questions, $question);
             }
         }
+
+        //private_questions não tem id, ela tem que ser salva antes de chamar a preview
+        // juntando as questoes com as questoes privadas
+        // $questions = array_merge($questions,$request['private_questions'] );
+
         $questions_ids = array_column($questions, 'id');
+        // não tá chegando as questões privadas na preview
         return view('exams.preview', compact('exam', 'questions', 'questions_ids', 'exam_attributes'));
 
     }
