@@ -63,20 +63,20 @@ class ExamController extends Controller
                 $request
             );
 
-            $question_ids =  $request['exam']['questions'];
+            // $question_ids =  $request['exam']['questions'];
 
-            $i=1;
-            foreach($question_ids as $question_id){;
-                $exam_question = new ExamQuestion;
-                $exam_question->number=$i;
-                $exam_question->private = 0;
-                $exam_question->exam_id = $exam->id;
-                $exam_question->question_id = $question_id;
-                $exam_question->created_at = now();
-                $exam_question->updated_at = now();
-                $exam_question->save();
-                $i++;
-            }
+            // $i=1;
+            // foreach($question_ids as $question_id){;
+            //     $exam_question = new ExamQuestion;
+            //     $exam_question->number=$i;
+            //     $exam_question->private = 0;
+            //     $exam_question->exam_id = $exam->id;
+            //     $exam_question->question_id = $question_id;
+            //     $exam_question->created_at = now();
+            //     $exam_question->updated_at = now();
+            //     $exam_question->save();
+            //     $i++;
+            // }
 
             DB::commit();
             session(['testSaved' => $exam->id]);
@@ -161,7 +161,8 @@ class ExamController extends Controller
                 ->where('private','=','1')
                 ->with('QuestionsPrivate','AnswersPrivate')->get();
 
-            return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private'));
+            $headers = UserHeader::all();
+            return view('exams.create', compact('categories', 'levels', 'exam', 'tags','exam_questions','questions_private','headers'));
 
         }else{
             return redirect()->route('exams.index')->with('warning', "Você não tem permissão para acessar essa tela." );
@@ -181,11 +182,10 @@ class ExamController extends Controller
                 $request->validated(),
                 $exam
             );
-            return false;
 
             DB::commit();
-            return back()->with('success', "Prova atualizada com sucesso" );
             return redirect()->route('exams.index')->with('success', "Prova atualizada com sucesso" );
+            return back()->with('success', "Prova atualizada com sucesso" );
 
         }catch (\Throwable $e) {
             return $e->getMessage();

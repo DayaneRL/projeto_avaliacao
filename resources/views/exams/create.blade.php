@@ -19,9 +19,6 @@
             <li class="nav-item">
               <a class="nav-link" id="questoes-tab" data-toggle="tab" href="#Questoes" role="tab" aria-controls="Questoes" aria-selected="false">Questoes</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" id="preview-tab" data-toggle="tab" href="#Preview" role="tab" aria-controls="Preview" aria-selected="false">Preview</a>
-            </li>
         </ul>
 
         @if ($errors->any())
@@ -35,8 +32,11 @@
         @endif
 
         <div class="row mb-3">
-            {{-- <form action="{{isset($exam)?route('exams.update',$exam->id):route('exams.store')}}" method="POST" class="col-12"> --}}
-                <form action="{{route('exams.preview')}}" method="POST" class="col-12">
+        @if(isset($exam))
+            <form action="{{route('exams.update',$exam->id)}}" method="POST" class="col-12">
+        @else
+            <form action="{{route('exams.preview')}}" method="POST" class="col-12">
+        @endif
                 @csrf
                 @if(isset($exam))
                     @method('PUT')
@@ -45,7 +45,6 @@
                 <div class="tab-content" id="myTabContent">
                     @include('exams._partials.dados')
                     @include('exams._partials.questoes')
-                    @include('exams._partials.preview')
                 </div>
 
             </form>

@@ -40,7 +40,7 @@ class Exam extends Model
             }
         }
         return Attribute::make(
-            get: fn ($value) => count($listTagNames)>0 ? implode(",", $listTagNames) : $listTagNames
+            get: fn ($value) => count($listTagNames)>0 ? implode(",", $listTagNames) : ''
         );
     }
 

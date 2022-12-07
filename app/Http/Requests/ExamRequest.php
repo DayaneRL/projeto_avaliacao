@@ -32,18 +32,18 @@ class ExamRequest extends FormRequest
         ];
 
 
-        // if ($this->filled('exam_attributes'))
-        // {
-        //     foreach($this->input('exam_attributes') as $key => $val)
-        //     {
-        //         $rules["exam_attributes.{$key}.number_of_questions"] = ['required'];
-        //         $rules["exam_attributes.{$key}.level_id"] = ['required'];
-        //         if ($this->filled("exam_attributes.{$key}.id"))
-        //         {
-        //             $rules["exam_attributes.{$key}.id"] = ['required'];
-        //         }
-        //     }
-        // }
+        if ($this->filled('exam_attributes'))
+        {
+            foreach($this->input('exam_attributes') as $key => $val)
+            {
+                $rules["exam_attributes.{$key}.number_of_questions"] = ['required'];
+                $rules["exam_attributes.{$key}.level_id"] = ['required'];
+                if ($this->filled("exam_attributes.{$key}.id"))
+                {
+                    $rules["exam_attributes.{$key}.id"] = ['required'];
+                }
+            }
+        }
 
         if ($this->filled('private_questions'))
         {

@@ -43,39 +43,6 @@ class ExamService
 
         $number = 0;
 
-        if(isset($request['private_questions'])){
-            foreach($request['private_questions'] as $key => $question){
-
-                $number+=1;
-                $examQuestion = ExamQuestion::create([
-                    'exam_id'=>$exam->id,
-                    'number'=>$number,
-                    'private'=>true
-                ]);
-
-                $questPrivate = QuestionsPrivate::create([
-                    'description'=>$question["description"],
-                    // 'image'=>$question['image'],
-                    'user_id'=>Auth::user()->id,
-                    'exam_question_id'=>$examQuestion->id
-                ]);
-
-                if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
-                    foreach($question["answer"] as $answer){
-                        $ansPrivate = AnswersPrivate::create(
-                            array_merge(
-                                $answer,
-                                [
-                                    'exam_question_id'=>$examQuestion->id,
-                                    'user_id'=>Auth::user()->id,
-                                ]
-                            )
-                        );
-                    }
-                }
-            }
-        }
-
         if(isset($request['exam_attributes'])){
             foreach($request['exam_attributes'] as $attribute){
                 ExamAttribute::create(
@@ -106,6 +73,40 @@ class ExamService
                         'question_id'=>$question->id,
                         'private'=>false
                     ]);
+                }
+            }
+        }
+
+
+        if(isset($request['private_questions'])){
+            foreach($request['private_questions'] as $key => $question){
+
+                $number+=1;
+                $examQuestion = ExamQuestion::create([
+                    'exam_id'=>$exam->id,
+                    'number'=>$number,
+                    'private'=>true
+                ]);
+
+                $questPrivate = QuestionsPrivate::create([
+                    'description'=>$question["description"],
+                    // 'image'=>$question['image'],
+                    'user_id'=>Auth::user()->id,
+                    'exam_question_id'=>$examQuestion->id
+                ]);
+
+                if(isset($question["answer"]) && !isset($question["answer"]['rows'])){
+                    foreach($question["answer"] as $answer){
+                        $ansPrivate = AnswersPrivate::create(
+                            array_merge(
+                                $answer,
+                                [
+                                    'exam_question_id'=>$examQuestion->id,
+                                    'user_id'=>Auth::user()->id,
+                                ]
+                            )
+                        );
+                    }
                 }
             }
         }

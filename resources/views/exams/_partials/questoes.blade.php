@@ -195,7 +195,7 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary shadow" id="submit-exam" onclick="$('#preview-tab').click()">Gerar</button>
+        <button type="submit" class="btn btn-primary shadow" id="submit-exam" onclick="$('#preview-tab').click()">@if(isset($exam))Atualizar @else Gerar @endif</button>
     </div>
 
 </div>

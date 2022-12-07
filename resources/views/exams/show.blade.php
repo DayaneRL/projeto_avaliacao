@@ -31,7 +31,7 @@
                     <div class="d-none" id="exam_id">{{$exam->id}}</div>
                     <h3 id="exam_title">{{$exam->title}}</h3>
 
-                    <p><b>Tags:</b> {{$exam->tags_list}} </p>
+                    @if(!empty($exam->tags_list))<p><b>Tags:</b> {{$exam->tags_list}} </p>@endif
                     <p><b>Total de questões:</b> {{$exam->number_of_questions}} </p>
                     <p><b>Categoria:</b> {{$exam->Category->name}} </p>
                     <p><b>Data da prova:</b> {{$exam->exam_date}} </p>
