@@ -208,7 +208,7 @@
                         questions: JSON.parse(document.getElementById('questions_ids').value),
                         editedQuestions,
                         privateQuestionsObject,
-                        idHeaderImage
+                        user_header_id: idHeaderImage
                     },
                     exam_attributes: JSON.parse(document.getElementById('exam_attributes').value),
                     private_questions:  JSON.parse(document.getElementById('private_questions').value),
@@ -217,7 +217,7 @@
                     if (response) {
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Prova salva';
                         btnSave.disabled = true;
-                        testId=  response;
+                        testId =  response;
                     } else {
                         // avisar o usuario que houve um erro
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvar prova';

@@ -67,7 +67,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{base_path().'/public/storage/'.$image }}" class="headerImg">
+        <img src="{{base_path().$image }}" class="headerImg">
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
         </p>
@@ -97,9 +97,9 @@
                     <tr>
                         <td>{{ $questionNumber++ }}</td>
                         <td>
-                            @foreach ($replys as $reply)
-                                @if ($reply->question_id == $question->id)
-                                    {{$reply->alternative}}
+                            @foreach ($question['answers'] as $answer)
+                                @if ($answer['valid'])
+                                    {{$answer['alternative']}}
                                 @endif
                             @endforeach
                         </td>

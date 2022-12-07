@@ -201,13 +201,27 @@ $(document).on('click','#add_priv_question', function(){
                     <label>Descrição da pergunta<span class="text-danger">*</span></label>
                     <textarea class="form-control editor" name="private_questions[${sum_priv_questions}][description]" required></textarea>
                 </div>
-
-                <div class="form-group col-md-6">
-                    <label>Tipo da resposta<span class="text-danger">*</span></label>
-                    <select class="form-control" id="choose-question-type" required>
-                        <option>Selecione...</option>
-                        <option value="Alternativa">Alternativa</option>
-                    </select>
+                <div class="form-group col-md-12 row q_answer">
+                <small class="text-muted mb-1 ml-3">Clique na letra para selecionar a alternativa correta</small>
+                    <div class="form-group col-md-10">
+                        <label for="inputState_0">Descrição da alternativa <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text alternative_option" id="basic-addon1">a</span>
+                            </div>
+                            <input type="hidden" name="private_questions[${sum_priv_questions}][answer][0][alternative]" value="a"/>
+                            <input type="hidden" class="alternative_valid" name="private_questions[${sum_priv_questions}][answer][0][valid]" value="0"/>
+                            <input type="text" class="form-control" name="private_questions[${sum_priv_questions}][answer][0][description]" aria-describedby="basic-addon1" required>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2 pt-3">
+                        <button type="button" class="btn btn-secondary add_q_answer">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button type="button" class="btn btn-secondary disabled rm_q_answer" disabled="true">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -275,7 +289,7 @@ $(document).on("change","#choose-question-type", function(e){
 $(document).on("click",".add_q_answer", function(){
     console.log($(this).parents('.form-row').find('.q_answer'));
     let qtd_answers = $(this).parents('.form-row').find('.q_answer').length;
-    let alternatives = ['A','B','C','D'];
+    let alternatives = ['a','b','c','d'];
     let index ;
     if($(this).parents('.form-row')){
         index = $(this).parents('.form-row').attr('id').split('-')[1];

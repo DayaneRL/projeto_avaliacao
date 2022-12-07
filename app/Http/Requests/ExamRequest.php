@@ -29,6 +29,7 @@ class ExamRequest extends FormRequest
             'exam.tags'=>'nullable',
             'exam.category_id'=>'required',
             'exam.date'=>'required',
+            'exam.user_header_id'=>'nullable|sometimes',
         ];
 
 

@@ -12,17 +12,16 @@ class DownloadController extends Controller
 {
     public function downloadExam(){
         $exam= request()->all();
-        // $questions = Question::all(); ->codigo antigo
         $id = $exam['id'];
 
         $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
         $imageId =  $imageId[0]->user_header_id;
 
         if($imageId == 0){
-            $image = 'img/header/logocaraguasecretaria.jpeg';
+            $image = '/public/img/header/logocaraguasecretaria.jpeg';
         }else{
             $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
-            $image =  $image[0]->logo;
+            $image =  '/public/storage/'.$image[0]->logo;
         }
 
         $ExamQuestions =  Exam::find($exam['id'])->ExamQuestions;
@@ -48,28 +47,40 @@ class DownloadController extends Controller
         $exam= request()->all();
 
         $id = $exam['id'];
-        $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
+        // $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
+        // $questions_ids= [];
+        // foreach($questions as $question){
+        //     $questions_ids[]+=$question->id;
+        // }
+        // $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
-        $questions_ids= [];
-        foreach($questions as $question){
-            $questions_ids[]+=$question->id;
+        $ExamQuestions =  Exam::find($exam['id'])->ExamQuestions;
+        $questions =[];
+        foreach($ExamQuestions as $ExamQuestion){
+            if($ExamQuestion->private==1){
+                $questionPrivate = QuestionsPrivate::where('exam_question_id','=',$ExamQuestion->id)->first() ;
+                $questionPrivate['answers']= $ExamQuestion->AnswersPrivate;
+                array_push($questions, $questionPrivate);
+            }else{
+                $question = $ExamQuestion->Question;
+                $question['answers'] = $question->Answers;
+                array_push($questions, $question);
+            }
         }
-
-        $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
 
         $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
         $imageId =  $imageId[0]->user_header_id;
 
 
         if($imageId == 0){
-            $image = 'headers/logocaraguasecretaria.PNG';
+            $image = '/public/img/header/logocaraguasecretaria.jpeg';
         }else{
             $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
-            $image =  $image[0]->logo;
+            $image = '/public/storage/'. $image[0]->logo;
         }
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','replys','questions_ids','image'));
+        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','image'));
         return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
 
