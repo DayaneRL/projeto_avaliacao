@@ -63,7 +63,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{base_path().'/public/storage/'.$image }}" class="headerImg">
+        <img src="{{base_path().$image }}" class="headerImg">
 
         <p class="institutionName">
             CEI/EMEI Prof° Aparecida Maria Pires de Meneses
@@ -86,17 +86,17 @@
         @foreach ($questions as $question)
 
             <p class="questionNumber mt-3">Questão {{$questionNumber++}}</p>
-            @if ($question->image)
+            @if (isset($question->image)&&$question->image!=="0")
                 <img src="{{ $question->image}} " class="questionImg">
             @endif
             <p class="questionText">{{$question['description']}}</p>
             @foreach ($question['answers'] as $reply)
-                @if($reply['question_id'] == $question['id'])
+                {{-- @if($reply['question_id'] == $question['id']) --}}
                     <li class="answers">
                         <span class="alternative">{{$reply['alternative']}})</span>
                         {{$reply['description']}}
                     </li>
-                @endif
+                {{-- @endif --}}
 
             @endforeach
         @endforeach

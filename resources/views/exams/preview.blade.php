@@ -53,6 +53,7 @@
             @endif
 
             <input type="hidden" value="{{ json_encode($exam_attributes) }}" id="exam_attributes">
+            <input type="hidden" value="{{ json_encode($private_questions) }}" id="private_questions">
             <input type="hidden" value="{{ json_encode($questions) }}" id="questions">
             <input type="hidden" value="{{ json_encode($questions_ids) }}" id="questions_ids">
 
@@ -75,7 +76,7 @@
         updateImage();
         function updateImage(){
             if(idHeaderImage==0){
-                $('#headerImage').attr("src",MAIN_URL+ '/storage/headers/logocaraguasecretaria.PNG');
+                $('#headerImage').attr("src",MAIN_URL+ '/img/header/logocaraguasecretaria.jpeg');
             }else{
                 $.ajax({
                     url: `/findHeader/${idHeaderImage}`,
@@ -203,13 +204,14 @@
                         number_of_questions: "{{ $exam['number_of_questions'] }}",
                         category_id: "{{ $exam['category_id'] }}",
                         tags: JSON.parse(document.getElementById('tags').value),
-                        exam_attributes: JSON.parse(document.getElementById('exam_attributes').value),
                         date: "{{ $exam['date'] }}",
                         questions: JSON.parse(document.getElementById('questions_ids').value),
                         editedQuestions,
                         privateQuestionsObject,
                         idHeaderImage
-                    }
+                    },
+                    exam_attributes: JSON.parse(document.getElementById('exam_attributes').value),
+                    private_questions:  JSON.parse(document.getElementById('private_questions').value),
                 },
                 success: function(response) {
                     if (response) {

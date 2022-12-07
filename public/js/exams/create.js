@@ -207,7 +207,6 @@ $(document).on('click','#add_priv_question', function(){
                     <select class="form-control" id="choose-question-type" required>
                         <option>Selecione...</option>
                         <option value="Alternativa">Alternativa</option>
-                        <option value="Descritiva">Descritiva</option>
                     </select>
                 </div>
             </div>
@@ -262,14 +261,15 @@ $(document).on("change","#choose-question-type", function(e){
             </div>
         </div>`;
         $(this).parents('.question').find('.form-row').append(div);
-    }else if($(e.target).val()=="Descritiva"){
-        let div =  `<div class="form-group col-md-6 q_answer">
-                        <label> Qtd. de linhas <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control" name="private_questions[${index}][answer][rows]" required>
-                        <small>Quantidades de linhas disponível para resposta do aluno</small>
-                    </div>`;
-        $(this).parents('.question').find('.form-row').append(div);
     }
+    // else if($(e.target).val()=="Descritiva"){
+    //     let div =  `<div class="form-group col-md-6 q_answer">
+    //                     <label> Qtd. de linhas <span class="text-danger">*</span></label>
+    //                     <input type="number" class="form-control" name="private_questions[${index}][answer][rows]" required>
+    //                     <small>Quantidades de linhas disponível para resposta do aluno</small>
+    //                 </div>`;
+    //     $(this).parents('.question').find('.form-row').append(div);
+    // }
 })
 
 $(document).on("click",".add_q_answer", function(){

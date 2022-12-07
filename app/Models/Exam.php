@@ -29,6 +29,11 @@ class Exam extends Model
         return $this->hasMany(Question::class);
     }
 
+    public function ExamQuestions()
+    {
+        return $this->hasMany(ExamQuestion::class);
+    }
+
     // Accessors
     public function tagsList(): Attribute
     {
