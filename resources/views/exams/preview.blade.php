@@ -66,45 +66,33 @@
         let btnTest = document.getElementById('btnTest');
         let btnAnswers = document.getElementById('btnAnswers');
         let btnSave = document.getElementById('btnSave');
-        let visualizingTest = true;
+        let examPreview = true;
         let testSaved = false;
         let testId = 0;
-        const MAIN_URL = window.location.origin;
+        let alternatives = ['a','b','c','d'];
+        let questionText = [];
+        let editedQuestions = [];
+        let qtdQuestions = {{ $exam['number_of_questions']; }};
 
         let months = ['', 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
         const date = $('#date').val();
         const day = date.split('/')[0];
         const month = months[parseInt(date.split('/')[1])];
         const year = date.split('/')[2];
-
-        updateDate();
-        function updateDate(){
-            $('#day').text(day);
-            $('#month').text(month);
-            $('#year').text(year);
-        }
-
         const idHeaderImage = {{$exam['header_id']}};
 
-        updateImage();
-        function updateImage(){
-            if(idHeaderImage==0){
-                $('#headerImage').attr("src",MAIN_URL+ '/img/header/logocaraguasecretaria.jpeg');
-            }else{
-                $.ajax({
-                    url: `/findHeader/${idHeaderImage}`,
-                    type: 'GET',
-                    success: function (response) {
-                        $('#headerImage').attr("src",MAIN_URL+ '/storage/'+response.header.logo);
-                        $('#headerSchool').text(response.header.description);
-                    },
-                    error: function (error) {
-                        console.log('error');
-                        console.log(error);
-                    }
-                });
-            }
+        let alternativeText = new Array();
+        for (i = 0; i < qtdQuestions; i++) {
+            alternativeText[i] = new Array(4);
         }
+
+        btnTest.addEventListener("click", ()=> actionClicked(true));
+        btnAnswers.addEventListener("click", ()=> actionClicked(false));
+
+        const MAIN_URL = window.location.origin;
+
+        updateDate();
+        updateImage();
 
 
         @if(session()->has('testSaved'))
@@ -119,65 +107,42 @@
             btnTest.disabled = false;
         }
 
-
-
-        let alternatives = ['a','b','c','d'];
-
-        let questionText = [];
-        let editedQuestions = [];
-
-        let qtdQuestions = {{ $exam['number_of_questions'] }};
-
-        // isso aqui tá dando erro, mas tá bem podre o código mesmo.
-        let alternativeText = new Array();
-        for (i = 0; i < qtdQuestions; i++) {
-            alternativeText[i] = new Array(4);
-        }
-        // let alternativeText = [];
-
-        btnTest.addEventListener("click", btnTestClick);
-        btnAnswers.addEventListener("click", btnAnswersClick);
-
-        function btnTestClick() {
-            if (visualizingTest) {
-                downloadTest();
-                return;
-            } else {
-                loadTest();
-                if (testSaved) {
-                    btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
+        function actionClicked(wasExam){
+            if(examPreview){
+                if(wasExam){
+                    downloadTest();
+                }else{
+                    loadAnswers();
+                    updateButtons(wasExam);
+                    examPreview = false;
+                }
+            }else{
+                if(wasExam){
+                    loadTest();
+                    updateButtons(wasExam);
+                    examPreview = true;
+                }else{
+                    downloadAnswers();
                 }
             }
-            // bring the view of the test again
-
-            if (!testSaved) {
-                btnTest.disabled = true;
-            }
-            btnAnswers.disabled = false;
-
-            btnAnswers.innerHTML = '<i class="fas fa-eye mr-2 pt-1"></i> Visualizar gabarito';
-            visualizingTest = true;
-
         }
 
-        function btnAnswersClick() {
-
-            if (visualizingTest) {
-                btnAnswers.disabled = true;
-                loadAnswers();
-
-                if (testSaved) {
-                    btnAnswers.innerHTML = '<i class="fas fa-save-download mr-2 pt-1"></i> Baixar gabarito';
-                    btnTest.innerHTML = '<i class="fas fa-eye mr-2 pt-1"></i> Visualizar prova';
-                    btnAnswers.disabled = false;
-                }
-
-                btnTest.disabled = false;
-                visualizingTest = false;
-                return;
+        function updateButtons(wasExam){
+            btnTest.disabled=false;
+            btnAnswers.disabled=false;
+            if(wasExam){
+                btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
+                btnAnswers.innerHTML = '<i class="fas fa-eye mr-2 pt-1"></i> Visualizar gabarito';
+                btnTest.disabled = !testSaved;
+            }else{
+                btnTest.innerHTML = '<i class="fas fa-eye mr-2 pt-1"></i> Visualizar prova';
+                btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
+                btnAnswers.disabled = !testSaved;
             }
-            downloadAnswers();
         }
+
+
+
 
         function saveTest() {
             let privateQuestionsObject = {
@@ -195,13 +160,6 @@
             testSaved = true;
             btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvando...';
             btnSave.disabled = true;
-            if (visualizingTest) {
-                btnTest.disabled = false;
-                btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
-            } else {
-                btnAnswers.disabled = false;
-                btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
-            }
 
             $.ajax({
                 url: window.location.origin + '/exams',
@@ -226,6 +184,14 @@
                     if (response) {
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Prova salva';
                         btnSave.disabled = true;
+
+                        btnTest.disabled= false;
+                        btnAnswers.disabled=false;
+                        if(examPreview){
+                            btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
+                        }else{
+                            btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
+                        }
                         testId =  response;
                     } else {
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvar prova';
@@ -289,8 +255,6 @@
         }
 
         function loadTest() {
-            btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Carregando...';
-            btnTest.disabled = true;
             $.ajax({
                 url: "load_test",
                 type: 'POST',
@@ -302,7 +266,6 @@
                 success: function(response) {
                     if (response['success']) {
                         document.getElementById('pdfViewer').innerHTML = response['html'];
-                        btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
                         updateImage();
                         updateDate();
                     }
@@ -310,12 +273,9 @@
                 error: function(response) {
                 }
             });
-
-
         }
 
         function loadAnswers() {
-            btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Carregando...';
             $.ajax({
                 url: "load_answers",
                 type: 'POST',
@@ -327,7 +287,7 @@
                 success: function(response) {
                     if (response['success']) {
                         document.getElementById('pdfViewer').innerHTML = response['html'];
-                        btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
+                        // btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
                         updateImage();
                         updateDate();
                     }
@@ -336,7 +296,6 @@
                     console.log('loadanswer error')
                 }
             });
-
         }
 
         function editQuestion(question) {
@@ -348,9 +307,7 @@
             $('#alternativesOfQuestion' + question).empty();
 
             appendInput(question);
-
             markCorrectAlternative(correctAlternative);
-
             createTrumbowyg(question);
 
             $('#button' + question).prop("disabled", true);
@@ -464,7 +421,6 @@
                 txt = txt.replace(/&[^;]+;/g, " "); // remove special chars (%n;)
 
                 if (txt.length > max) {
-                    // make an alert
                     $('#button' + question + 'Save').prop("disabled", true);
                 } else {
                     $('#button' + question + 'Save').prop("disabled", false);
@@ -473,13 +429,11 @@
         }
 
         function saveQuestion(question) {
-            // console.log('chamou o save pra questao' + question);
             $('#button' + question).prop("disabled", false);
             $('#question' + question + 'Text').trumbowyg('destroy');
             $('#button' + question + 'Save').removeClass("d-inline").addClass("d-none");
             $('#button' + question + 'Cancel').removeClass("d-inline").addClass("d-none");
 
-            // update the question text
             let thisQuestionText = $('#question' + question + 'Text').text().trim();
 
             alternativeWasEdited = saveEditedAlternatives(question);
@@ -534,6 +488,32 @@
             return(objectToReturn);
 
 
+        }
+
+
+        function updateDate(){
+            $('#day').text(day);
+            $('#month').text(month);
+            $('#year').text(year);
+        }
+
+        function updateImage(){
+            if(idHeaderImage==0){
+                $('#headerImage').attr("src",MAIN_URL+ '/img/header/logocaraguasecretaria.jpeg');
+            }else{
+                $.ajax({
+                    url: `/findHeader/${idHeaderImage}`,
+                    type: 'GET',
+                    success: function (response) {
+                        $('#headerImage').attr("src",MAIN_URL+ '/storage/'+response.header.logo);
+                        $('#headerSchool').text(response.header.description);
+                    },
+                    error: function (error) {
+                        console.log('error');
+                        console.log(error);
+                    }
+                });
+            }
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.2/trumbowyg.min.js"
