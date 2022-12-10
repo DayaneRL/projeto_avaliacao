@@ -35,7 +35,7 @@ class ExamService
                     'tags'=>$tags,
                     'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
                     'user_id'=>Auth::user()->id,
-                    'user_header_id'=> $request['exam']['idHeaderImage']
+                    'user_header_id'=> $request['exam']['user_header_id']
 
                 ]
             )

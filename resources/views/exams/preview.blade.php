@@ -56,7 +56,7 @@
             <input type="hidden" value="{{ json_encode($private_questions) }}" id="private_questions">
             <input type="hidden" value="{{ json_encode($questions) }}" id="questions">
             <input type="hidden" value="{{ json_encode($questions_ids) }}" id="questions_ids">
-
+            <input type="hidden" id="date" value="{{ $exam['date']; }}">
         </div>
     </div>
 @endsection
@@ -71,6 +71,19 @@
         let testId = 0;
         const MAIN_URL = window.location.origin;
 
+        let months = ['', 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+        const date = $('#date').val();
+        const day = date.split('/')[0];
+        const month = months[parseInt(date.split('/')[1])];
+        const year = date.split('/')[2];
+
+        updateDate();
+        function updateDate(){
+            $('#day').text(day);
+            $('#month').text(month);
+            $('#year').text(year);
+        }
+
         const idHeaderImage = {{$exam['header_id']}};
 
         updateImage();
@@ -83,6 +96,7 @@
                     type: 'GET',
                     success: function (response) {
                         $('#headerImage').attr("src",MAIN_URL+ '/storage/'+response.header.logo);
+                        $('#headerSchool').text(response.header.description);
                     },
                     error: function (error) {
                         console.log('error');
@@ -160,15 +174,12 @@
 
                 btnTest.disabled = false;
                 visualizingTest = false;
-                // bring the view of the answers
                 return;
             }
-            // download the answers PDF
             downloadAnswers();
         }
 
         function saveTest() {
-            // showing the edited questions
             let privateQuestionsObject = {
                 "private_questions": []
             }
@@ -180,8 +191,6 @@
                 };
                 privateQuestionsObject.private_questions.push(private_question);
             });
-
-            // console.log(privateQuestionsObject);
 
             testSaved = true;
             btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvando...';
@@ -219,13 +228,11 @@
                         btnSave.disabled = true;
                         testId =  response;
                     } else {
-                        // avisar o usuario que houve um erro
                         btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvar prova';
                         btnSave.disabled = false;
                     }
                 },
                 error: function(response) {
-                    // avisar o usuario que houve um erro
                     btnSave.innerHTML = '<i class="fas fa-save mr-2 pt-1"></i>Salvar prova';
                     btnSave.disabled = false;
                 }
@@ -297,6 +304,7 @@
                         document.getElementById('pdfViewer').innerHTML = response['html'];
                         btnTest.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar prova';
                         updateImage();
+                        updateDate();
                     }
                 },
                 error: function(response) {
@@ -321,6 +329,7 @@
                         document.getElementById('pdfViewer').innerHTML = response['html'];
                         btnAnswers.innerHTML = '<i class="fas fa-file-download mr-2 pt-1"></i> Baixar gabarito';
                         updateImage();
+                        updateDate();
                     }
                 },
                 error: function(blob) {

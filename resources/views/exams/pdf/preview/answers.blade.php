@@ -69,8 +69,7 @@
     <div class="header">
         <img src="" id="headerImage" class="headerImg">
         {{-- <img src="{{ public_path('img/logocaraguasecretaria.png') }}" class="headerImg"> --}}
-        <p class="institutionName">
-            CEI/EMEI Prof° Aparecida Maria Pires de Meneses
+        <p class="institutionName" id="headerSchool">
         </p>
         <p class="titleTest">
             Gabarito da prova: {{$exam['title']}}
@@ -78,7 +77,7 @@
     </div>
     <div class="testInfo">
         <p>Professor {{Auth::user()->name}}</p>
-        <p>Caraguatatuba, 25 de maio de 2022</p>
+        <p>Caraguatatuba, <span id="day"></span> de <span id="month"></span> de <span id="year"></span></p>
     </div>
         @php
             $questionNumber = 1;

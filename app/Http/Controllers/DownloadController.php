@@ -14,15 +14,28 @@ class DownloadController extends Controller
         $exam= request()->all();
         $id = $exam['id'];
 
+
         $imageId = DB::select('SELECT user_header_id FROM exams where id = ?', [$id]);
         $imageId =  $imageId[0]->user_header_id;
 
         if($imageId == 0){
             $image = '/public/img/header/logocaraguasecretaria.jpeg';
+            $schoolName = '';
         }else{
-            $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
+            $image = DB::select('SELECT logo, description FROM user_headers where id = ?', [$imageId]);
+            $schoolName = $image[0]->description;
             $image =  '/public/storage/'.$image[0]->logo;
         }
+
+        $examDate = Exam::find($exam['id'])->date;
+        $examDate = explode('-', $examDate);
+
+        $months = ['', 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+
+        $year = $examDate[0];
+        $month = $months[intval($examDate[1])];
+        $day = $examDate[2];
+        $examDate = $day.' de '.$month.' de '.$year;
 
         $ExamQuestions =  Exam::find($exam['id'])->ExamQuestions;
         $questions =[];
@@ -39,7 +52,7 @@ class DownloadController extends Controller
         }
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','image'));
+        $pdf = Pdf::loadView('exams/pdf/download/exam', compact('exam','questions','image', 'examDate', 'schoolName'));
         return $pdf->download($exam['title'].'.pdf');
     }
 
@@ -47,12 +60,16 @@ class DownloadController extends Controller
         $exam= request()->all();
 
         $id = $exam['id'];
-        // $questions = DB::select('SELECT questions.* FROM questions, exam_questions where exam_questions.exam_id = ? and exam_questions.question_id = questions.id', [$id]);
-        // $questions_ids= [];
-        // foreach($questions as $question){
-        //     $questions_ids[]+=$question->id;
-        // }
-        // $replys = Answer::whereIn('question_id', $questions_ids)->where('valid',1)->get();
+
+        $examDate = Exam::find($exam['id'])->date;
+        $examDate = explode('-', $examDate);
+
+        $months = ['', 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+
+        $year = $examDate[0];
+        $month = $months[intval($examDate[1])];
+        $day = $examDate[2];
+        $examDate = $day.' de '.$month.' de '.$year;
 
         $ExamQuestions =  Exam::find($exam['id'])->ExamQuestions;
         $questions =[];
@@ -74,13 +91,15 @@ class DownloadController extends Controller
 
         if($imageId == 0){
             $image = '/public/img/header/logocaraguasecretaria.jpeg';
+            $schoolName = '';
         }else{
-            $image = DB::select('SELECT logo FROM user_headers where id = ?', [$imageId]);
+            $image = DB::select('SELECT logo, description FROM user_headers where id = ?', [$imageId]);
+            $schoolName = $image[0]->description;
             $image = '/public/storage/'. $image[0]->logo;
         }
 
         Pdf::setOption('isRemoteEnabled',true);
-        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','image'));
+        $pdf = Pdf::loadView('exams/pdf/download/answers', compact('exam','questions','image', 'examDate', 'schoolName'));
         return $pdf->download('gabarito:'.$exam['title'].'.pdf');
     }
 
