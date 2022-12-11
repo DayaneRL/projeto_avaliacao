@@ -48,7 +48,7 @@
 
                         <div class="form-row mb-2">
                             <div class="form-group col-md-12">
-                                <label for="inputName">Descrição</label>
+                                <label for="inputName">Nome da escola</label>
                                 <input type="text" class="form-control" id="inputName" name="header[description]"
                                 value={{$header->description??old('header.description')}}>
                             </div>

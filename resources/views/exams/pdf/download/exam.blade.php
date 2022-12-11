@@ -66,7 +66,7 @@
         <img src="{{base_path().$image }}" class="headerImg">
 
         <p class="institutionName">
-            CEI/EMEI Prof° Aparecida Maria Pires de Meneses
+            {{$schoolName}}
         </p>
         <p class="titleTest">
 
@@ -75,7 +75,7 @@
     </div>
     <div class="testInfo">
         <p>Professor {{Auth::user()->name}}</p>
-        <p>Caraguatatuba, 25 de maio de 2022</p>
+        <p>Caraguatatuba, {{$examDate}}</p>
         <p class="studentName">Nome: _____________________________________________________________</p>
     </div>
         @php

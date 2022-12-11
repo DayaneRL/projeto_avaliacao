@@ -69,7 +69,7 @@
     <div class="header">
         <img src="{{base_path().$image }}" class="headerImg">
         <p class="institutionName">
-            CEI/EMEI Prof° Aparecida Maria Pires de Meneses
+            {{$schoolName}}
         </p>
         <p class="titleTest">
             Gabarito da prova: {{$exam['title']}}
@@ -77,7 +77,7 @@
     </div>
     <div class="testInfo">
         <p>Professor {{Auth::user()->name}}</p>
-        <p>Caraguatatuba, 25 de maio de 2022</p>
+        <p>Caraguatatuba, {{$examDate}}</p>
     </div>
         @php
             $questionNumber = 1;
