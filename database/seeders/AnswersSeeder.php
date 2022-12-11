@@ -191,7 +191,7 @@ class AnswersSeeder extends Seeder
                     'alternative' => 'b',
                     'created_at'=> now(),
                     'description' => 'Guerra das Duas Rosas.',
-                    'valid' => true,
+                    'valid' => false,
                     'updated_at'=> now(),
                     'question_id' => '6',
                 ],

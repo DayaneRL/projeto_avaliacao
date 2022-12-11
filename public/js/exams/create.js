@@ -351,10 +351,10 @@ $(document).on('click','.rm-question',function(){
 })
 
 $(document).on('click', '.alternative_option', function(){
-    if($(this).parents('.question')){
-        $(this).parents('.question').find('.alternative_option').removeClass('bg-success');
-        $(this).parents('.question').find('.alternative_option').css('color','#6e707e');
-        $(this).parents('.question').find('.q_answer').find('.alternative_valid').val("0");
+    if($(this).parents('.collapse')){
+        $(this).parents('.collapse').find('.alternative_option').removeClass('bg-success');
+        $(this).parents('.collapse').find('.alternative_option').css('color','#6e707e');
+        $(this).parents('.collapse').find('.q_answer').find('.alternative_valid').val("0");
     }
     $(this).addClass('bg-success');
     $(this).css('color','#fff');

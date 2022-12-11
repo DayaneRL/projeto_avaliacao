@@ -43,7 +43,6 @@ class UserController extends Controller
             DB::beginTransaction();
 
             $requestData = $request->validated();
-            // $requestData['user']['password'] = Hash::make($request['password']);
             $user = User::create($requestData['user']);
 
             DB::commit();

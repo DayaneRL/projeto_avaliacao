@@ -91,7 +91,7 @@ function downloadTest() {
 function downloadAnswers() {
     $.ajax({
         headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() },
-        url: "exams/download_answers",
+        url: "/exams/download_answers",
         type: 'POST',
         data: {
             title: $('#exam_title').text(),

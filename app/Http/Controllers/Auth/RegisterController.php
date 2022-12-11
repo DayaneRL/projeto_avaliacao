@@ -27,7 +27,7 @@ class RegisterController extends Controller
             return redirect()
                 ->route('dashboard.index')
                 ->with('success', 'Conta criada com sucesso');
-        }catch(Exception $exception){
+        }catch(\Exception $exception){
             DB::rollBack();
         }
     }
