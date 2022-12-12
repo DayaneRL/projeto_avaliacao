@@ -22,3 +22,14 @@ Foco em cadastrar provas consumindo um banco de questões e/ou cadastradndo perg
 As avaliações e o gabarito de respostas podem ser baixadas em PDF.
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+<br/>
+<br/>
+
+### Comandos
+1. composer install <br/>
+2. npm install <br/>
+3. cp .env.example .env <br/>
+4. php artisan storage:link <br/>
+5. php artisan key:generate <br/>
+6. php artisan serve
