@@ -33,3 +33,9 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 4. php artisan storage:link <br/>
 5. php artisan key:generate <br/>
 6. php artisan serve
+
+<br/> <br/>
+
+### Bug
+Ao instalar o projeto, caso apresente o erro 'The PHP GD extension is required, but is not installed' ao tentar baixar o PDF, ele pode ser corrigido descomentando a linha ';extension=php_gd2.dll' do arquivo *php.ini* , conforme apresentado nesse link: 
+<a href="https://stackoverflow.com/questions/39384644/extension-gd-is-missing-from-your-system-laravel-composer-update">Correção</a>
