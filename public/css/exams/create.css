@@ -66,3 +66,12 @@
     font-weight: bold;
     margin-bottom: 0;
 }
+
+span.error{
+    font-size: 0.9em !important;
+    color: #e74a3b!important;
+}
+
+#questoes-tab{
+    cursor: pointer;
+}

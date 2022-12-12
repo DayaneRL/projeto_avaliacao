@@ -136,7 +136,7 @@
                     <img src="{{ $question['image'] }} " class="questionImg">
                 @endif
 
-                <p class="questionText" id="question{{$question['id']}}Text">{{ $question['description'] }}</p>
+                <p class="questionText" id="question{{$question['id']}}Text">{{ strip_tags ($question['description']) }}</p>
                 <ul id="alternativesOfQuestion{{$question['id']}}" class="ulAlternatives">
                 @foreach ($question['answers'] as $reply)
                     <li class="answers" id="alternative{{$question['id'].$reply['alternative']}}" value="{{ $reply['valid'] }}">

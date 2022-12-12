@@ -124,6 +124,7 @@ class ExamService
                 $request['exam'],
                 ['tags'=>$tags,
                  'date'=>new \DateTime("$dt_exam[2]-$dt_exam[1]-$dt_exam[0]"),
+                 'user_header_id'=> $request['exam']['user_header_id']
                 ]
             )
         );

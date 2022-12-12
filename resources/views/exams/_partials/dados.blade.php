@@ -12,7 +12,7 @@
             <div class="form-row">
                 <div class="form-group col-md-9">
                     <label for="inputName">Título<span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="inputName" name="exam[title]"
+                    <input type="text" class="form-control" id="title" name="exam[title]"
                         required value="{{$exam->title??old('exam.title')}}">
                         {{-- <small class="text-secondary">Exemplo: Avaliação História segundo bimestre</small> --}}
                 </div>
@@ -25,8 +25,8 @@
 
                 <div class="form-group col-md-5">
                     <label for="inputCategory">Categoria<span class="text-danger">*</span></label>
-                    <select class="form-control js-select2" id="inputCategory" name="exam[category_id]"  required>
-                        <option>Selecione...</option>
+                    <select class="form-control js-select2" id="inputCategory" name="exam[category_id]" >
+                        <option value="">Selecione...</option>
                         @foreach ($categories as $category)
                         <option value="{{$category->id}}"
                             @if(old('exam.category_id')==$category->id||
@@ -38,7 +38,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-7">
-                    <label for="inputName">Tags</label>
+                    <label for="inputName">Temas</label>
                     <select class="js-select2 form-control" id="tags" name="exam[tags][]" multiple="multiple">
 
                         @foreach ($tags as $tag)
@@ -55,12 +55,12 @@
 
                 <div class="form-group col-md-7">
                     <label for="inputName">Categorias</label>
-                    <select class="form-control js-select2" id="inputHeaders" name="exam[header_id]" onchange="updateImage(this.value)" >
+                    <select class="form-control js-select2" id="inputHeaders" name="exam[user_header_id]" onchange="updateImage(this.value)" >
                         <option value="0">Cabeçalho padrão</option>
                         @foreach ($headers as $header)
                             <option value="{{$header->id}}"
                                 @if(old('exam.header_id')==$header->id||
-                                        (isset($exam)&&$exam->header_id==$header->id) )
+                                        (isset($exam)&&$exam->user_header_id==$header->id) )
                                         selected
                                 @endif
                             >

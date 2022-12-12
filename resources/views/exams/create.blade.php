@@ -17,7 +17,7 @@
               <a class="nav-link active" id="dados-tab" data-toggle="tab" href="#dadosGerais" role="tab" aria-controls="dadosGerais" aria-selected="true">Dados Gerais</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="questoes-tab" data-toggle="tab" href="#Questoes" role="tab" aria-controls="Questoes" aria-selected="false">Questoes</a>
+              <a class="nav-link" id="questoes-tab" role="tab" aria-controls="Questoes" aria-selected="false" onclick="validate()">Questoes</a>
             </li>
         </ul>
 
@@ -33,9 +33,9 @@
 
         <div class="row mb-3">
         @if(isset($exam))
-            <form action="{{route('exams.update',$exam->id)}}" method="POST" class="col-12">
+            <form action="{{route('exams.update',$exam->id)}}" method="POST" class="col-12" id="formExam">
         @else
-            <form action="{{route('exams.preview')}}" method="POST" class="col-12">
+            <form action="{{route('exams.preview')}}" method="POST" class="col-12" id="formExam">
         @endif
                 @csrf
                 @if(isset($exam))
@@ -59,6 +59,9 @@
 
     {{-- trumbowyg --}}
     <script src="{{asset('plugins/trumbowyg/trumbowyg.min.js')}}"></script>
+    <script src="{{asset('plugins/jquery/jquery.validate.min.js')}}"></script>
+    <script src="{{asset('plugins/jquery/additional-methods.min.js')}}"></script>
+
     <script>
         $('.editor').trumbowyg({
             btns: [['strong', 'em',]],
@@ -66,4 +69,46 @@
             removeformatPasted: true,
         });
     </script>
+
+    <script>
+        $(document).ready(function(){
+            $("#formExam").validate({
+                errorElement:"span",
+                messages:{
+                    "exam[title]":{
+                        required:"Esse campo é obrigatório",
+                    },
+                    "exam[date]": {
+                        required:"Esse campo é obrigatório",
+                    },
+                }
+            });
+            jQuery.extend(jQuery.validator.messages, {
+                required: "Esse campo é obrigatório",
+            });
+        })
+
+        function validate(){
+            if($('#inputCategory').val()==""){
+                $('#inputCategory').parents('.form-group').find('.obg').remove();
+                $('#inputCategory').parents('.form-group').find('.select2').after('<span class="text-danger obg">Esse campo é obrigatório</span>');
+            }
+
+            if($("#formExam").valid() && $('#inputCategory').val()!==""){
+               $('#questoes-tab').attr('href',"#Questoes");
+               $('#questoes-tab').attr('data-toggle',"tab");
+            }
+        }
+
+        function validateQuestions(e){
+            if($("#formExam").valid()){
+                $("#formExam").submit();
+            }
+        }
+
+        $(document).on('change', '#inputCategory', function(){
+            $('#inputCategory').parents('.form-group').find('.obg').remove();
+        })
+    </script>
+
 @endsection

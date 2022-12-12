@@ -79,7 +79,7 @@
         const day = date.split('/')[0];
         const month = months[parseInt(date.split('/')[1])];
         const year = date.split('/')[2];
-        const idHeaderImage = {{$exam['header_id']}};
+        const idHeaderImage = {{$exam['user_header_id']}};
 
         let alternativeText = new Array();
         for (i = 0; i < qtdQuestions; i++) {

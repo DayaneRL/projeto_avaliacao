@@ -36,8 +36,8 @@
                     <p><b>Categoria:</b> {{$exam->Category->name}} </p>
                     <p><b>Data da prova:</b> {{$exam->exam_date}} </p>
                     <hr/>
+                        <p><b> - Questões Aleatórias - </b></p>
                         @foreach ($exam->Attributes as $attribute)
-                            <p><b> - Questões Aleatórias - </b></p>
                             <p><b>Qtd. de questões:</b> {{$attribute->number_of_questions}},
                             <b>Nível:</b> {{$attribute->Level->name}} </p>
                         @endforeach

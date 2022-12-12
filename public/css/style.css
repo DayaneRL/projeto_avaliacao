@@ -10,3 +10,10 @@ span.text-danger{
     width: 50px;
     margin: 20px 10px;
 }
+
+.error {
+    color: black !important;
+    font-size: 1em !important;
+    position: relative !important;
+    width: 100% !important;
+}

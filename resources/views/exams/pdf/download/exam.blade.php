@@ -89,7 +89,7 @@
             @if (isset($question->image)&&$question->image!=="0")
                 <img src="{{ $question->image}} " class="questionImg">
             @endif
-            <p class="questionText">{{$question['description']}}</p>
+            <p class="questionText">{{strip_tags ($question['description'])}}</p>
             @foreach ($question['answers'] as $reply)
                 {{-- @if($reply['question_id'] == $question['id']) --}}
                     <li class="answers">

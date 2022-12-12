@@ -1,6 +1,6 @@
 const MAIN_URL = window.location.origin;
 $(document).ready(function() {
-    $('#previewImage').attr("src",MAIN_URL+ '/img/header/logocaraguasecretaria.jpeg');
+    updateImage($('#inputHeaders').val());
 
     $('.js-select2').select2({
         "language": {
@@ -445,7 +445,6 @@ $(document).on('click', '.edit-exam_question', function(){
 
 
 function updateImage(id){
-    console.log(id)
     if(id<=0){
         $('#previewImage').attr("src",MAIN_URL+ '/img/header/logocaraguasecretaria.jpeg');
     }else{
